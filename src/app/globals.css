@@ -8,9 +8,10 @@
   --dark-blue: light-dark(#0a0a2f, #0a0a2f);
   --higher-color: light-dark(#962929, #962929);
   --lower-color: light-dark(#434360, #434360);
+  --hint-color: light-dark(rgb(225, 225, 225), rgb(175, 175, 175));
   --background: light-dark(white, rgb(50, 50, 50));
   --foreground: light-dark(black, white);
-  --border-color: light-dark(rgb(50, 50, 50), white);
+  --border-color: light-dark(rgb(50, 50, 50), rgb(250, 250, 250));
   --border: 0.05rem solid var(--borderColor);
   --backdrop-color: light-dark(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
   --link-color: light-dark(blue, rgb(170, 170, 255));
@@ -333,7 +334,8 @@ a {
 /* Urbanist */
 @font-face {
   font-family: "Urbanist";
-  src: url("./fonts/urbanist/Urbanist-Italic.ttf") format("truetype");
+  src: url("./fonts/urbanist/Urbanist-Italic-VariableFont_wght.ttf")
+    format("truetype");
   font-weight: normal;
   font-style: italic;
   font-display: swap;
@@ -341,7 +343,7 @@ a {
 
 @font-face {
   font-family: "Urbanist";
-  src: url("./fonts/urbanist/Urbanist-Regular.ttf") format("truetype");
+  src: url("./fonts/urbanist/Urbanist-VariableFont_wght.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -358,5 +360,12 @@ a {
 @font-face {
   font-family: "Gabarito-Regular";
   src: url("./fonts/Gabarito-VariableFont_wght.ttf") format("truetype");
+  font-display: swap;
+}
+
+/* Inter */
+@font-face {
+  font-family: "Inter";
+  src: url("./fonts/Inter-VariableFont_wght.ttf") format("truetype");
   font-display: swap;
 }
