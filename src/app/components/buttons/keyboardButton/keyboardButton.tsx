@@ -1,0 +1,187 @@
+"use client";
+import React, { useState, useEffect, useRef, useCallback, JSX } from "react";
+import Link from "next/link";
+import styles from "./keyboardButton.module.css";
+import classNames from "classnames";
+
+/*
+ * backgroundColor - changes the background color + text color, used to give hints in the game
+ * onKeydown - does an extra keydown function, we will use this for some arrow controls
+ * keyPressToken - we pass in a token from a higher component to fire the onKeydown. (keyboard controls for the button)
+ */
+interface KeyboardButtonProps {
+  backgroundColor: `none` | `grey` | `yellow` | `green`;
+  text?: string;
+  children?: React.ReactNode;
+  icon?: JSX.Element;
+  variant?: "keyboard";
+  onClick?: () => void;
+  width: "default" | "smallest" | "full";
+  ariaLabel?: string;
+  type?: "button" | "submit" | "reset";
+  form?: string;
+  name?: string;
+  title?: string;
+  disabled?: boolean;
+  draggable?: boolean;
+  autoFocus?: boolean;
+  tabIndex?: number;
+  id?: string;
+  style?: React.CSSProperties;
+  onKeydown?: () => void;
+  keyPressToken?: number | string;
+}
+
+export default function KeyboardButton({
+  backgroundColor,
+  text,
+  children,
+  icon,
+  variant = "keyboard",
+  width = "default",
+  onClick,
+  ariaLabel,
+  type = "button",
+  form,
+  name,
+  title,
+  disabled = false,
+  draggable = false,
+  autoFocus = false,
+  tabIndex,
+  id,
+  style,
+  onKeydown,
+}: KeyboardButtonProps) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const timeoutRef = useRef<NodeJS.Timeout>(undefined);
+
+  const [active, setActive] = useState(false);
+  const enabled = useRef(true);
+  const enterKeyDown = useRef(false);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handlePointerDown = () => {
+    if (enabled.current) {
+      clearTimeout(timeoutRef.current);
+      enabled.current = false;
+      setActive(false);
+      timeoutRef.current = setTimeout(() => {
+        setActive(true);
+      }, 80);
+    }
+  };
+
+  const handlePointerUp = () => {
+    if (!enabled.current) {
+      clearTimeout(timeoutRef.current);
+      setActive(true);
+      enabled.current = true;
+      timeoutRef.current = setTimeout(() => {
+        setActive(false);
+        onClick?.();
+      }, 80);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    onKeydown();
+    if (e.key === "Enter" && enabled.current) {
+      clearTimeout(timeoutRef.current);
+      enabled.current = false;
+      enterKeyDown.current = true;
+      setActive(true);
+    }
+  };
+
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === "Enter" && !enabled.current) {
+      setActive(false);
+      timeoutRef.current = setTimeout(() => {
+        enabled.current = true;
+        enterKeyDown.current = false;
+        onClick?.();
+      }, 80);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!enterKeyDown.current) {
+      enabled.current = true;
+      setActive(false);
+    }
+  };
+
+  const handleBlur = () => {
+    enabled.current = true;
+    enterKeyDown.current = false;
+    setActive(false);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLButtonElement>) => {
+    if (buttonRef.current && e.touches.length > 0) {
+      const touch = e.touches[0];
+      if (
+        !buttonRef.current.contains(
+          document.elementFromPoint(touch.clientX, touch.clientY)
+        )
+      ) {
+        setActive(false);
+        enabled.current = true;
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (keyPressToken) {
+      setActive(true);
+      timeoutRef.current = setTimeout(() => {
+        setActive(false);
+        onClick?.();
+      }, 80);
+    }
+  }, [keyPressToken]);
+
+  return (
+    <button
+      ref={buttonRef}
+      id={id}
+      name={name}
+      title={title}
+      className={classNames(
+        styles.button,
+        styles[variant],
+        styles[width],
+        styles[backgroundColor],
+        {
+          [styles.active]: active,
+        }
+      )}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onTouchMove={handleTouchMove}
+      onKeyDown={handleKeyDown}
+      onKeyUp={handleKeyUp}
+      onMouseLeave={handleMouseLeave}
+      onBlur={handleBlur}
+      aria-label={ariaLabel}
+      type={type}
+      form={form}
+      disabled={disabled}
+      draggable={draggable}
+      autoFocus={autoFocus}
+      tabIndex={tabIndex}
+      style={{ ...style }}
+    >
+      {icon && <div className={styles.icon_container}>{icon}</div>}
+      {children || text}
+    </button>
+  );
+}

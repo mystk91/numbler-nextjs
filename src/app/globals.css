@@ -3,21 +3,21 @@
 :root {
   color-scheme: light dark;
   --grey: light-dark(#8c8c8c, #8c8c8c);
-  --yellow: light-dark(#d1b101, #d1b101);
-  --green: light-dark(#23a64c, #23a64c);
+  --yellow: light-dark(#d1b101, #9d8600);
+  --green: light-dark(#23a64c, #1e8c41);
   --dark-blue: light-dark(#0a0a2f, #0a0a2f);
   --higher-color: light-dark(#962929, #962929);
   --lower-color: light-dark(#434360, #434360);
   --hint-color: light-dark(rgb(225, 225, 225), rgb(175, 175, 175));
   --background: light-dark(white, rgb(50, 50, 50));
   --foreground: light-dark(black, white);
-  --border-color: light-dark(rgb(50, 50, 50), rgb(250, 250, 250));
+  --border-color: light-dark(rgb(50, 50, 50), rgb(245, 245, 245));
   --border: 0.05rem solid var(--borderColor);
   --backdrop-color: light-dark(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
   --link-color: light-dark(blue, rgb(170, 170, 255));
   --icon-color: light-dark(black, white);
   --error-color: light-dark(brown, rgb(249, 105, 105));
-  --focus-color: light-dark(rgba(47, 96, 149, 1), rgba(47, 96, 149, 1));
+  --focus-color: light-dark(rgba(47, 96, 149, 1), rgba(200, 200, 200, 1));
   --focus-outline: 0.1rem solid var(--focus-color);
   --focus-outline-offset: 0.1rem;
 }
@@ -45,7 +45,7 @@ input::placeholder {
 }
 
 svg {
-  fill: var(--iconColor);
+  fill: var(--icon-color);
 }
 
 html {
