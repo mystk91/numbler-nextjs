@@ -1,0 +1,28 @@
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 0.8rem;
+  width: 100%;
+  padding: 0 0.4rem;
+}
+
+.number_keys {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.keyboard > * {
+  display: flex;
+  justify-content: center;
+  column-gap: 0.4rem;
+}
+
+.input_keys {
+  display: flex;
+  justify-content: center;
+  column-gap: 0.8rem;
+  width: 100%;
+}

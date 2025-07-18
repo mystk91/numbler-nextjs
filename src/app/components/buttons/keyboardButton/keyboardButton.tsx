@@ -1,5 +1,13 @@
 "use client";
-import React, { useState, useEffect, useRef, useCallback, JSX } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  JSX,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import Link from "next/link";
 import styles from "./keyboardButton.module.css";
 import classNames from "classnames";
@@ -23,37 +31,39 @@ interface KeyboardButtonProps {
   name?: string;
   title?: string;
   disabled?: boolean;
-  draggable?: boolean;
-  autoFocus?: boolean;
   tabIndex?: number;
   id?: string;
   style?: React.CSSProperties;
-  onKeydown?: () => void;
+  onKeyDown?: (e?: React.KeyboardEvent<HTMLButtonElement>) => void;
   keyPressToken?: number | string;
 }
 
-export default function KeyboardButton({
-  backgroundColor,
-  text,
-  children,
-  icon,
-  variant = "keyboard",
-  width = "default",
-  onClick,
-  ariaLabel,
-  type = "button",
-  form,
-  name,
-  title,
-  disabled = false,
-  draggable = false,
-  autoFocus = false,
-  tabIndex,
-  id,
-  style,
-  onKeydown,
-}: KeyboardButtonProps) {
+function KeyboardButton(
+  {
+    backgroundColor,
+    text,
+    children,
+    icon,
+    variant = "keyboard",
+    width = "default",
+    onClick,
+    ariaLabel,
+    type = "button",
+    form,
+    name,
+    title,
+    disabled = false,
+    tabIndex,
+    id,
+    style,
+    onKeyDown,
+    keyPressToken,
+  }: KeyboardButtonProps,
+  ref: React.Ref<HTMLButtonElement>
+) {
   const buttonRef = useRef<HTMLButtonElement>(null);
+  useImperativeHandle(ref, () => buttonRef.current!);
+
   const timeoutRef = useRef<NodeJS.Timeout>(undefined);
 
   const [active, setActive] = useState(false);
@@ -92,7 +102,7 @@ export default function KeyboardButton({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    onKeydown();
+    onKeyDown?.(e);
     if (e.key === "Enter" && enabled.current) {
       clearTimeout(timeoutRef.current);
       enabled.current = false;
@@ -141,11 +151,12 @@ export default function KeyboardButton({
 
   useEffect(() => {
     if (keyPressToken) {
+      setActive(false);
       setActive(true);
       timeoutRef.current = setTimeout(() => {
         setActive(false);
         onClick?.();
-      }, 80);
+      }, 160);
     }
   }, [keyPressToken]);
 
@@ -175,8 +186,6 @@ export default function KeyboardButton({
       type={type}
       form={form}
       disabled={disabled}
-      draggable={draggable}
-      autoFocus={autoFocus}
       tabIndex={tabIndex}
       style={{ ...style }}
     >
@@ -185,3 +194,7 @@ export default function KeyboardButton({
     </button>
   );
 }
+
+export default forwardRef<HTMLButtonElement, KeyboardButtonProps>(
+  KeyboardButton
+);
