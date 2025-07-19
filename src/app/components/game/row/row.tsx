@@ -1,0 +1,98 @@
+"use client";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import styles from "./row.module.css";
+import classNames from "classnames";
+import Rectangle from "@/app/components/game/rectangle/rectangle";
+
+type RectangleProps = {
+  type: `digit` | `hint`;
+  value:
+    | ``
+    | 0
+    | 1
+    | 2
+    | 3
+    | 4
+    | 5
+    | 6
+    | 7
+    | 8
+    | 9
+    | `higher`
+    | `lower`
+    | `equals`;
+  color: `none` | `grey` | `yellow` | `green` | `higher` | `lower`;
+  active?: boolean;
+  animate?: boolean;
+  animation?: `` | `bounce_up` | `bounce_down` | `equals`;
+  ariaLabel?: string;
+  style?: React.CSSProperties;
+};
+
+interface RowProps {
+  rectangles: RectangleProps[];
+  row?: number;
+  currentRow?: boolean;
+  ariaLabel?: string;
+  style?: React.CSSProperties;
+}
+
+export default function Row({
+  rectangles,
+  row,
+  currentRow,
+  ariaLabel,
+  style,
+}: RowProps) {
+  const hint = rectangles[rectangles.length - 1];
+  return (
+    <div
+      className={styles.row}
+      aria-label={
+        ariaLabel
+          ? ariaLabel
+          : currentRow
+          ? `Row ${row}, current row`
+          : `Row ${row}`
+      }
+      style={{ ...style }}
+    >
+      <div className={styles.digits_wrapper}>
+        {rectangles.slice(0, -1).map((rectangle, index) => (
+          <Rectangle
+            type={rectangle.type}
+            value={rectangle.value}
+            color={rectangle.color}
+            row={row}
+            column={index + 1}
+            active={rectangle.active}
+            currentRow={currentRow}
+            animate={rectangle.animate}
+            animation={rectangle.animation}
+            ariaLabel={rectangle.ariaLabel}
+            style={{ ...rectangle.style }}
+            key={`${rectangle.type} row-${row} col-${index + 1}`}
+          />
+        ))}
+      </div>
+      <div className={styles.hints_wrapper}>
+        <Rectangle
+          type={hint.type}
+          value={hint.value}
+          color={hint.color}
+          row={row}
+          column={rectangles.length}
+          active={hint.active}
+          currentRow={currentRow}
+          animate={hint.animate}
+          animation={hint.animation}
+          ariaLabel={hint.ariaLabel}
+          style={{ ...hint.style }}
+          key={`${hint.type} row-${row} col-${rectangles.length + 1}`}
+        />
+      </div>
+    </div>
+  );
+}

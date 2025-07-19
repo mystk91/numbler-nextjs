@@ -1,0 +1,25 @@
+.row {
+  display: flex;
+  column-gap: 0.8rem;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  height: 100%;
+  max-height: 32rem;
+  padding: 0 0.4rem;
+}
+
+.digits_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  column-gap: 0.2rem;
+}
+
+.hints_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}

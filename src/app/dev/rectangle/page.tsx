@@ -73,6 +73,7 @@ export default function Page() {
           currentRow={true}
           animate={props.animate}
           animation={props.animation}
+          style={{ minHeight: "6.0rem", minWidth: "4.0rem" }}
         />
 
         <Rectangle
@@ -83,6 +84,7 @@ export default function Page() {
           currentRow={true}
           animate={false}
           animation=""
+          style={{ minHeight: "6.0rem", minWidth: "4.0rem" }}
         />
 
         <Rectangle
@@ -93,6 +95,7 @@ export default function Page() {
           currentRow={false}
           animate={true}
           animation="bounce_down"
+          style={{ minHeight: "6.0rem", minWidth: "4.0rem" }}
         />
         <Rectangle
           type={`digit`}
@@ -102,6 +105,7 @@ export default function Page() {
           currentRow={false}
           animate={true}
           animation="bounce_up"
+          style={{ minHeight: "6.0rem", minWidth: "4.0rem" }}
         />
         <Rectangle
           type={`digit`}
@@ -112,6 +116,7 @@ export default function Page() {
           animate={true}
           animation={correctDigit.animation}
           animationDelay={1.5}
+          style={{ minHeight: "6.0rem", minWidth: "4.0rem" }}
         />
 
         <Rectangle
@@ -122,6 +127,7 @@ export default function Page() {
           currentRow={currentRow}
           animate={true}
           animation=""
+          style={{ minHeight: "6.0rem", minWidth: "4.0rem" }}
         />
 
         <Rectangle
@@ -130,6 +136,7 @@ export default function Page() {
           color={hint.color}
           animate={hint.animate}
           currentRow={hint.currentRow}
+          style={{ minHeight: "6.0rem", minWidth: "4.0rem" }}
         />
         <Rectangle
           type={`hint`}
@@ -137,12 +144,14 @@ export default function Page() {
           color="lower"
           currentRow={true}
           animate={false}
+          style={{ minHeight: "6.0rem", minWidth: "4.0rem" }}
         />
         <Rectangle
           type={`hint`}
           value={`equals`}
           color="green"
           currentRow={false}
+          style={{ minHeight: "6.0rem", minWidth: "4.0rem" }}
         />
         <Rectangle
           type={`hint`}
@@ -151,6 +160,7 @@ export default function Page() {
           animate={equals.animate}
           animation={equals.animation}
           currentRow={equals.currentRow}
+          style={{ minHeight: "6.0rem", minWidth: "4.0rem" }}
         />
       </div>
       <div className={styles.buttons}>

@@ -5,8 +5,10 @@
 
 .wrapper {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  column-gap: 7.2rem;
   row-gap: 1.2rem;
 }
 

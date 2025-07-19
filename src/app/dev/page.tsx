@@ -21,6 +21,8 @@ export default function Page() {
         <div>
           <h1>{`Game`}</h1>
           <Link href="/dev/rectangle">{`Rectangle`}</Link>
+          <Link href="/dev/row">{`Row`}</Link>
+          <Link href="/dev/gameboard">{`Gameboard`}</Link>
         </div>
       </div>
     </div>

@@ -18,7 +18,7 @@ import Equals from "@/app/svg/svg_equals";
  *  ariaLabel? - an optional ariaLabel that will be used rather than our default aria-label
  *  style? - any additional styling
  */
-interface RectangleProps {
+export interface RectangleProps {
   type: `digit` | `hint`;
   value:
     | ``
@@ -65,26 +65,32 @@ export default function Rectangle({
   function getAriaLabel(): string {
     const colorMessages = {
       none: ``,
-      grey: `Number is not used again`,
-      yellow: `Number appears in a different column`,
-      green: `Number is in the correct column`,
-      higher: `Arrow pointing up: Guess higher`,
-      lower: `Arrow pointing down: Guess lower`,
+      grey: `number is not used again.`,
+      yellow: `number appears in a different column.`,
+      green: `number is in the correct column.`,
+      higher: `arrow pointing up: guess higher.`,
+      lower: `arrow pointing down: guess lower.`,
     };
-    const coordinate = `row ${row}, column ${column}`;
-    if (!value)
-      return `${active && `Current digit, `}${
-        currentRow && `Current row, `
-      }Empty ${type} container, ${coordinate}`;
+    const coordinate = `Coordinates: Row ${row}, Column ${column}`;
+    if (value === ``) {
+      if (active) {
+        return `Enter a digit here on the current row. ${coordinate}`;
+      }
+      return `Empty ${type} container${
+        currentRow ? ` on the current row` : ``
+      }. ${coordinate}`;
+    }
     if (type === "digit") {
-      return `${value},${
-        currentRow ? ` current row,` : `${color}: ${colorMessages[color]},`
+      return `${
+        currentRow
+          ? `${value} on the current row.`
+          : `${color} ${value}: ${colorMessages[color]}`
       } ${coordinate}`;
     } else {
-      return `hint, ${
+      return `Hint with an, ${
         color === "green"
           ? `Equals sign: you guessed correctly!`
-          : `${colorMessages[color]},`
+          : `${colorMessages[color]}.`
       } ${coordinate}`;
     }
   }

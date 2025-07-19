@@ -4,17 +4,16 @@
   justify-content: center;
   align-items: center;
   border: 0.4rem solid light-dark(rgb(200, 200, 200), rgb(200, 200, 200));
-  min-height: 6rem;
-  margin: 0 0.1rem;
-  /* Need to change these later so we can scale the rectangles */
-  height: 7.5rem;
-  width: 6rem;
+  min-height: 5.2rem;
   font-family: "Roboto", "Inter", sans-serif;
   color: var(--foreground);
   background-color: var(--background);
   overflow: hidden;
   user-select: none;
   container-type: size;
+  height: 100%;
+  width: auto;
+  aspect-ratio: 4 / 5;
 }
 
 .digit_wrapper {
@@ -35,7 +34,7 @@ svg.equals {
 
 .hint {
   background-color: var(--hint-color);
-  min-width: 5.2rem;
+
 }
 
 .current_row {
