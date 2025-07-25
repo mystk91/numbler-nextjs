@@ -20,7 +20,7 @@
   --focus-color: light-dark(rgba(47, 96, 149, 1), rgba(200, 200, 200, 1));
   --focus-outline: 0.1rem solid var(--focus-color);
   --focus-outline-offset: 0.1rem;
-  --grey-text: rgb(230, 230, 230);
+  --grey-text: light-dark(rgb(245, 245, 245), rgb(230, 230, 230));
 }
 
 /* Elements */
