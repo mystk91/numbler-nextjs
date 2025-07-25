@@ -1,0 +1,51 @@
+.instructions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 1.6rem;
+}
+
+.instructions_wrapper,
+.example_wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 1.6rem;
+}
+
+.example_wrapper {
+  row-gap: 0.8rem;
+}
+
+.instruction_text {
+  font-size: 1.8rem;
+  text-decoration: underline;
+  text-underline-offset: 0.6rem;
+}
+
+.arrows_wrapper {
+  display: flex;
+  column-gap: 1.2rem;
+}
+
+.color_hints {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.4rem;
+  width: 100%;
+}
+
+.color_hint {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 2.4rem;
+}
+
+.color_hint .text_wrapper {
+  width: 16rem;
+  font-size: 1.6rem;
+  text-wrap: pretty;
+}

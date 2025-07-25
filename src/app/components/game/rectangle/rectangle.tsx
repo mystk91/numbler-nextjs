@@ -40,7 +40,6 @@ export interface RectangleProps {
   column?: number;
   active?: boolean;
   currentRow?: boolean;
-  previousRow?: boolean;
   animate?: boolean;
   animation?: `` | `bounce_up` | `bounce_down` | `equals`;
   animationDelay?: number;
@@ -66,8 +65,8 @@ export default function Rectangle({
     const colorMessages = {
       none: ``,
       grey: `number is not used again.`,
-      yellow: `number appears in a different column.`,
-      green: `number is in the correct column.`,
+      yellow: `number appears in a different position.`,
+      green: `number is in the correct position.`,
       higher: `arrow pointing up: guess higher.`,
       lower: `arrow pointing down: guess lower.`,
     };
@@ -87,10 +86,10 @@ export default function Rectangle({
           : `${color} ${value}: ${colorMessages[color]}`
       } ${coordinate}`;
     } else {
-      return `Hint with an, ${
+      return `Hint with an ${
         color === "green"
           ? `Equals sign: you guessed correctly!`
-          : `${colorMessages[color]}.`
+          : `${colorMessages[color]}`
       } ${coordinate}`;
     }
   }

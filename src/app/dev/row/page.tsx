@@ -4,6 +4,7 @@ import Link from "next/link";
 import styles from "./page.module.css";
 import type { Metadata } from "next";
 import Row from "@/app/components/game/row/row";
+import Rectangle from "@/app/components/game/rectangle/rectangle";
 
 export function PageOne() {
   const guesses = 6;
@@ -357,9 +358,7 @@ export default function PageTwo() {
       <div
         className={styles.wrapper}
         style={{
-          height: `min(100%, calc(100vw * ${guesses * 5} / ${
-            columns * 4
-          }))`,
+          height: `min(100%, calc(100vw * ${guesses * 5} / ${columns * 4}))`,
         }}
       >
         <Row
@@ -652,6 +651,7 @@ export default function PageTwo() {
               active: false,
               animate: false,
               animation: ``,
+              currentRow: true,
             },
             {
               type: "digit",
@@ -660,6 +660,7 @@ export default function PageTwo() {
               active: false,
               animate: false,
               animation: ``,
+              currentRow: true,
             },
             {
               type: "digit",
@@ -668,6 +669,7 @@ export default function PageTwo() {
               active: false,
               animate: false,
               animation: ``,
+              currentRow: true,
             },
             {
               type: "digit",
@@ -676,6 +678,7 @@ export default function PageTwo() {
               active: true,
               animate: false,
               animation: ``,
+              currentRow: true,
             },
             {
               type: "digit",
@@ -684,6 +687,7 @@ export default function PageTwo() {
               active: false,
               animate: false,
               animation: ``,
+              currentRow: true,
             },
             {
               type: "digit",
@@ -692,6 +696,7 @@ export default function PageTwo() {
               active: false,
               animate: false,
               animation: ``,
+              currentRow: true,
             },
             {
               type: "digit",
@@ -700,6 +705,7 @@ export default function PageTwo() {
               active: false,
               animate: false,
               animation: ``,
+              currentRow: true,
             },
             {
               type: "hint",
@@ -708,6 +714,7 @@ export default function PageTwo() {
               active: false,
               animate: false,
               animation: ``,
+              currentRow: true,
             },
           ]}
           currentRow={true}

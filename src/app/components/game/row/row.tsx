@@ -4,32 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./row.module.css";
 import classNames from "classnames";
-import Rectangle from "@/app/components/game/rectangle/rectangle";
-
-type RectangleProps = {
-  type: `digit` | `hint`;
-  value:
-    | ``
-    | 0
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | `higher`
-    | `lower`
-    | `equals`;
-  color: `none` | `grey` | `yellow` | `green` | `higher` | `lower`;
-  active?: boolean;
-  animate?: boolean;
-  animation?: `` | `bounce_up` | `bounce_down` | `equals`;
-  ariaLabel?: string;
-  style?: React.CSSProperties;
-};
+import Rectangle, {
+  RectangleProps,
+} from "@/app/components/game/rectangle/rectangle";
 
 interface RowProps {
   rectangles: RectangleProps[];
@@ -68,7 +45,7 @@ export default function Row({
             row={row}
             column={index + 1}
             active={rectangle.active}
-            currentRow={currentRow}
+            currentRow={rectangle.currentRow}
             animate={rectangle.animate}
             animation={rectangle.animation}
             ariaLabel={rectangle.ariaLabel}
@@ -85,7 +62,7 @@ export default function Row({
           row={row}
           column={rectangles.length}
           active={hint.active}
-          currentRow={currentRow}
+          currentRow={hint.currentRow}
           animate={hint.animate}
           animation={hint.animation}
           ariaLabel={hint.ariaLabel}
