@@ -5,7 +5,7 @@ import Link from "next/link";
 import styles from "./keyboard.module.css";
 import classNames from "classnames";
 import KeyboardButton from "@/app/components/buttons/keyboardButton/keyboardButton";
-import Backspace from "@/app/svg/svg_backspace";
+import Backspace from "@/app/components/icons/backspace";
 
 //The color the keys will be
 type KeyColor = "none" | "grey" | "yellow" | "green";

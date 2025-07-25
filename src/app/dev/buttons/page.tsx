@@ -9,7 +9,8 @@ export default function Page() {
     <div className={styles.page}>
       <div className={styles.wrapper}>
         <Button variant="primary">{`Accept`}</Button>
-        <Button variant="cancel">{`Cancel`}</Button>
+        <Button variant="red">{`Cancel`}</Button>
+        <Button variant="green">{`Cancel`}</Button>
         <Button variant="secondary">{`Cancel`}</Button>
         <Button variant="tertiary">{`Info`}</Button>
       </div>

@@ -15,7 +15,7 @@
   --border: 0.05rem solid var(--borderColor);
   --backdrop-color: light-dark(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
   --link-color: light-dark(blue, rgb(170, 170, 255));
-  --icon-color: light-dark(black, white);
+  --icon-color: light-dark(black, rgb(230, 230, 230));
   --error-color: light-dark(brown, rgb(249, 105, 105));
   --focus-color: light-dark(rgba(47, 96, 149, 1), rgba(200, 200, 200, 1));
   --focus-outline: 0.1rem solid var(--focus-color);

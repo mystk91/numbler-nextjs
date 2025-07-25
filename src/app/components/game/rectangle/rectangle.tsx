@@ -2,8 +2,8 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./rectangle.module.css";
 import classNames from "classnames";
-import DownArrow from "@/app/svg/svg_downArrow";
-import Equals from "@/app/svg/svg_equals";
+import DownArrow from "@/app/components/icons/downArrow";
+import Equals from "@/app/components/icons/equals";
 
 /*  Rectangle: used to create the graphic for the game that will hold numbers, arrows, and colored hints
  *

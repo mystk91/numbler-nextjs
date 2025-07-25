@@ -16,7 +16,7 @@ interface ButtonProps {
   text?: string;
   children?: React.ReactNode;
   icon?: JSX.Element;
-  variant: "primary" | "secondary" | "tertiary" | "cancel";
+  variant: "primary" | "secondary" | "tertiary" | "red" | "green";
   onClick?: () => void;
   onKeyDown?: (e?: React.KeyboardEvent<HTMLButtonElement>) => void;
   width?: "default" | "smallest" | "full";

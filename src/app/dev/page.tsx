@@ -13,8 +13,8 @@ export default function Page() {
     <div className={styles.page}>
       <div className={styles.wrapper}>
         <div>
-          <h1>{`Site`}</h1>
-          <Link href="/dev/buttons">{`Buttons`}</Link>
+          <h1>{`Buttons`}</h1>
+          <Link href="/dev/buttons">{`Button Set`}</Link>
         </div>
         <div>
           <h1>{`Navbar`}</h1>

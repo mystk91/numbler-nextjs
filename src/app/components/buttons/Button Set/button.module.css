@@ -17,7 +17,7 @@
   text-wrap: pretty;
   user-select: none;
   font-size: 1.8rem;
-  border-radius: 0.8rem;
+  border-radius: 1.6rem;
   box-shadow: 0px 2px 1px 1px rgba(0, 0, 0, 0.3);
   transition: all 0.15s;
   -webkit-tap-highlight-color: transparent;
@@ -54,19 +54,27 @@
   box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.3);
 }
 
-.primary, .cancel {
+.primary,
+.red,
+.green {
   border: 0.2rem solid rgba(0, 0, 0, 0);
   font-weight: bolder;
   background-color: var(--buttonColor);
 }
 
-.primary:hover, .cancel:hover {
+.primary:hover,
+.red:hover,
+.green:hover {
   color: light-dark(rgb(255, 255, 255), rgb(245, 245, 245));
   filter: brightness(1.1);
 }
 
-.cancel{
+.red {
   background-color: var(--higher-color);
+}
+
+.green {
+  background-color: var(--green);
 }
 
 .secondary {
@@ -77,7 +85,7 @@
 }
 
 .secondary:hover {
-  background-color: light-dark(rgb(247, 247, 247), rgb(60, 60, 60));
+  background-color: light-dark(rgb(245, 245, 245), rgb(60, 60, 60));
   color: light-dark(var(--buttonColor), rgb(245, 245, 245));
 }
 
