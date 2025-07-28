@@ -21,6 +21,8 @@ export default function Page() {
           <Link href="/dev/navbar">{`Navbar`}</Link>
           <Link href="/dev/navbar/instructions">{`Instructions`}</Link>
           <Link href="/dev/login">{`Login`}</Link>
+          <Link href="/dev/dropdown">{`Dropdown Menu`}</Link>
+          <Link href="/dev/navbar/buttons">{`Navbar Buttons`}</Link>
         </div>
         <div>
           <h1>{`Keyboard`}</h1>

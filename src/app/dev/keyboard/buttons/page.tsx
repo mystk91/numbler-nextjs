@@ -4,7 +4,7 @@ import Link from "next/link";
 import styles from "./page.module.css";
 import type { Metadata } from "next";
 import KeyboardButton from "@/app/components/buttons/keyboardButton/keyboardButton";
-import Backspace from "@/app/svg/svg_backspace";
+import Backspace from "@/app/components/icons/backspace";
 
 
 export default function Page() {
