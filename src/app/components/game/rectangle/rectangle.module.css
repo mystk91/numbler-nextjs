@@ -6,7 +6,7 @@
   border: 0.4rem solid light-dark(rgb(200, 200, 200), rgb(200, 200, 200));
   min-height: 5.2rem;
   font-family: "Roboto", "Inter", sans-serif;
-  color: var(--foreground);
+
   background-color: var(--background);
   overflow: hidden;
   user-select: none;

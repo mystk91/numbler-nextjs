@@ -58,6 +58,7 @@ export default function Rectangle({
   animate = true,
   animation = ``,
   animationDelay = 0,
+  ariaLabel,
   style,
 }: RectangleProps) {
   //Generates the aria label based on our props
@@ -108,7 +109,7 @@ export default function Rectangle({
         animationDelay: animationDelay ? `${animationDelay}s` : ``,
         ...style,
       }}
-      aria-label={getAriaLabel()}
+      aria-label={ariaLabel ? ariaLabel : getAriaLabel()}
     >
       {type === "hint" && value ? (
         value === `equals` ? (

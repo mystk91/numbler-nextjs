@@ -126,7 +126,7 @@
 
   .tertiary:hover {
     background-color: transparent;
-    border-color: var(--buttonColor);
+    border-color: rgb(240, 240, 240);
     color: rgba(255, 255, 255);
   }
 }

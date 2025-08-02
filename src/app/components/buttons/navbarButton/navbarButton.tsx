@@ -44,7 +44,7 @@ export function Button(
     name,
     title,
     disabled = false,
-    draggable = false,
+    draggable,
     autoFocus = false,
     tabIndex,
     id,

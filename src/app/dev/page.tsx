@@ -35,6 +35,8 @@ export default function Page() {
           <Link href="/dev/rectangle">{`Rectangle`}</Link>
           <Link href="/dev/row">{`Row`}</Link>
           <Link href="/dev/gameboard">{`Gameboard`}</Link>
+          <Link href="/dev/game">{`Game`}</Link>
+          <Link href="/dev/game_end_panel">{`Game End Panel`}</Link>
         </div>
       </div>
     </div>

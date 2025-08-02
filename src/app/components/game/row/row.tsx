@@ -8,7 +8,7 @@ import Rectangle, {
   RectangleProps,
 } from "@/app/components/game/rectangle/rectangle";
 
-interface RowProps {
+export interface RowProps {
   rectangles: RectangleProps[];
   row?: number;
   currentRow?: boolean;
