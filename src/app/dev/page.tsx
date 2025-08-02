@@ -38,6 +38,11 @@ export default function Page() {
           <Link href="/dev/game">{`Game`}</Link>
           <Link href="/dev/game_end_panel">{`Game End Panel`}</Link>
         </div>
+        <div>
+          <h1>{`Login`}</h1>
+          <Link href="/dev/login">{`Login`}</Link>
+          <Link href="dev/login/signup">{`Signup`}</Link>
+        </div>
       </div>
     </div>
   );

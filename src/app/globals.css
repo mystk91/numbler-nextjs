@@ -37,8 +37,12 @@
 }
 
 input {
-  color: var(--foreground);
   background-color: var(--background);
+  font-family: "Urbanist", "Segoe UI", "Arial", sans-serif;
+}
+
+label {
+  font-family: "Urbanist", "Segoe UI", "Arial", sans-serif;
 }
 
 input::placeholder {
@@ -80,10 +84,6 @@ h6 {
 
 nav {
   font-family: "Urbanist", "Segoe UI", "Arial", sans-serif;
-}
-
-button {
-  font-family: "Gabarito", "Arial Bold", sans-serif;
 }
 
 a {
@@ -361,7 +361,7 @@ a {
 
 /* Gabarito */
 @font-face {
-  font-family: "Gabarito-Regular";
+  font-family: "Gabarito";
   src: url("./fonts/Gabarito-VariableFont_wght.ttf") format("truetype");
   font-display: swap;
 }

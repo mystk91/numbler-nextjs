@@ -4,6 +4,7 @@
   all: unset;
   box-sizing: border-box;
   cursor: pointer;
+  font-family: "Gabarito", "Manrope", "Roboto", sans-serif;
   height: max-content;
   min-height: var(--height);
   width: max-content;

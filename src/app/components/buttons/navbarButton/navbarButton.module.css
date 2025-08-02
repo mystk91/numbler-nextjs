@@ -2,6 +2,7 @@
   all: unset;
   box-sizing: border-box;
   cursor: pointer;
+  font-family: "Gabarito", "Manrope", "Roboto", sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -5,11 +5,16 @@ import Link from "next/link";
 import styles from "./component.module.css";
 import classNames from "classnames";
 
-interface LoginProps {
+interface ComponentProps {
   style?: React.CSSProperties;
 }
 
-export default function Login({ style }: LoginProps) {
+export default function Component({ style }: ComponentProps) {
+
+  //componentDidMount, runs when component mounts and returns on dismount
+  useEffect(() => {
+    return () => {};
+  }, []);
 
   return <div style={{ ...style }}></div>;
 }

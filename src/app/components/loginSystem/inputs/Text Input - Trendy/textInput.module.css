@@ -1,0 +1,65 @@
+.input_wrapper {
+  --height: 4.8rem;
+  --labelFontSize: 1.4rem;
+  --labelFontSizeSmall: 1rem;
+  --labelOffsetTop: 0.4rem;
+  --inputFontSize: 1.6rem;
+  height: var(--height);
+  width: 100%;
+  position: relative;
+  border: 0.05rem solid var(--border-color);
+  display: flex;
+  outline: 0rem solid transparent;
+  transition: outline 0.2s;
+  border-radius: 0.4rem;
+}
+
+.input_wrapper:focus-within {
+  outline: var(--focus-outline);
+  transition: outline 0.2s;
+}
+
+.input_wrapper label {
+  user-select: none;
+  pointer-events: none;
+}
+
+.input_wrapper label.initial {
+  position: absolute;
+  top: calc(var(--height) / 2 - var(--labelFontSize) / 2);
+  left: 0.8rem;
+  font-size: var(--labelFontSize);
+  transition: all 0.2s;
+}
+
+.input_wrapper label.moved {
+  position: absolute;
+  top: var(--labelOffsetTop);
+  left: 0.4rem;
+  font-size: var(--labelFontSizeSmall);
+  transition: all 0.2s;
+}
+
+.input_wrapper input {
+  all: unset;
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--height);
+  padding-top: calc(
+    (var(--height) - var(--labelOffsetTop) - var(--labelFontSizeSmall)) / 2
+  );
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
+  font-size: var(--inputFontSize);
+}
+
+.password_toggle {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  width: 4.8rem;
+  padding: 0.6rem 1rem;
+}

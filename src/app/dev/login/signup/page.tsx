@@ -1,14 +1,14 @@
-"use client";
+"use client"
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./page.module.css";
-import Login from "@/app/components/loginSystem/login/login";
+
 
 export default function Page() {
   return (
     <div className={styles.page}>
       <div className={styles.wrapper}>
-        <Login style={{ border: "0.05rem solid var(--border-color)" }} />
+        
       </div>
     </div>
   );

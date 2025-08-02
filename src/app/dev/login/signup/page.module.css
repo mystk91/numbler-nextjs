@@ -3,14 +3,14 @@
   width: 100vw;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .wrapper {
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  row-gap: 8rem;
+  align-items: safe center;
+  flex-direction: column;
   height: 100%;
   width: 100%;
 }

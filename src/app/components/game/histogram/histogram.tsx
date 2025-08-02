@@ -60,10 +60,10 @@ export default function Histogram({ scores, numDigits }: HistogramProps) {
   return (
     averageRef.current && (
       <div className={styles.histogram} aria-label="A histogram of your scores">
-        <div className={styles.histogram_header}>
+        <h2 className={styles.histogram_header}>
           <div>{`Average (${numDigits} digits) :`}</div>
           <div className={styles.average}>{averageRef.current.toFixed(3)}</div>
-        </div>
+        </h2>
         <div className={styles.rows}>
           {Object.entries(histogramData).map(([key, value], index) => (
             <div

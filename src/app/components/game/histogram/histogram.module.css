@@ -11,6 +11,7 @@
   font-size: 1.6rem;
   column-gap: 1.2rem;
   animation: -2s 4s dropdownAverage forwards;
+  font-weight: 400;
 }
 
 .histogram_header > .average {

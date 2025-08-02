@@ -1,9 +1,11 @@
 .dropdown_menu_wrapper {
   position: relative;
+  font-family: "Gabarito", "Manrope", "Roboto", sans-serif;
 }
 
 .dropdown_menu_wrapper > button {
   all: unset;
+  font-family: "Gabarito", "Manrope", "Roboto", sans-serif;
   box-sizing: border-box;
   cursor: pointer;
   display: flex;
@@ -12,7 +14,7 @@
   height: 5.6rem;
   padding: 0.4rem 0.8rem;
   width: max-content;
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   background-color: var(--lower-color);
   color: var(--grey-text);
   transition: all 0.1s;
@@ -109,7 +111,7 @@
   animation: closeFontSize 0.2s forwards;
 }
 
-.dropdown_menu a{
+.dropdown_menu a {
   user-select: none;
 }
 
@@ -171,8 +173,8 @@
   color: light-dark(var(--grey-text), var(--grey-text));
 }
 
-.dropdown_menu li:hover{
-  background-color: light-dark(rgb(210,210,210), rgb(75, 75, 75));
+.dropdown_menu li:hover {
+  background-color: light-dark(rgb(210, 210, 210), rgb(75, 75, 75));
 }
 
 .dropdown_menu li.active,
