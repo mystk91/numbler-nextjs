@@ -13,7 +13,7 @@ interface ProgressBarProps {
 
 export default function ProgressBar({
   percent,
-  borderRight = ".5px solid var(--borderColor)",
+  borderRight = ".5px solid var(--border-color)",
   progressStyle,
   percentStyle,
 }: ProgressBarProps) {

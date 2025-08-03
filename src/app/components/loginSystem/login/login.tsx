@@ -5,7 +5,7 @@ import Link from "next/link";
 import styles from "./login.module.css";
 import classNames from "classnames";
 import { useRouter } from "next/navigation";
-import InputWrapper from "@/app/components/loginSystem/inputs/Text Input Wrapper - Trendy/input_wrapper";
+import InputWrapper from "@/app/components/inputs/Text Input Wrapper - Trendy/input_wrapper";
 import Button from "@/app/components/buttons/Button Set/button";
 
 interface LoginProps {
@@ -65,7 +65,7 @@ export default function Login({ style }: LoginProps) {
         }
       } catch {
         let errors = { ...form };
-        errors.password = `A network error has occurred`;
+        errors.password = `Something went wrong. Try again soon.`;
         setFormErrors(errors);
       }
     }
@@ -74,7 +74,7 @@ export default function Login({ style }: LoginProps) {
   //Checks to see if input fields are valid, returns true if valid, otherwise adds error messages and returns false
   function validate(): boolean {
     let emailRegExp = new RegExp(
-      "^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,256})$"
+      "^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,128})$"
     );
     let passwordRegExp = new RegExp(
       "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*[!@#$%^&*_0-9]).{8,32}$"
@@ -117,6 +117,7 @@ export default function Login({ style }: LoginProps) {
           //inputRef={inputReference}
           error={formErrors.email}
           ariaDescribedBy="email-error"
+          maxLength={128}
         />
         <InputWrapper
           label="Password"
@@ -128,6 +129,7 @@ export default function Login({ style }: LoginProps) {
           onChange={handleChange}
           error={formErrors.password}
           ariaDescribedBy="password-error"
+          maxLength={32}
         />
         <div className={styles.button_container}>
           <Button variant="primary" type="submit" width="full">
@@ -141,7 +143,7 @@ export default function Login({ style }: LoginProps) {
           <a href="/signup">{`Sign up!`}</a>
         </div>
         <a
-          href="/recover-password"
+          href="/password-reset"
           className={styles.forgot_password}
         >{`Forgot Password?`}</a>
       </div>

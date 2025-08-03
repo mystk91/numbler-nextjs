@@ -12,7 +12,7 @@
   --background: light-dark(white, rgb(50, 50, 50));
   --foreground: light-dark(black, white);
   --border-color: light-dark(rgb(50, 50, 50), rgb(245, 245, 245));
-  --border: 0.05rem solid var(--borderColor);
+  --border: 0.05rem solid var(--border-color);
   --backdrop-color: light-dark(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
   --link-color: light-dark(blue, rgb(170, 170, 255));
   --icon-color: light-dark(black, rgb(230, 230, 230));

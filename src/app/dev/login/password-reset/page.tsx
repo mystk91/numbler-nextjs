@@ -2,13 +2,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./page.module.css";
-import Signup from "@/app/components/loginSystem/signup/signup";
+import PasswordReset from "@/app/components/loginSystem/passwordReset/passwordReset";
 
 export default function Page() {
   return (
     <div className={styles.page}>
       <div className={styles.wrapper}>
-        <Signup />
+        <PasswordReset />
       </div>
     </div>
   );

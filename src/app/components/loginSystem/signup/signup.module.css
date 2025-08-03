@@ -1,0 +1,100 @@
+.signup_wrapper {
+  height: 100%;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.panel_wrapper {
+  --panelWidth: 36rem;
+  width: var(--panelWidth);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: safe center;
+  margin: 1.6rem 0 20%;
+  transform: translateX(0);
+  position: relative;
+}
+
+.back_button {
+  position: absolute;
+  top: 33%;
+  left: -6rem;
+}
+
+.panel {
+  width: 100%;
+  padding: 1.8rem 3.6rem 1.8rem;
+  border: var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 1.8rem;
+}
+
+.panel > form {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 1.8rem;
+}
+
+.inputs_wrapper {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 0.8rem;
+}
+
+.enterRight {
+  animation: enterRight 0.5s;
+  animation-timing-function: ease-out;
+}
+
+.enterLeft {
+  animation: enterLeft 0.5s;
+  animation-timing-function: ease-out;
+}
+
+@keyframes enterRight {
+  0% {
+    transform: translateX(calc(50vw + var(--panelWidth) / 2));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes enterLeft {
+  0% {
+    transform: translateX(calc(-50vw - var(--panelWidth) / 2));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.closeLeft {
+  transform: translateX(calc(-50vw - var(--panelWidth) / 2));
+  transition: transform 0.5s ease-in;
+}
+
+.closeRight {
+  transform: translateX(calc(50vw + var(--panelWidth) / 2));
+  transition: transform 0.5s ease-in;
+}
+
+.success_message {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.4rem;
+  text-align: center;
+  width: 36rem;
+}

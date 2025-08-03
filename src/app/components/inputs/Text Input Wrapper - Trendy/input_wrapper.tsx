@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import TextInput from "@/app/components/loginSystem/inputs/Text Input - Trendy/textInput";
+import TextInput from "@/app/components/inputs/Text Input - Trendy/textInput";
 import styles from "./input_wrapper.module.css";
 
 interface InputWrapperProps {

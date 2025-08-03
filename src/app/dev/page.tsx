@@ -41,7 +41,8 @@ export default function Page() {
         <div>
           <h1>{`Login`}</h1>
           <Link href="/dev/login">{`Login`}</Link>
-          <Link href="dev/login/signup">{`Signup`}</Link>
+          <Link href="/dev/login/signup">{`Signup`}</Link>
+          <Link href="/dev/login/password-reset">{`Password Reset`}</Link>
         </div>
       </div>
     </div>
