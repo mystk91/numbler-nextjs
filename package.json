@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "focus-trap-react": "^11.0.4",
     "next": "15.3.5",
     "normalize.css": "^8.0.1",
     "react": "^19.0.0",

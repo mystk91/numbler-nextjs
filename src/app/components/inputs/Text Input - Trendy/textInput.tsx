@@ -97,7 +97,7 @@ export default function TextInput({
           type="button"
           className={styles.password_toggle}
           onClick={() => setPasswordVisible(!passwordVisible)}
-          tabIndex={50}
+          tabIndex={-1}
           aria-label={passwordVisible ? "Hide password" : "Show password"}
           aria-pressed={passwordVisible}
         >

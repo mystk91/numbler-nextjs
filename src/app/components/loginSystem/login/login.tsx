@@ -102,6 +102,7 @@ export default function Login({ style }: LoginProps) {
       aria-label="Login Container"
       style={{ ...style }}
     >
+      <h1>{`Sign in`}</h1>
       <form
         className={styles.login_form}
         onSubmit={login}

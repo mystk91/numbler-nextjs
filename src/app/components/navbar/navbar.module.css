@@ -1,0 +1,49 @@
+.navbar {
+  --height: 5.6rem;
+  width: 100vw;
+  height: var(--height);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: var(--lower-color);
+  border-bottom: 0.05rem var(--border-color);
+  column-gap: 1.2rem;
+  padding: 0 1.6rem;
+  transition: opacity 0.1s;
+}
+
+.navbar > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 33.3%;
+}
+
+.logo_wrapper > svg {
+  width: 30%;
+  height: calc(0.6 * var(--height));
+  width: auto;
+  fill: var(--grey-text);
+}
+
+.navbar .menu_icons {
+  justify-content: flex-start;
+}
+
+.navbar .game_mode_links {
+  justify-content: flex-end;
+}
+
+.links_wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.links_wrapper a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: var(--grey-text);
+}

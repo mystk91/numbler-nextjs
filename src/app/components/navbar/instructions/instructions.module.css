@@ -3,6 +3,8 @@
   flex-direction: column;
   justify-content: center;
   row-gap: 1.6rem;
+  max-width: 36rem;
+  padding: 0 2.4rem;
 }
 
 .instructions_wrapper,
@@ -16,6 +18,11 @@
 
 .example_wrapper {
   row-gap: 0.8rem;
+}
+
+.row_wrapper {
+  display: flex;
+  justify-content: center;
 }
 
 .instruction_text {
