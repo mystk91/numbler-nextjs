@@ -117,7 +117,7 @@ export default function Navbar({
                     style={{
                       borderColor: "var(--grey-text)",
                       backgroundColor:
-                        n === digits ? "var(--grey)" : "var(--lower-color)",
+                        n === digits ? "rgb(80, 80, 80)" : "var(--lower-color)",
                       minHeight: "4.8rem",
                     }}
                     ariaLabel="Digit symbol"
