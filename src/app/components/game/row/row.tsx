@@ -53,8 +53,6 @@ export default function Row({
             key={`${rectangle.type} row-${row} col-${index + 1}`}
           />
         ))}
-      </div>
-      <div className={styles.hints_wrapper}>
         <Rectangle
           type={hint.type}
           value={hint.value}

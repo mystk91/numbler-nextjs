@@ -76,7 +76,7 @@
 @keyframes modalAppear {
   0% {
     opacity: 0;
-    transform: translateY(50vh);
+    transform: translateY(20rem);
   }
   100% {
     opacity: 1;
@@ -91,7 +91,7 @@
   }
   100% {
     opacity: 0;
-    transform: translateY(50vh);
+    transform: translateY(20rem);
   }
 }
 

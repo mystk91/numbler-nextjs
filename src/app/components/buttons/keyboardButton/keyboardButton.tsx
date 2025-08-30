@@ -36,6 +36,7 @@ interface KeyboardButtonProps {
   style?: React.CSSProperties;
   onKeyDown?: (e?: React.KeyboardEvent<HTMLButtonElement>) => void;
   keyPressToken?: number | string;
+  keyType?: "number" | "enter" | "backspace";
 }
 
 function KeyboardButton(
@@ -58,6 +59,7 @@ function KeyboardButton(
     style,
     onKeyDown,
     keyPressToken,
+    keyType = "number",
   }: KeyboardButtonProps,
   ref: React.Ref<HTMLButtonElement>
 ) {
@@ -171,6 +173,7 @@ function KeyboardButton(
         styles[variant],
         styles[width],
         styles[backgroundColor],
+        styles[keyType],
         {
           [styles.active]: active,
         }
@@ -190,7 +193,9 @@ function KeyboardButton(
       style={{ ...style }}
     >
       {icon && <div className={styles.icon_container}>{icon}</div>}
-      {children || text}
+      {(children || text) && (
+        <div className={styles.text_wrapper}>{children || text}</div>
+      )}
     </button>
   );
 }

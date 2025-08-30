@@ -20,6 +20,7 @@ export default function Gameboard({ rows }: GameboardProps) {
           rows[0]?.rectangles.length * 4
         }))`,
       }}
+      aria-label="Game board"
     >
       {rows.map((rowProps, index) => {
         return <Row key={index} {...rowProps} />;

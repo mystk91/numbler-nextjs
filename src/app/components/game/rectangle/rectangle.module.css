@@ -13,6 +13,11 @@
   height: 100%;
   width: auto;
   aspect-ratio: 4 / 5;
+  flex-shrink: 0;
+}
+
+.hint{
+  margin-left: 0.8rem;
 }
 
 .digit_wrapper {

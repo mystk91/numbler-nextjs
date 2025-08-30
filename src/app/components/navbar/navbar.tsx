@@ -120,7 +120,7 @@ export default function Navbar({
                         n === digits ? "rgb(80, 80, 80)" : "var(--lower-color)",
                       minHeight: "4.8rem",
                     }}
-                    ariaLabel="Digit symbol"
+                    ariaLabel={`Go to the ${n} digit mode of Numbler`}
                   />
                 </NavbarButton>
               </Link>
@@ -129,7 +129,7 @@ export default function Navbar({
         </div>
       )}
 
-      <div className={styles.logo_wrapper}>
+      <div className={styles.logo_wrapper} aria-label="Numbler logo">
         <NumblerIcon />
       </div>
       <div className={styles.menu_icons}>
