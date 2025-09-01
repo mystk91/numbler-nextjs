@@ -12,12 +12,12 @@ export default function Page() {
           result="victory"
           correctNumber="12345"
           hints={[
-            ["G", "X", "Y", "X", "X", "L"],
-            ["G", "G", "Y", "X", "X", "H"],
-            ["G", "G", "G", "G", "G", "E"],
-            ["", "", "", "", "", ""],
-            ["", "", "", "", "", ""],
-            ["", "", "", "", "", ""],
+            ["green", "grey", "yellow", "grey", "grey", "lower"],
+            ["green", "green", "yellow", "grey", "grey", "higher"],
+            ["green", "green", "green", "green", "green", "green"],
+            ["none", "none", "none", "none", "none", "none"],
+            ["none", "none", "none", "none", "none", "none"],
+            ["none", "none", "none", "none", "none", "none"],
           ]}
           scores={[2, 3, 3, 4, 4, 4, 4, 5, 5, 7]}
           date={new Date()}
@@ -27,12 +27,12 @@ export default function Page() {
           result="defeat"
           correctNumber="7653120"
           hints={[
-            ["X", "X", "X", "X", "X", "X", "X", "H"],
-            ["G", "X", "X", "X", "X", "X", "X", "L"],
-            ["G", "G", "Y", "X", "X", "X", "X", "H"],
-            ["G", "G", "Y", "X", "X", "X", "X", "L"],
-            ["G", "G", "Y", "X", "X", "X", "X", "H"],
-            ["G", "G", "G", "Y", "X", "X", "X", "L"],
+            ["grey", "grey", "grey", "grey", "grey", "grey", "grey", "higher"],
+            ["green", "grey", "grey", "grey", "grey", "grey", "grey", "lower"],
+            ["green", "green", "yellow", "grey", "grey", "grey", "grey", "higher"],
+            ["green", "green", "yellow", "grey", "grey", "grey", "grey", "lower"],
+            ["green", "green", "yellow", "grey", "grey", "grey", "grey", "higher"],
+            ["green", "green", "green", "yellow", "grey", "grey", "grey", "lower"],
           ]}
           scores={[2, 3, 3, 4, 4, 4, 5, 7]}
           date={new Date()}

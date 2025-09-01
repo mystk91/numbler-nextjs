@@ -3,4 +3,10 @@
   flex: 1;
   flex-direction: column;
   align-items: center;
+  position: relative;
+}
+
+.end_panel_wrapper {
+  position: absolute;
+  top: 0;
 }

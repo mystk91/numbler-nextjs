@@ -113,6 +113,7 @@ export default function Modal({
         })}
         onMouseDown={closeOnBackdropClick ? closeModal : () => null}
         style={backdropStyle}
+        onKeyDown={(e) => e.stopPropagation()}
       >
         <div
           className={classNames(styles.modal, {

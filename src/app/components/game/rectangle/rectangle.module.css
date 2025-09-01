@@ -16,7 +16,7 @@
   flex-shrink: 0;
 }
 
-.hint{
+.hint {
   margin-left: 0.8rem;
 }
 
@@ -43,7 +43,7 @@ svg.equals {
 .current_row {
   border: 0.2rem solid var(--border-color);
   transition: border 0.1s;
-  animation: newRow 0.4s;
+  animation: newRow 1.75s;
 }
 
 .current_row.active {
@@ -54,9 +54,6 @@ svg.equals {
 @keyframes newRow {
   0% {
     border: 0.4rem solid light-dark(rgb(200, 200, 200), rgb(200, 200, 200));
-  }
-  100% {
-    border: 0.2rem solid var(--border-color);
   }
 }
 
@@ -239,7 +236,8 @@ svg.equals {
     color: var(--foreground);
     font-size: 70cqh;
   }
-  50% {
+  10% {
+    color: white;
   }
   75% {
     font-size: 110cqh;

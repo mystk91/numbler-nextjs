@@ -20,32 +20,36 @@ import Equals from "@/app/components/icons/equals";
  */
 export interface RectangleProps {
   type: `digit` | `hint`;
-  value:
-    | ``
-    | 0
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | `higher`
-    | `lower`
-    | `equals`;
-  color: `none` | `grey` | `yellow` | `green` | `higher` | `lower`;
+  value: Value;
+  color: Color;
   row?: number;
   column?: number;
   active?: boolean;
   currentRow?: boolean;
   animate?: boolean;
-  animation?: `` | `bounce_up` | `bounce_down` | `equals`;
+  animation?: Animation;
   animationDelay?: number;
   ariaLabel?: string;
   style?: React.CSSProperties;
 }
+
+export type Animation = `` | `bounce_up` | `bounce_down` | `equals`;
+export type Color = `none` | `grey` | `yellow` | `green` | `higher` | `lower`;
+export type Value =
+  | ``
+  | 0
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | `higher`
+  | `lower`
+  | `equals`;
 
 export default function Rectangle({
   type,

@@ -30,26 +30,35 @@ export type Item = LinkItem | ActionItem | Decoration;
  *  children - wrap a button around a child eleemnt
  *  item - the inputed MenuItem: ActionMenuItem | LinkMenuItem |  DecorationMenuItem;
  *  itemRef - an entry from itemsRef to keep track of actionable items vs decorations
- *  onClose - the functions that hides visibility
+ *  onClose - the function that closes the menu
+ *  onCloseAndFocus - the function that closes the menu and focuses the parent
+ *  isParentClosing  - boolean if the parent item is closing its descendent menu - needed to avoid refocusing on hover
  *  index - the index we get from the map when creating a menu
  *  parent - a ref to the parent menuItem of this item
  *  siblings - an array ref of the siblings of this item
  *  direction - the direction the menu will face in (affects arrows and keyboard inputs)
+ *  parentRef - ref to the button that controls the menu
  * */
 interface MenuItemProps {
   item: Item;
   itemRef: React.RefObject<HTMLLIElement | null>;
   onClose: () => void;
+  onCloseAndFocus: () => void;
+  isParentClosing?: boolean;
   index: number;
   siblings?: React.RefObject<HTMLLIElement | null>[];
   direction?: "right" | "left";
+  parentRef?: React.RefObject<HTMLElement | null>;
 }
 export function Item({
   item,
   itemRef,
   onClose,
+  onCloseAndFocus,
+  isParentClosing,
   index,
   siblings,
+  parentRef,
 }: MenuItemProps) {
   const router = useRouter();
   const [isActive, setIsActive] = useState(false);
@@ -85,6 +94,7 @@ export function Item({
       itemRef.current?.matches(":focus") ||
       itemRef.current?.querySelector(":focus");
     if (!isItemFocused) {
+      setIsActive(false);
       setClosing(true);
     }
   }
@@ -106,21 +116,26 @@ export function Item({
       switch (e.key) {
         case "ArrowDown": {
           if (siblings && index + 1 < siblings.length) {
+            setIsActive(false);
             siblings[index + 1].current?.focus();
           }
           break;
         }
         case "ArrowUp": {
           if (index > 0 && siblings) {
+            setIsActive(false);
             siblings[index - 1].current?.focus();
+          } else {
           }
           break;
         }
         case "Escape": {
-          onClose();
+          onCloseAndFocus();
+          break;
         }
-        case "Escape": {
-          onClose();
+        case "Backspace": {
+          onCloseAndFocus();
+          break;
         }
         default: {
         }
@@ -159,13 +174,14 @@ export function Item({
       case "Enter": {
         onClose();
         router.push(href);
+        break;
       }
       case "Escape": {
-        onClose();
+        onCloseAndFocus();
         break;
       }
       case "Backspace": {
-        onClose();
+        onCloseAndFocus();
         break;
       }
       default: {
@@ -179,7 +195,7 @@ export function Item({
       return (
         <li
           tabIndex={0}
-          onMouseEnter={handleMouseEnter}
+          onMouseEnter={() => !isParentClosing && handleMouseEnter()}
           onMouseLeave={handleMouseLeave}
           onBlur={() => setTimeout(handleBlur, 0)}
           onKeyDown={(e) => handleKeydownLink(e, item.href)}
@@ -208,7 +224,7 @@ export function Item({
           role="menuitem"
           tabIndex={0}
           ref={itemRef}
-          onMouseEnter={() => itemRef.current?.focus()}
+          onMouseEnter={() => !isParentClosing && itemRef.current?.focus()}
           onClick={() => {
             item.onClick();
             onClose();
@@ -241,6 +257,8 @@ export default function DropdownMenu({
   const [direction, setDirection] = useState<"left" | "right" | undefined>();
   const menuRef = useRef<HTMLUListElement | null>(null);
   const observerRef = useRef<ResizeObserver | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const shouldFocusParent = useRef(false);
 
   //Gives time for closing animation to play
   const [closing, setClosing] = useState(false);
@@ -254,6 +272,11 @@ export default function DropdownMenu({
       timerRef.current = setTimeout(() => {
         setMenuOpen(false);
         setClosing(false);
+        // Focus button after menu closes if requested
+        if (shouldFocusParent.current) {
+          buttonRef.current?.focus();
+          shouldFocusParent.current = false;
+        }
       }, closingTime);
     }
   }, [closing]);
@@ -263,13 +286,30 @@ export default function DropdownMenu({
     }
     setClosing(false);
     setMenuOpen(true);
+    buttonRef.current?.focus();
+  }
+
+  function closeMenuAndFocus() {
+    shouldFocusParent.current = true;
+    setClosing(true);
+  }
+
+  function closeMenu() {
+    setClosing(true);
+  }
+
+  function handleBlur(e: React.FocusEvent) {
+    const relatedTarget = e.relatedTarget as HTMLElement | null;
+    const currentTarget = e.currentTarget as HTMLElement;
+    if (!relatedTarget || !currentTarget.contains(relatedTarget)) {
+      closeMenu();
+    }
   }
 
   //Adds event listeners when menu opens, removes them when it closes
   useEffect(() => {
     if (!menuRef.current || !menuOpen) {
       document.removeEventListener("click", handleClick);
-      window.removeEventListener("keydown", escapeKey);
       if (observerRef.current) {
         observerRef.current.disconnect();
         observerRef.current = null;
@@ -285,7 +325,6 @@ export default function DropdownMenu({
       positionMenu();
     }
     document.addEventListener("click", handleClick);
-    window.addEventListener("keydown", escapeKey);
   }, [menuOpen]);
 
   //Poition the menu so it doesn't go out of bounds
@@ -319,20 +358,10 @@ export default function DropdownMenu({
     }
   }
 
-  //Closes the menu when user hits Escape
-  const escapeKey = useCallback(
-    (e: KeyboardEvent | globalThis.KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setClosing(true);
-      }
-    },
-    []
-  );
-
   //Closes the menu when user clicks something else
   const handleClick = useCallback((e: MouseEvent) => {
     if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-      setClosing(true);
+      closeMenu();
     }
   }, []);
 
@@ -350,17 +379,32 @@ export default function DropdownMenu({
   }, [actionableIndexes.length]);
 
   function handleButtonKeydown(e: React.KeyboardEvent<HTMLButtonElement>) {
-    e.stopPropagation();
-    if (
-      e.key === "ArrowUp" ||
-      e.key === "ArrowRight" ||
-      e.key === "ArrowDown" ||
-      e.key === "ArrowLeft"
-    ) {
-      e.preventDefault();
-    }
-    if (e.key === "ArrowDown") {
-      itemRefs.current[0].current?.focus();
+    if (menuOpen) {
+      e.stopPropagation();
+      if (
+        e.key === "ArrowUp" ||
+        e.key === "ArrowRight" ||
+        e.key === "ArrowDown" ||
+        e.key === "ArrowLeft"
+      ) {
+        e.preventDefault();
+        if (e.key === "ArrowDown") {
+          itemRefs.current[0].current?.focus();
+        }
+      }
+      if (e.key === "Escape" || e.key === "Backspace") {
+        closeMenuAndFocus();
+      }
+    } else {
+      // When menu is closed, allow normal button behavior
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        e.stopPropagation();
+        openMenu();
+      } else {
+        (e.target as HTMLElement).blur();
+        return;
+      }
     }
   }
 
@@ -369,16 +413,18 @@ export default function DropdownMenu({
       className={classNames(styles.dropdown_menu_wrapper, {
         [styles.closing]: closing,
       })}
+      onBlur={handleBlur}
     >
       <button
         onClick={() => {
-          menuOpen ? setClosing(true) : openMenu();
+          menuOpen ? closeMenu() : openMenu();
         }}
         onKeyDown={handleButtonKeydown}
         aria-haspopup="true"
         aria-expanded={menuOpen}
         aria-label={`Click to ${menuOpen ? `close` : `open`} dropdown menu`}
         title={title}
+        ref={buttonRef}
       >
         {label}
       </button>
@@ -402,10 +448,15 @@ export default function DropdownMenu({
               <Item
                 item={item}
                 itemRef={itemRefs.current[actionableIndexes.indexOf(i)]}
-                onClose={() => setClosing(true)}
+                onClose={() => {
+                  closeMenu();
+                }}
+                onCloseAndFocus={closeMenuAndFocus}
+                isParentClosing={closing}
                 direction={direction}
                 index={actionableIndexes.indexOf(i)}
                 siblings={itemRefs.current}
+                parentRef={buttonRef}
                 key={i}
               />
             );

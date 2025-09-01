@@ -7,11 +7,12 @@ import classNames from "classnames";
 import Button from "@/app/components/buttons/Button Set/button";
 import Rectangle from "@/app/components/game/rectangle/rectangle";
 import Histogram from "@/app/components/game/histogram/histogram";
+import { Color } from "@/app/components/game/rectangle/rectangle";
 
 interface EndPanelProps {
   result: "victory" | "defeat";
   correctNumber: string;
-  hints: string[][];
+  hints: Color[][];
   date: Date;
   scores: number[];
   closeFunction: () => void;
@@ -64,18 +65,18 @@ export default function EndPanel({
     copiedText += "Numbler.net\n";
 
     let attempts: number = 1;
-    hints.forEach((row: string[]) => {
+    hints.forEach((row: Color[]) => {
       for (let i = 0; i < bodySpacesLeft[hints[0].length - 3]; i++) {
         copiedText += " ";
       }
 
       for (let i = 0; i < row.length - 1; i++) {
         switch (row[i]) {
-          case "X": {
+          case "grey": {
             copiedText += grey;
             break;
           }
-          case "Y": {
+          case "yellow": {
             copiedText += yellow;
             break;
           }
@@ -86,12 +87,12 @@ export default function EndPanel({
         }
       }
       switch (row[row.length - 1]) {
-        case "H": {
+        case "higher": {
           copiedText += upArrow + "\n";
           attempts++;
           break;
         }
-        case "L": {
+        case "lower": {
           copiedText += downArrow + "\n";
           attempts++;
           break;
@@ -134,12 +135,17 @@ export default function EndPanel({
   }
 
   return (
-    <div className={styles.end_panel}>
+    <div
+      className={styles.end_panel}
+      onKeyDown={(e) => {
+        e.stopPropagation();
+      }}
+    >
       <button
         className={styles.close_button}
         onClick={closeFunction}
         aria-label={"Close panel"}
-        tabIndex={1}
+        tabIndex={2}
       >
         <svg
           id="close-icon"
@@ -170,6 +176,7 @@ export default function EndPanel({
               index + 1
             }`}
             key={index}
+            style={{ flexShrink: "1" }}
           />
         ))}
       </div>

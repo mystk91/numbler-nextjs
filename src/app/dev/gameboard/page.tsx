@@ -50,59 +50,60 @@ export default function Page() {
     createGameboard();
   }, []);
 
-  //Updates one rectangle
-  function updateRectangle(
-    targetRow: number,
-    targetColumn: number,
-    updates: Partial<RectangleProps>
-  ) {
-    const updatedGameboard = gameboard.map((row, rowIndex) => {
-      if (rowIndex === targetRow) {
-        return {
-          ...row,
-          rectangles: row.rectangles.map((rectangle, colIndex) => {
-            if (colIndex === targetColumn) {
-              return {
-                ...rectangle,
-                ...updates,
-              };
-            }
-            return rectangle;
-          }),
-        };
-      }
-      return row;
-    });
-    setGameboard(updatedGameboard);
-  }
-
-  //Used to update multiple rectangles at once
-  function updateRectangles(
-    changes: Array<{
-      row: number;
-      column: number;
-      updates: Partial<RectangleProps>;
-    }>
-  ) {
-    const updatedGameboard = gameboard.map((row, rowIndex) => {
-      return {
-        ...row,
-        rectangles: row.rectangles.map((rectangle, colIndex) => {
-          const change = changes.find(
-            (change) => change.row === rowIndex && change.column === colIndex
-          );
-          if (change) {
+    //Updates one rectangle
+    function updateRectangle(
+      targetRow: number,
+      targetColumn: number,
+      updates: Partial<RectangleProps>
+    ) {
+      setGameboard((prevGameboard) => {
+        return prevGameboard.map((row, rowIndex) => {
+          if (rowIndex === targetRow) {
             return {
-              ...rectangle,
-              ...change.updates,
+              ...row,
+              rectangles: row.rectangles.map((rectangle, colIndex) => {
+                if (colIndex === targetColumn) {
+                  return {
+                    ...rectangle,
+                    ...updates,
+                  };
+                }
+                return rectangle;
+              }),
             };
           }
-          return rectangle;
-        }),
-      };
-    });
-    setGameboard(updatedGameboard);
-  }
+          return row;
+        });
+      });
+    }
+    //Used to update multiple rectangles at once
+    function updateRectangles(
+      changes: Array<{
+        row: number;
+        column: number;
+        updates: Partial<RectangleProps>;
+      }>
+    ) {
+      setGameboard((prevGameboard) => {
+        return prevGameboard.map((row, rowIndex) => {
+          return {
+            ...row,
+            rectangles: row.rectangles.map((rectangle, colIndex) => {
+              const change = changes.find(
+                (change) => change.row === rowIndex && change.column === colIndex
+              );
+              if (change) {
+                return {
+                  ...rectangle,
+                  ...change.updates,
+                };
+              }
+              return rectangle;
+            }),
+          };
+        });
+      });
+    }
 
   function changeStuff() {
     updateRectangles([

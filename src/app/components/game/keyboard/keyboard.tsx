@@ -62,7 +62,7 @@ export function useKeyColors() {
 export default function Keyboard({
   keyColors,
   keyFunctions,
-  focusEnter,
+  focusEnter = false,
 }: KeyboardProps) {
   const [initalized, setIntialized] = useState(false);
   const keyboardRef = useRef<HTMLDivElement>(null);
@@ -165,7 +165,7 @@ export default function Keyboard({
 
   // Focuses the Enter key when we change the focusEnter prop to true
   useEffect(() => {
-    if (focusEnter) {
+    if (focusEnter && keyboardRef.current?.contains(document.activeElement)) {
       setTimeout(() => {
         buttonRefs.current.Enter?.focus();
       }, 0);
@@ -185,6 +185,7 @@ export default function Keyboard({
               buttonRefs.current[1] = el;
             }}
             onKeyDown={(e) => onButtonKeydown(e, "1")}
+            tabIndex={1}
           >{`1`}</KeyboardButton>
           <KeyboardButton
             backgroundColor={keyColors[2]}
@@ -195,6 +196,7 @@ export default function Keyboard({
               buttonRefs.current[2] = el;
             }}
             onKeyDown={(e) => onButtonKeydown(e, "2")}
+            tabIndex={1}
           >{`2`}</KeyboardButton>
           <KeyboardButton
             backgroundColor={keyColors[3]}
@@ -205,6 +207,7 @@ export default function Keyboard({
               buttonRefs.current[3] = el;
             }}
             onKeyDown={(e) => onButtonKeydown(e, "3")}
+            tabIndex={1}
           >{`3`}</KeyboardButton>
           <KeyboardButton
             backgroundColor={keyColors[4]}
@@ -215,6 +218,7 @@ export default function Keyboard({
               buttonRefs.current[4] = el;
             }}
             onKeyDown={(e) => onButtonKeydown(e, "4")}
+            tabIndex={1}
           >{`4`}</KeyboardButton>
           <KeyboardButton
             backgroundColor={keyColors[5]}
@@ -225,6 +229,7 @@ export default function Keyboard({
               buttonRefs.current[5] = el;
             }}
             onKeyDown={(e) => onButtonKeydown(e, "5")}
+            tabIndex={1}
           >{`5`}</KeyboardButton>
           <KeyboardButton
             backgroundColor={keyColors[6]}
@@ -235,6 +240,7 @@ export default function Keyboard({
               buttonRefs.current[6] = el;
             }}
             onKeyDown={(e) => onButtonKeydown(e, "6")}
+            tabIndex={1}
           >{`6`}</KeyboardButton>
           <KeyboardButton
             backgroundColor={keyColors[7]}
@@ -245,6 +251,7 @@ export default function Keyboard({
               buttonRefs.current[7] = el;
             }}
             onKeyDown={(e) => onButtonKeydown(e, "7")}
+            tabIndex={1}
           >{`7`}</KeyboardButton>
           <KeyboardButton
             backgroundColor={keyColors[8]}
@@ -255,6 +262,7 @@ export default function Keyboard({
               buttonRefs.current[8] = el;
             }}
             onKeyDown={(e) => onButtonKeydown(e, "8")}
+            tabIndex={1}
           >{`8`}</KeyboardButton>
           <KeyboardButton
             backgroundColor={keyColors[9]}
@@ -265,6 +273,7 @@ export default function Keyboard({
               buttonRefs.current[9] = el;
             }}
             onKeyDown={(e) => onButtonKeydown(e, "9")}
+            tabIndex={1}
           >{`9`}</KeyboardButton>
           <KeyboardButton
             backgroundColor={keyColors[0]}
@@ -275,12 +284,13 @@ export default function Keyboard({
               buttonRefs.current[0] = el;
             }}
             onKeyDown={(e) => onButtonKeydown(e, "0")}
+            tabIndex={1}
           >{`0`}</KeyboardButton>
         </div>
         <div className={styles.input_keys} aria-label="Input keys">
           <KeyboardButton
             backgroundColor={keyColors.Enter}
-            style={{minHeight: `4.8rem`}}
+            style={{ minHeight: `4.8rem` }}
             width={"default"}
             onClick={keyFunctions[`Enter`]}
             keyPressToken={tokens.Enter}
@@ -290,11 +300,12 @@ export default function Keyboard({
             onKeyDown={(e) => onButtonKeydown(e, "Enter")}
             ariaLabel="Enter a guess!"
             keyType="enter"
+            tabIndex={1}
           >{`Enter`}</KeyboardButton>
           <KeyboardButton
             backgroundColor="none"
             width={"smallest"}
-            style={{ minHeight: `4.8rem`}}
+            style={{ minHeight: `4.8rem` }}
             onClick={keyFunctions[`Backspace`]}
             icon={<Backspace />}
             keyPressToken={tokens.Backspace}
@@ -304,6 +315,7 @@ export default function Keyboard({
             onKeyDown={(e) => onButtonKeydown(e, "Backspace")}
             ariaLabel="Backspace key"
             keyType="backspace"
+            tabIndex={1}
           ></KeyboardButton>
         </div>
       </div>

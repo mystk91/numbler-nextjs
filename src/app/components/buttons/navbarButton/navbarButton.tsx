@@ -56,9 +56,15 @@ export function Button(
   useImperativeHandle(ref, () => buttonRef.current!);
 
   function handleKeydown(e: React.KeyboardEvent) {
-    e.stopPropagation();
     if (e.key === "Enter") {
+      e.stopPropagation();
       onClick?.();
+    } else {
+      //Tab is for firefox
+      if (e.key !== "Tab") {
+        //Done to stop button from interferring with the game
+        (e.target as HTMLElement).blur();
+      }
     }
   }
 
