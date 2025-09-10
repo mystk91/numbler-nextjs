@@ -56,7 +56,7 @@ export function Button(
   useImperativeHandle(ref, () => buttonRef.current!);
 
   function handleKeydown(e: React.KeyboardEvent) {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" || e.key === " ") {
       e.stopPropagation();
       onClick?.();
     } else {

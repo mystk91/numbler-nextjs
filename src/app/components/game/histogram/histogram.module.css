@@ -1,7 +1,7 @@
 .histogram {
   display: flex;
   flex-direction: column;
-  width: 30rem;
+  width: 90%;
   height: 100%;
 }
 
@@ -61,7 +61,8 @@
   border-top: 0.05rem solid var(--border-color);
   position: relative;
   overflow: hidden;
-  animation: -2s 4s dropdownHistogram, -2s 6s expandBars;
+  animation: -2s 4s dropdownHistogram,
+    -2s 10s expandBars cubic-bezier(0.14, 0.95, 0.69, 0.98);
 }
 
 .bar::after {
@@ -102,7 +103,7 @@
 }
 
 .lightGreen {
-  background-color: light-dark(rgb(74, 242, 74), rgb(95, 177, 95));
+  background-color: light-dark(rgb(110, 214, 110), rgb(96, 179, 96));
 }
 
 .darkGreen {
@@ -168,13 +169,13 @@
 @keyframes expandBars {
   0% {
     width: 0rem;
-    opacity: 0;
+    opacity: 1;
   }
-  56% {
+  34% {
     width: 0rem;
     opacity: 0;
   }
-  80% {
+  48% {
     opacity: 1;
   }
   100% {

@@ -21,6 +21,7 @@ import { createPortal } from "react-dom";
  * centered - if true, will center the modal vertically rather than being elevated
  * extraTopPadding - if true, will add a little more padding so the closeButton won't overlap with modal content
  * unstyled - if true, removes the default border, background, and padding from modal
+ * animate? - if true, the modal will have an entry and exit animation
  * backdropStyle  - adds any additional styling to the backdrop
  * modalStyle - adds any additional styling to the modal
  */
@@ -42,7 +43,6 @@ interface ModalProps {
 export default function Modal({
   children,
   closeFunction,
-  animate = false,
   closeButton = false,
   closeOnBackdropClick = false,
   closeOnEscape = true,
@@ -50,11 +50,21 @@ export default function Modal({
   centered = false,
   extraTopPadding = false,
   unstyled = false,
+  animate = false,
   backdropStyle,
   modalStyle,
 }: ModalProps) {
   const [closing, setClosing] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout>(undefined);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  //Clears the timer on dismount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   //Closes the modal when user hits ESC
   const escapeKey = useCallback(

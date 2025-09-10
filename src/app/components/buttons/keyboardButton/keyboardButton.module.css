@@ -25,10 +25,10 @@
   container-type: size;
 }
 
-/* Stops background color from persiting on IOS */
+/* Stops darker shade from appearing on IOS after click */
 @media (hover: none) and (pointer: coarse) {
-  .button:hover:not(.active) {
-    background-color: unset;
+  .keyboard:hover:not(.active) {
+    background-color: light-dark(white, rgb(60, 60, 60));
   }
 }
 

@@ -2,13 +2,26 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  width: 36rem;
+  width: 40rem;
+  max-width: 95vw;
   border: 0.05rem solid var(--border-color);
   row-gap: 1.6rem;
   position: relative;
   padding: 2.4rem 1.2rem;
   background-color: var(--background);
   border-radius: 2rem;
+  animation: appear .6s;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+    transform: translateY(-3.2rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0rem);
+  }
 }
 
 .end_panel > * {

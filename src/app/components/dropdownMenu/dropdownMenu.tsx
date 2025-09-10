@@ -176,6 +176,11 @@ export function Item({
         router.push(href);
         break;
       }
+      case " ": {
+        onClose();
+        router.push(href);
+        break;
+      }
       case "Escape": {
         onCloseAndFocus();
         break;

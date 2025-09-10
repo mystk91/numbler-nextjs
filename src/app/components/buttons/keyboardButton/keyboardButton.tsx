@@ -15,7 +15,7 @@ import classNames from "classnames";
 /*
  * backgroundColor - changes the background color + text color, used to give hints in the game
  * onKeydown - does an extra keydown function, we will use this for some arrow controls
- * keyPressToken - we pass in a token from a higher component to fire the onKeydown. (keyboard controls for the button)
+ * keyPressToken - we pass in a token from the keyboard to fire the onKeydown multiple times in succession
  */
 interface KeyboardButtonProps {
   backgroundColor: `none` | `grey` | `yellow` | `green`;
@@ -23,7 +23,7 @@ interface KeyboardButtonProps {
   children?: React.ReactNode;
   icon?: JSX.Element;
   variant?: "keyboard";
-  onClick?: () => void;
+  onClick?: Function;
   width: "default" | "smallest" | "full";
   ariaLabel?: string;
   type?: "button" | "submit" | "reset";
@@ -105,7 +105,8 @@ function KeyboardButton(
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     onKeyDown?.(e);
-    if (e.key === "Enter" && enabled.current) {
+    if ((e.key === "Enter" || e.key === " ") && enabled.current) {
+      e.preventDefault();
       clearTimeout(timeoutRef.current);
       enabled.current = false;
       enterKeyDown.current = true;
@@ -114,7 +115,8 @@ function KeyboardButton(
   };
 
   const handleKeyUp = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key === "Enter" && !enabled.current) {
+    if ((e.key === "Enter" || e.key === " ") && !enabled.current) {
+      e.preventDefault();
       setActive(false);
       timeoutRef.current = setTimeout(() => {
         enabled.current = true;
