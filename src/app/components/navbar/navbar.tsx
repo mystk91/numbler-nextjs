@@ -15,6 +15,8 @@ import Modal from "@/app/components/Modal Versatile Portal/modal";
 import Instructions from "@/app/components/navbar/instructions/instructions";
 import Login from "@/app/components/loginSystem/login/login";
 import Rectangle from "@/app/components/game/rectangle/rectangle";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/app/contexts/userContext";
 
 const linksMenu: Item[] = [
   { type: "link", label: "2 Digits", href: "/digits2" },
@@ -25,37 +27,42 @@ const linksMenu: Item[] = [
   { type: "link", label: "7 Digits", href: "/digits7" },
 ];
 
-const profileMenu: Item[] = [
-  { type: "link", label: "Your Profile", href: "/profile" },
-  {
-    type: "action",
-    label: "Logout",
-    onClick: () => {
-      console.log("We logged out");
-    },
-  },
-];
-
-interface User {
-  session?: any;
-}
-
 type Digit = 2 | 3 | 4 | 5 | 6 | 7 | undefined;
 const gameModes = [2, 3, 4, 5, 6, 7];
-
+4;
 interface NavbarProps {
-  user: User;
   containerRef: React.RefObject<HTMLElement | null>;
   digits?: Digit;
   style?: React.CSSProperties;
 }
 
-export default function Navbar({
-  user,
-  digits,
-  containerRef,
-  style,
-}: NavbarProps) {
+export default function Navbar({ digits, containerRef, style }: NavbarProps) {
+  const user = useUser();
+  const router = useRouter();
+  const profileMenu: Item[] =
+    user && user.session
+      ? [
+          { type: "link", label: "Your Profile", href: "/profile" },
+          {
+            type: "action",
+            label: "Logout",
+            onClick: async () => {
+              try {
+                const options = {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                };
+                const res = await fetch("/api/auth/logout", options);
+                const data = await res.json();
+                if (data.success || data.errors) {
+                  window.location.reload();
+                  //router.push("/");
+                }
+              } catch {}
+            },
+          },
+        ]
+      : [];
   const [initalized, setInitialized] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
@@ -143,10 +150,20 @@ export default function Navbar({
             <QuestionMark />
           </NavbarButton>
         )}
-        {user.session ? (
+        {user && user.session ? (
           <DropdownMenu
             menu={profileMenu}
-            label={<ProfileLoggedIn style={{ padding: "0.4rem" }} />}
+            label={
+              user && user.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt="Your profile picture"
+                  style={{ padding: "0.4rem" }}
+                />
+              ) : (
+                <ProfileLoggedIn style={{ padding: "0.4rem" }} />
+              )
+            }
             containerRef={containerRef}
             title="Your Profile"
           />
@@ -177,6 +194,7 @@ export default function Navbar({
           closeButton={true}
           closeOnBackdropClick={true}
           animate={true}
+          modalStyle={{ paddingTop: "0.4rem" }}
         >
           <Login style={{ border: "none" }} />
         </Modal>

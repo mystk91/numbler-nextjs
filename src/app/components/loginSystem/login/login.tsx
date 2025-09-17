@@ -14,6 +14,7 @@ interface LoginProps {
 
 export default function Login({ style }: LoginProps) {
   const router = useRouter();
+
   //URLS
   const loginURL = "/api/auth/login";
   // Used to give focus to the form input on load
@@ -47,7 +48,7 @@ export default function Login({ style }: LoginProps) {
     if (validate()) {
       try {
         const options = {
-          method: "PUT",
+          method: "POST",
           body: JSON.stringify(formData),
           headers: { "Content-Type": "application/json" },
         };
@@ -59,7 +60,7 @@ export default function Login({ style }: LoginProps) {
             email: ``,
             password: ``,
           });
-          router.replace(data.redirectUrl);
+          window.location.reload();
         } else {
           setFormErrors(data.errors);
         }

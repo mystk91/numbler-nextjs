@@ -63,6 +63,11 @@
   min-width: max-content;
   position: relative;
   will-change: transform, opacity;
+  border-radius: 0.8rem;
+}
+
+.modal > * {
+  border-radius: 1.8rem;
 }
 
 .animate.modal {

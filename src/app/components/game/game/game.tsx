@@ -18,15 +18,12 @@ import {
   Value,
   Animation,
 } from "@/app/components/game/rectangle/rectangle";
+import { useUser } from "@/app/contexts/userContext";
 
 type Digits = 2 | 3 | 4 | 5 | 6 | 7;
-interface User {
-  session?: string;
-}
 
 interface GameProps {
   digits: Digits;
-  user?: User;
 }
 
 type GameData = {
@@ -60,7 +57,7 @@ async function getLocalGameData(digits: number): Promise<GameData | null> {
 // Clears the session and refreshes the page - used when user has invalid credentials
 function forceLogout() {}
 
-export default function Game({ digits, user }: GameProps) {
+export default function Game({ digits }: GameProps) {
   const [gameboard, setGameboard] = useState<RowProps[]>([]);
   const currentRow = useRef(0);
   const currentColumn = useRef(0);
@@ -68,6 +65,7 @@ export default function Game({ digits, user }: GameProps) {
   const correctNumber = useRef("");
   const [showEndPanel, setShowEndPanel] = useState(false);
   const { keyColors, setKeyColors } = useKeyColors();
+  const initialKeyColors = useKeyColors().keyColors;
   const values = useRef<Value[][]>([]);
   const hints = useRef<Color[][]>([]);
   const date = useRef<Date>(new Date());
@@ -75,6 +73,7 @@ export default function Game({ digits, user }: GameProps) {
   const scores = useRef<number[]>([]);
   const checkingGuess = useRef(false);
   const [focusEnter, setFocusEnter] = useState(false);
+  const user = useUser();
 
   // Returns an object with all the data in the current game
   function getGameData() {
@@ -92,7 +91,26 @@ export default function Game({ digits, user }: GameProps) {
   //Initalizes the game
   useEffect(() => {
     initializeGame();
+    window.addEventListener("focus", windowFocus);
+    window.addEventListener("blur", windowBlur);
+    return () => {
+      window.removeEventListener("focus", windowFocus);
+      window.removeEventListener("blur", windowBlur);
+    };
   }, []);
+
+  // Re-initalizes the game when user swaps windows
+  function windowFocus() {
+    checkingGuess.current = true;
+    initializeGame();
+    checkingGuess.current = false;
+  }
+
+  // Here we could record a logged in users game when they swap windows
+  function windowBlur() {
+    if (user && user.session) {
+    }
+  }
 
   // Initalizes the game on mount
   async function initializeGame() {
@@ -139,6 +157,10 @@ export default function Game({ digits, user }: GameProps) {
       values.current = game.values;
       hints.current = game.hints;
       currentRow.current = game.currentRow;
+      currentColumn.current = Math.max(
+        game.values[game.currentRow].findIndex((value) => value === ""),
+        0
+      );
       gameStatus.current = game.gameStatus;
       gameId.current = game.gameId;
       correctNumber.current = game.correctNumber;
@@ -283,6 +305,9 @@ export default function Game({ digits, user }: GameProps) {
       ]);
       setFocusEnter(true);
     }
+    if (!user) {
+      localStorage.setItem("digits" + digits, JSON.stringify(getGameData()));
+    }
   }
 
   //Handles hitting the backspace key on the keyboard
@@ -322,6 +347,9 @@ export default function Game({ digits, user }: GameProps) {
           },
         },
       ]);
+    }
+    if (!user) {
+      localStorage.setItem("digits" + digits, JSON.stringify(getGameData()));
     }
   }
 
@@ -537,6 +565,7 @@ export default function Game({ digits, user }: GameProps) {
 
   // Used to change the key colors when we load an old game - used during initializeGame()
   function updateKeyColors(row: number) {
+    setKeyColors(initialKeyColors);
     if (currentRow.current > 0) {
       for (let i = 0; i < row; i++) {
         for (let j = 0; j < digits; j++) {

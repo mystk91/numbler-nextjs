@@ -10,7 +10,7 @@ export default function Page() {
   return (
     <div className={styles.page} ref={pageRef}>
       <div className={styles.wrapper}>
-        <Navbar user={{session: ""}} digits={4} containerRef={pageRef} />
+        <Navbar digits={4} containerRef={pageRef} />
       </div>
     </div>
   );
