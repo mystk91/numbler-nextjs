@@ -3,7 +3,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 0.4rem solid light-dark(rgb(200, 200, 200), rgb(200, 200, 200));
+  border: 0.4rem solid light-dark(rgb(200, 200, 200), rgb(170, 170, 170));
   min-height: 5.2rem;
   font-family: "Roboto", "Inter", sans-serif;
   background-color: var(--background);

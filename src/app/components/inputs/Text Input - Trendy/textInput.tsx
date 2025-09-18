@@ -71,6 +71,13 @@ export default function TextInput({
     }
   }
 
+  //This will move the labels up if the input starts with a value
+  useEffect(() => {
+    if ("current" in ref && Number(ref.current?.value.length) > 0) {
+      setLabelMoved(true);
+    }
+  }, [value]);
+
   return (
     <div className={styles.input_wrapper} style={style}>
       <label

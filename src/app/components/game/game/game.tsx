@@ -19,6 +19,9 @@ import {
   Animation,
 } from "@/app/components/game/rectangle/rectangle";
 import { useUser } from "@/app/contexts/userContext";
+import { createToast } from "@/app/components/toasts/createToast";
+import InvalidGuess from "@/app/components/toasts/invalidGuessToast";
+import { toast } from "react-toastify";
 
 type Digits = 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -269,6 +272,7 @@ export default function Game({ digits }: GameProps) {
 
   //Handles pressing a number key on the keyboard
   function handleNumberKey(number: Value) {
+    toast.dismiss();
     if (gameStatus.current !== "playing" || checkingGuess.current) return;
     if (currentColumn.current < digits - 1) {
       values.current[currentRow.current][currentColumn.current] = number;
@@ -313,6 +317,7 @@ export default function Game({ digits }: GameProps) {
   //Handles hitting the backspace key on the keyboard
   function handleBackspaceKey() {
     if (gameStatus.current !== "playing" || checkingGuess.current) return;
+    toast.dismiss();
     if (currentColumn.current === digits) {
       currentColumn.current -= 1;
       values.current[currentRow.current][currentColumn.current] = "";
@@ -356,13 +361,29 @@ export default function Game({ digits }: GameProps) {
   //Handles hitting the enter key on the keyboard
   async function handleEnterKey() {
     if (gameStatus.current !== "playing" || checkingGuess.current) return;
-    currentColumn.current === digits ? await checkGuess() : showErrorMessage();
+    currentColumn.current === digits
+      ? await checkGuess()
+      : showInvalidGuessToast();
     setFocusEnter(false);
   }
 
   // Shows an error message telling user to guess a "n" digit numbe
-  function showErrorMessage() {
-    console.log(`you need to guess a ${digits} digit number`);
+  function showInvalidGuessToast() {
+    // This condition stops toasts from appearing if they hit double enter after making a guess
+    if (
+      currentColumn.current > 0 ||
+      (currentRow.current === 0 && currentColumn.current === 0)
+    ) {
+      createToast(
+        InvalidGuess,
+        "error",
+        undefined,
+        `Enter a ${digits} digit number`,
+        true,
+        2000
+      );
+      toast.clearWaitingQueue();
+    }
   }
 
   // Checks the guess of the user and handles the outcome
