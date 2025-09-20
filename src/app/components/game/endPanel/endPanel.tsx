@@ -8,6 +8,7 @@ import Button from "@/app/components/buttons/Button Set/button";
 import Rectangle from "@/app/components/game/rectangle/rectangle";
 import Histogram from "@/app/components/game/histogram/histogram";
 import { Color } from "@/app/components/game/rectangle/rectangle";
+import NavbarButton from "../../buttons/navbarButton/navbarButton";
 
 interface EndPanelProps {
   result: "victory" | "defeat";
@@ -18,6 +19,7 @@ interface EndPanelProps {
   closeFunction: () => void;
   style?: React.CSSProperties;
 }
+const gameModes = [2, 3, 4, 5, 6, 7];
 
 export default function EndPanel({
   result,
@@ -201,6 +203,50 @@ export default function EndPanel({
       </div>
       <div className={styles.histogram_wrapper}>
         <Histogram scores={scores} numDigits={correctNumber.length} />
+      </div>
+
+      <div className={styles.game_modes}>
+        <div className={styles.play_more}>{`Play More`}</div>
+        <div className={styles.links_wrapper}>
+          {gameModes.map((n) => (
+            <Link key={n} href={`/digits${n}`} tabIndex={-1}>
+              <NavbarButton
+                style={{ backgroundColor: "var(--background)" }}
+                ariaLabel={`Go to the ${n} digit mode of Numbler`}
+              >
+                <Rectangle
+                  color="none"
+                  type="digit"
+                  value={
+                    n as
+                      | ""
+                      | 0
+                      | 1
+                      | 2
+                      | 3
+                      | 4
+                      | 5
+                      | 6
+                      | 7
+                      | 8
+                      | 9
+                      | "equals"
+                      | "higher"
+                      | "lower"
+                  }
+                  style={{
+                    border: "none",
+                    backgroundColor:
+                      n === hints[0].length - 1
+                        ? "rgb(80, 80, 80)"
+                        : "var(--lower-color)",
+                    minHeight: "5.2rem",
+                  }}
+                />
+              </NavbarButton>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );

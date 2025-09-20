@@ -37,6 +37,7 @@ export default function Page() {
           <Link href="/dev/gameboard">{`Gameboard`}</Link>
           <Link href="/dev/game">{`Game`}</Link>
           <Link href="/dev/game_end_panel">{`Game End Panel`}</Link>
+          <Link href="/dev/scramble">{`Scramble / Descramble`}</Link>
         </div>
         <div>
           <h1>{`Login`}</h1>

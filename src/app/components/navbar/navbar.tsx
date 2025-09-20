@@ -109,8 +109,6 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
                         | ""
                         | 0
                         | 1
-                        | "higher"
-                        | "lower"
                         | 2
                         | 3
                         | 4
@@ -120,6 +118,8 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
                         | 8
                         | 9
                         | "equals"
+                        | "higher"
+                        | "lower"
                     }
                     style={{
                       borderColor: "var(--grey-text)",
