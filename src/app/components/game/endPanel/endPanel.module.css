@@ -78,15 +78,15 @@
   align-items: center;
   height: 0;
   opacity: 0;
-  animation: game_modes_appear 1.6s forwards;
-  animation-delay: 1.6s;
+  animation: game_modes_appear 1.8s forwards;
+  animation-delay: 2.0s;
 }
 
 .play_more {
   display: flex;
   justify-content: center;
   font-size: 1.8rem;
-  padding-bottom: 0.4rem;
+  padding-bottom: 0.6rem;
   width: 60%;
   border-bottom: var(--border);
 }
@@ -97,7 +97,7 @@
     opacity: 0;
     transform: translateY(-3.2rem);
   }
-  30% {
+  40% {
     opacity: 0;
   }
   100% {
@@ -109,5 +109,5 @@
 
 .links_wrapper {
   display: flex;
-  padding-top: 0.6rem;
+  padding-top: 0.8rem;
 }

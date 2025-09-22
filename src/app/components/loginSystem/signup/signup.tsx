@@ -160,18 +160,28 @@ export default function Signup({}: SignupProps) {
       setFormErrors(errors);
       return;
     }
-    //Verifies password and creates account (backend not written)
-    /*
-      const options = {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: { "Content-Type": "application/json" },
-      };
+    const options = {
+      method: "POST",
+      body: JSON.stringify(formData),
+      headers: { "Content-Type": "application/json" },
+    };
+    try {
       const res = await fetch("/api/auth/signup", options);
       const data = await res.json();
-      */
-    //Move to success panel
-    nextPanel("success");
+      if (data.errors) {
+        throw new Error();
+      } else {
+        nextPanel("success");
+      }
+    } catch {
+      //This shouldn't happen usually
+      goBack("email", "password");
+      clearPanelForm("email");
+      clearPanelForm("password");
+      let errors = { ...initialForm };
+      errors.email = "Something went wrong. Try again soon.";
+      setFormErrors(errors);
+    }
   }
 
   function nextPanel(nextPanel: Panel) {
@@ -196,7 +206,6 @@ export default function Signup({}: SignupProps) {
       setCloseRight(false);
       setPanel(previousPanel);
       clearPanelForm(currentPanel);
-      clearPanelForm(previousPanel);
       setEnterLeft(true);
     }, 500);
   }

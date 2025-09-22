@@ -2,8 +2,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./page.module.css";
-import { scramble } from "@/app/functions/scramble";
-import { descramble } from "@/app/functions/descramble";
+import { scramble } from "@/app/lib/scramble";
+import { descramble } from "@/app/lib/descramble";
 import Button from "@/app/components/buttons/Button Set/button";
 import { useState } from "react";
 

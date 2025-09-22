@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import nodemailer from "nodemailer";
+import { randomString } from "@/app/lib/randomString";
 
 //Different POST routes related to login and account creation
 export async function POST(
@@ -15,7 +16,7 @@ export async function POST(
         return await login(req);
       case "logout":
         return await logout(req);
-      case "sendVerification":
+      case "signup":
         return await sendVerification(req);
       case "verifyEmail":
         return await verifyEmail(req);
@@ -25,19 +26,6 @@ export async function POST(
   } catch {
     return networkError();
   }
-}
-
-//Returns a random string, used for creating passwords and sessions
-function generateString(length: number): string {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-  const array = new Uint32Array(length);
-  crypto.getRandomValues(array);
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(array[i] % characters.length);
-  }
-  return result;
 }
 
 //RegExps used in validation
@@ -224,7 +212,7 @@ async function login(req: NextRequest) {
     }
     //Logs in user if password is correct
     if (await bcrypt.compare(body.password, user.password)) {
-      const sessionId = generateString(48);
+      const sessionId = randomString(48);
       await updateValues("Accounts", "email", user.email, {
         sessionId: sessionId,
       });
@@ -252,7 +240,7 @@ async function logout(req: NextRequest) {
     const cookieStore = await cookies();
     const sessionId = cookieStore.get("sessionId")?.value;
     cookieStore.delete("sessionId");
-    const newSessionId = generateString(48);
+    const newSessionId = randomString(48);
     if (sessionId) {
       // Giving their account a new random sessionId
       await updateValues("Accounts", "sessionId", sessionId, {
@@ -270,7 +258,7 @@ async function forceLogout() {
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("sessionId")?.value;
   cookieStore.delete("sessionId");
-  const newSessionId = generateString(48);
+  const newSessionId = randomString(48);
   if (sessionId) {
     // Giving their account a new random sessionId. We don't need to await here
     updateValues("Accounts", "sessionId", sessionId, {
@@ -310,7 +298,7 @@ async function sendVerification(req: NextRequest) {
       //Returns a false positive but doesn't send any emails
       return success();
     } else {
-      const verificationCode = generateString(32);
+      const verificationCode = randomString(32);
       const hashedPassword = await bcrypt.hash(body.password, 10);
       const user = {
         email: body.email.toLowerCase(),

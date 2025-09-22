@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "@/app/globals.css";
+import "@/app/lib/cron";
 
 export const metadata: Metadata = {
   title: "Numbler",

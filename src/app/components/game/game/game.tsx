@@ -22,6 +22,7 @@ import { useUser } from "@/app/contexts/userContext";
 import { createToast } from "@/app/components/toasts/createToast";
 import InvalidGuess from "@/app/components/toasts/invalidGuessToast";
 import { toast } from "react-toastify";
+import { descramble } from "@/app/lib/descramble";
 
 type Digits = 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -103,9 +104,9 @@ export default function Game({ digits }: GameProps) {
   }, []);
 
   // Re-initalizes the game when user swaps windows
-  function windowFocus() {
+  async function windowFocus() {
     checkingGuess.current = true;
-    initializeGame();
+    await initializeGame();
     checkingGuess.current = false;
   }
 
@@ -217,17 +218,17 @@ export default function Game({ digits }: GameProps) {
 
   //Updates one rectangle
   function updateRectangle(
-    targetRow: number,
-    targetColumn: number,
+    row: number,
+    column: number,
     updates: Partial<RectangleProps>
   ) {
     setGameboard((prevGameboard) => {
-      return prevGameboard.map((row, rowIndex) => {
-        if (rowIndex === targetRow) {
+      return prevGameboard.map((rowData, rowIndex) => {
+        if (rowIndex === row) {
           return {
-            ...row,
-            rectangles: row.rectangles.map((rectangle, colIndex) => {
-              if (colIndex === targetColumn) {
+            ...rowData,
+            rectangles: rowData.rectangles.map((rectangle, colIndex) => {
+              if (colIndex === column) {
                 return {
                   ...rectangle,
                   ...updates,
@@ -237,7 +238,7 @@ export default function Game({ digits }: GameProps) {
             }),
           };
         }
-        return row;
+        return rowData;
       });
     });
   }
@@ -361,9 +362,15 @@ export default function Game({ digits }: GameProps) {
   //Handles hitting the enter key on the keyboard
   async function handleEnterKey() {
     if (gameStatus.current !== "playing" || checkingGuess.current) return;
-    currentColumn.current === digits
-      ? await checkGuess()
-      : showInvalidGuessToast();
+    if (currentColumn.current === digits) {
+      checkingGuess.current = true;
+      await checkGuess();
+      if (gameStatus.current === "playing") {
+        checkingGuess.current = false;
+      }
+    } else {
+      showInvalidGuessToast();
+    }
     setFocusEnter(false);
   }
 
@@ -388,7 +395,6 @@ export default function Game({ digits }: GameProps) {
 
   // Checks the guess of the user and handles the outcome
   async function checkGuess() {
-    checkingGuess.current = true;
     let guess = "";
     for (let i = 0; i < digits; i++) {
       guess += values.current[currentRow.current][i];
@@ -493,11 +499,13 @@ export default function Game({ digits }: GameProps) {
         row: currentRow.current,
         column: i,
         updates: {
-          active: i === 0,
           animate: true,
           currentRow: true,
         },
       }));
+      updateRectangle(currentRow.current, 0, {
+        active: true
+      })
       setTimeout(() => updateRectangles(newRowUpdate), 90 * digits);
       setGameboard((prevGameboard) => {
         return prevGameboard.map((row, rowIndex) => {
@@ -536,7 +544,8 @@ export default function Game({ digits }: GameProps) {
   function getHints(guess: string) {
     let newHints: Color[] = [];
     //Compares the number with target number and creates color hints for it
-    let target = correctNumber.current;
+    //let target = correctNumber.current;
+    let target = descramble(correctNumber.current);
     let tempTarget = "";
     for (let i = 0; i < digits; i++) {
       if (guess[i] === target[i]) {
@@ -622,7 +631,7 @@ export default function Game({ digits }: GameProps) {
           <div className={styles.end_panel_wrapper}>
             <EndPanel
               result={gameStatus.current === "victory" ? "victory" : "defeat"}
-              correctNumber={correctNumber.current}
+              correctNumber={descramble(correctNumber.current)}
               hints={hints.current}
               scores={scores.current}
               date={date.current}
