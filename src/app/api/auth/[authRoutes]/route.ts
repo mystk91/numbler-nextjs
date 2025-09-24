@@ -2,16 +2,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
-import nodemailer from "nodemailer";
 import { randomString } from "@/app/lib/randomString";
+import { connectToDatabase } from "@/app/lib/mongodb";
+import { SES, SendEmailCommand } from "@aws-sdk/client-ses";
+import { verification_email } from "@/app/lib/emails/account_emails";
+
+const ses = new SES({
+  region: "us-east-1",
+  credentials: {
+    accessKeyId: process.env.SES_ACCESS_KEY ?? "",
+    secretAccessKey: process.env.SES_SECRET ?? "",
+  },
+});
 
 //Different POST routes related to login and account creation
 export async function POST(
   req: NextRequest,
-  { params }: { params: { authRoutes: string } }
+  { params }: { params: Promise<{ authRoutes: string }> }
 ) {
   try {
-    switch (params.authRoutes) {
+    const { authRoutes } = await params;
+    switch (authRoutes) {
       case "login":
         return await login(req);
       case "logout":
@@ -281,7 +292,7 @@ async function sendVerification(req: NextRequest) {
     }
     if (!passwordRegExp.test(body.password)) {
       errors.password = `Make your password stronger`;
-    } else if (body.password !== body.verifyPassword) {
+    } else if (body.password !== body.verify_password) {
       errors.password = `Passwords do not match`;
     }
     const errorFound = Object.values(errors).some(Boolean);
@@ -291,10 +302,15 @@ async function sendVerification(req: NextRequest) {
       });
     }
     //Checks to see if account already exists
-    const duplicateAccount = await getValues("Accounts", "email", body.email);
+    const db = await connectToDatabase("accounts");
+    const accounts = db.collection("accounts");
+    const duplicateAccount = await accounts.findOne({ email: body.email });
     //Checks to see if user is requesting too many verification emails
-    const spamCheck = await getAllValues("Unverifieds", "email", body.email);
-    if (duplicateAccount || spamCheck.length > 5) {
+    const unverified_accounts = db.collection("unverified_accounts");
+    const spamCheck = await unverified_accounts
+      .find({ email: body.email })
+      .toArray();
+    if (duplicateAccount || spamCheck.length > 45654) {
       //Returns a false positive but doesn't send any emails
       return success();
     } else {
@@ -304,30 +320,29 @@ async function sendVerification(req: NextRequest) {
         email: body.email.toLowerCase(),
         password: hashedPassword,
         code: verificationCode,
-        date: Date.now(),
+        createdAt: new Date(),
       };
-      await addEntries("Unverifieds", user);
-      const transporter = nodemailer.createTransport({
-        /*
-         *  Add Email Provider Here
-         */
-      });
-      const mailOptions = {
-        from: `"Website" <noreply@website.com>`,
-        to: body.email,
-        subject: "Website Email Verification",
-        html: `
-        </p> Welcome to Website! Click below to finish creating your account. </p> <br>
-        <a href='${process.env.protocol}${process.env.domain}/verify/${verificationCode}'>Verify Email</a></p>
-        `,
+      await unverified_accounts.insertOne(user);
+      // Send verification email with SES
+      const emailParams = {
+        Source: '"Numbler" <noreply@numbler.net>',
+        Destination: {
+          ToAddresses: [body.email],
+        },
+        Message: {
+          Subject: {
+            Data: "Numbler Verification",
+          },
+          Body: {
+            Html: {
+              Data: verification_email(verificationCode),
+            },
+          },
+        },
       };
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          return networkErrorPassword();
-        } else {
-          return success();
-        }
-      });
+      const command = new SendEmailCommand(emailParams);
+      await ses.send(command);
+      return success();
     }
   } catch {
     return networkErrorPassword();

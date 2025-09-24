@@ -23,6 +23,8 @@ interface PanelProps {
   closeLeft: boolean;
   closeRight: boolean;
   percent: number;
+  transitionDuration?: string;
+  buttonDisabled?: boolean;
   goBack?: () => void;
 }
 
@@ -33,6 +35,8 @@ export function Panel({
   closeLeft,
   closeRight,
   percent,
+  transitionDuration = "",
+  buttonDisabled = false,
   goBack,
 }: PanelProps) {
   return (
@@ -52,10 +56,14 @@ export function Panel({
             width="smallest"
             title="Go back"
             ariaLabel="Go back"
+            disabled={buttonDisabled}
           >{`<`}</Button>
         </div>
       )}
-      <ProgressBar percent={percent} />
+      <ProgressBar
+        percent={percent}
+        percentStyle={{ transitionDuration: transitionDuration }}
+      />
       <div className={classNames(styles.panel)}>{children}</div>
     </div>
   );
@@ -69,6 +77,8 @@ export default function Signup({}: SignupProps) {
   const [closeRight, setCloseRight] = useState(false);
   const [enterRight, setEnterRight] = useState(true);
   const [enterLeft, setEnterLeft] = useState(false);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [transitionDuration, setTransitionDuration] = useState("");
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -140,10 +150,13 @@ export default function Signup({}: SignupProps) {
       setFormErrors(errors);
       return;
     }
-    nextPanel("password");
+    nextPanel("password", 66);
   }
 
   async function submitPassword(e: FormEvent) {
+    setTransitionDuration("2s");
+    setPercent(80);
+    setButtonDisabled(true);
     e.preventDefault();
     setFormErrors(initialForm);
     const passwordRegExp = new RegExp(
@@ -171,21 +184,25 @@ export default function Signup({}: SignupProps) {
       if (data.errors) {
         throw new Error();
       } else {
-        nextPanel("success");
+        setTransitionDuration("");
+        nextPanel("success", 99);
       }
     } catch {
       //This shouldn't happen usually
-      goBack("email", "password");
+      goBack("email", "password", 33);
       clearPanelForm("email");
       clearPanelForm("password");
       let errors = { ...initialForm };
       errors.email = "Something went wrong. Try again soon.";
       setFormErrors(errors);
+      setTransitionDuration("");
+      setPercent(33);
+      setButtonDisabled(false);
     }
   }
 
-  function nextPanel(nextPanel: Panel) {
-    setPercent((prev) => prev + 33);
+  function nextPanel(nextPanel: Panel, percent: number) {
+    setPercent(percent);
     setEnterLeft(false);
     setCloseLeft(true);
     timeoutRef.current = setTimeout(() => {
@@ -198,8 +215,8 @@ export default function Signup({}: SignupProps) {
     }, 500);
   }
 
-  function goBack(previousPanel: Panel, currentPanel: Panel) {
-    setPercent((prev) => prev - 33);
+  function goBack(previousPanel: Panel, currentPanel: Panel, percent: number) {
+    setPercent(percent);
     setEnterRight(false);
     setCloseRight(true);
     timeoutRef.current = setTimeout(() => {
@@ -236,6 +253,7 @@ export default function Signup({}: SignupProps) {
           enterLeft={enterLeft}
           enterRight={enterRight}
           percent={percent}
+          transitionDuration={transitionDuration}
         >
           <form onSubmit={submitEmail}>
             <InputWrapper
@@ -266,7 +284,9 @@ export default function Signup({}: SignupProps) {
           enterLeft={enterLeft}
           enterRight={enterRight}
           percent={percent}
-          goBack={() => goBack("email", "password")}
+          transitionDuration={transitionDuration}
+          buttonDisabled={buttonDisabled}
+          goBack={() => goBack("email", "password", 33)}
         >
           <form onSubmit={submitPassword}>
             <div className={styles.inputs_wrapper}>
@@ -302,6 +322,7 @@ export default function Signup({}: SignupProps) {
               variant="primary"
               type="submit"
               style={{ width: "90%" }}
+              disabled={buttonDisabled}
             >{`Submit`}</Button>
           </form>
         </Panel>

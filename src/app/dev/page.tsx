@@ -45,6 +45,10 @@ export default function Page() {
           <Link href="/dev/login/signup">{`Signup`}</Link>
           <Link href="/dev/login/password-reset">{`Password Reset`}</Link>
         </div>
+        <div>
+          <h1>{`Emails`}</h1>
+          <Link href="/dev/emails/confirmation">{`Sign up `}</Link>
+        </div>
       </div>
     </div>
   );
