@@ -65,7 +65,14 @@
   padding: 0.6rem 1rem;
 }
 
-/* Stops auto-fill bacgkground from changing */
+/* Needed for ios */
+.eye,
+.closed_eye {
+  width: 4.8rem;
+  height: auto;
+}
+
+/* Stops auto-fill background from changing */
 .input_wrapper input:-webkit-autofill,
 .input_wrapper input:-webkit-autofill:hover,
 .input_wrapper input:-webkit-autofill:focus,

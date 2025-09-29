@@ -17,7 +17,7 @@ interface ButtonProps {
   children?: React.ReactNode;
   icon?: JSX.Element;
   variant: "primary" | "secondary" | "tertiary" | "red" | "green";
-  onClick?: () => void;
+  onClick?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   onKeyDown?: (e?: React.KeyboardEvent<HTMLButtonElement>) => void;
   width?: "default" | "smallest" | "full";
   ariaLabel?: string;
@@ -74,7 +74,7 @@ export function Button(
   }, []);
 
   const handlePointerDown = () => {
-    if (enabled.current) {
+    if (enabled.current && !disabled) {
       clearTimeout(timeoutRef.current);
       enabled.current = false;
       setActive(false);
@@ -85,7 +85,7 @@ export function Button(
   };
 
   const handlePointerUp = () => {
-    if (!enabled.current) {
+    if (!enabled.current && !disabled) {
       clearTimeout(timeoutRef.current);
       setActive(true);
       enabled.current = true;
@@ -97,7 +97,7 @@ export function Button(
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if ((e.key === "Enter" || e.key === " ") && enabled.current) {
+    if ((e.key === "Enter" || e.key === " ") && enabled.current && !disabled) {
       e.preventDefault();
       clearTimeout(timeoutRef.current);
       enabled.current = false;
@@ -107,7 +107,7 @@ export function Button(
   };
 
   const handleKeyUp = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if ((e.key === "Enter" || e.key === " ") && !enabled.current) {
+    if ((e.key === "Enter" || e.key === " ") && !enabled.current && !disabled) {
       e.preventDefault();
       setActive(false);
       timeoutRef.current = setTimeout(() => {
@@ -154,11 +154,13 @@ export function Button(
       className={classNames(styles.button, styles[variant], styles[width], {
         [styles.active]: active,
       })}
-      onPointerDown={handlePointerDown}
-      onPointerUp={handlePointerUp}
+      onPointerDown={
+        type === "submit" || disabled ? undefined : handlePointerDown
+      }
+      onPointerUp={type === "submit" || disabled ? undefined : handlePointerUp}
       onTouchMove={handleTouchMove}
-      onKeyDown={handleKeyDown}
-      onKeyUp={handleKeyUp}
+      onKeyDown={type === "submit" || disabled ? undefined : handleKeyDown}
+      onKeyUp={type === "submit" || disabled ? undefined : handleKeyUp}
       onMouseLeave={handleMouseLeave}
       onBlur={handleBlur}
       aria-label={ariaLabel}

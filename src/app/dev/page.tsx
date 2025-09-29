@@ -44,10 +44,16 @@ export default function Page() {
           <Link href="/dev/login">{`Login`}</Link>
           <Link href="/dev/login/signup">{`Signup`}</Link>
           <Link href="/dev/login/password-reset">{`Password Reset`}</Link>
+          <Link href="/dev/login/verify">{`Verification Message`}</Link>
+          <Link href="/dev/login/verify/5oi4m352im">{`Verify Page`}</Link>
         </div>
         <div>
           <h1>{`Emails`}</h1>
           <Link href="/dev/emails/confirmation">{`Sign up `}</Link>
+        </div>
+        <div>
+          <h1>{`Loaders`}</h1>
+          <Link href="/dev/loaders/arrow_loader">{`Arrow Loader`}</Link>
         </div>
       </div>
     </div>

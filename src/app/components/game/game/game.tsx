@@ -58,8 +58,10 @@ async function getLocalGameData(digits: number): Promise<GameData | null> {
   return null;
 }
 
-// Clears the session and refreshes the page - used when user has invalid credentials
-function forceLogout() {}
+// Refreshes the page - used when user has invalid credentials. Will force "user" to be reloaded
+function forceLogout() {
+  window.location.reload();
+}
 
 export default function Game({ digits }: GameProps) {
   const [gameboard, setGameboard] = useState<RowProps[]>([]);
@@ -112,7 +114,7 @@ export default function Game({ digits }: GameProps) {
 
   // Here we could record a logged in users game when they swap windows
   function windowBlur() {
-    if (user && user.session) {
+    if (user) {
     }
   }
 
@@ -125,9 +127,7 @@ export default function Game({ digits }: GameProps) {
     const body: { digits: number; session?: string; game?: GameData } = {
       digits: digits,
     };
-    if (user && user.session) {
-      body.session = user.session;
-    } else {
+    if (!user) {
       game = await getLocalGameData(digits);
       const scoresStorage = localStorage.getItem("scores" + digits);
       if (scoresStorage) {
@@ -469,9 +469,8 @@ export default function Game({ digits }: GameProps) {
         digits: digits,
         score: score,
       };
-      if (user && user.session) {
+      if (user) {
         body.game = getGameData();
-        body.session = user.session;
       } else {
         localStorage.setItem("digits" + digits, JSON.stringify(getGameData()));
         localStorage.setItem("scores" + digits, JSON.stringify(scores.current));
@@ -504,8 +503,8 @@ export default function Game({ digits }: GameProps) {
         },
       }));
       updateRectangle(currentRow.current, 0, {
-        active: true
-      })
+        active: true,
+      });
       setTimeout(() => updateRectangles(newRowUpdate), 90 * digits);
       setGameboard((prevGameboard) => {
         return prevGameboard.map((row, rowIndex) => {
@@ -517,13 +516,12 @@ export default function Game({ digits }: GameProps) {
       });
       checkingGuess.current = false;
       // We update the user's game on the backend here
-      if (user && user.session) {
+      if (user) {
         try {
           const res = await fetch("/api/game/updateGame", {
             method: "POST",
             body: JSON.stringify({
               digits: digits,
-              session: user.session,
               game: getGameData(),
             }),
             headers: { "Content-Type": "application/json" },

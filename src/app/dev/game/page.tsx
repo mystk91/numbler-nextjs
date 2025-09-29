@@ -12,7 +12,6 @@ export default function Page() {
 
   return (
     <div className={styles.page} ref={containerRef}>
-      <Navbar digits={4} containerRef={containerRef} />
       <Game digits={4} />
     </div>
   );

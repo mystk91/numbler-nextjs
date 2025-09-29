@@ -31,7 +31,7 @@ type Digit = 2 | 3 | 4 | 5 | 6 | 7 | undefined;
 const gameModes = [2, 3, 4, 5, 6, 7];
 4;
 interface NavbarProps {
-  containerRef: React.RefObject<HTMLElement | null>;
+  containerRef?: React.RefObject<HTMLElement | null>;
   digits?: Digit;
   style?: React.CSSProperties;
 }
@@ -39,31 +39,30 @@ interface NavbarProps {
 export default function Navbar({ digits, containerRef, style }: NavbarProps) {
   const user = useUser();
   const router = useRouter();
-  const profileMenu: Item[] =
-    user && user.session
-      ? [
-          { type: "link", label: "Your Profile", href: "/profile" },
-          {
-            type: "action",
-            label: "Logout",
-            onClick: async () => {
-              try {
-                const options = {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                };
-                const res = await fetch("/api/auth/logout", options);
-                const data = await res.json();
-                if (data.success || data.errors) {
-                  window.location.reload();
-                  //router.push("/");
-                }
-              } catch {}
-            },
+  const profileMenu: Item[] = user
+    ? [
+        { type: "link", label: "Your Profile", href: "/profile" },
+        {
+          type: "action",
+          label: "Logout",
+          onClick: async () => {
+            try {
+              const options = {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+              };
+              const res = await fetch("/api/auth/logout", options);
+              const data = await res.json();
+              if (data.success || data.errors) {
+                window.location.reload();
+                //router.push("/");
+              }
+            } catch {}
           },
-        ]
-      : [];
-  const [initalized, setInitialized] = useState(false);
+        },
+      ]
+    : [];
+  const [initalized, setInitialized] = useState(true);
   const [showLogin, setShowLogin] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
   const [mobileSize, setMobileSize] = useState(false);
@@ -150,7 +149,7 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
             <QuestionMark />
           </NavbarButton>
         )}
-        {user && user.session ? (
+        {user ? (
           <DropdownMenu
             menu={profileMenu}
             label={

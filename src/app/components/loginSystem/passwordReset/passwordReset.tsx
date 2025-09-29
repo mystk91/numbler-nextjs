@@ -8,13 +8,13 @@ import { useRouter } from "next/navigation";
 import InputWrapper from "@/app/components/inputs/Text Input Wrapper - Trendy/input_wrapper";
 import Button from "@/app/components/buttons/Button Set/button";
 
-interface widthProps {
+interface PasswordReset {
   style?: React.CSSProperties;
 }
 
-export default function width({ style }: widthProps) {
+export default function PasswordReset({ style }: widthProps) {
   //URLS
-  const resetUrl = "/api/auth/password_reset";
+  const resetUrl = "/api/auth/passwordReset";
   // Used to give focus to the form input on load
 
   const inputReference = useRef<HTMLInputElement | null>(null);
@@ -34,6 +34,7 @@ export default function width({ style }: widthProps) {
   };
   const [formData, setFormData] = useState(form);
   const [formErrors, setFormErrors] = useState(form);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   // Handle input changes
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -43,6 +44,7 @@ export default function width({ style }: widthProps) {
   // Handle login submission
   async function resetPassword(e: React.FormEvent) {
     e.preventDefault();
+    setButtonDisabled(true);
     setFormErrors(form);
     if (validate()) {
       try {
@@ -52,20 +54,20 @@ export default function width({ style }: widthProps) {
           headers: { "Content-Type": "application/json" },
         };
         const res = await fetch(resetUrl, options);
-        //const data = await res.json();
-        //if (!data.errors) {
-        if (true) {
-          setFormErrors({
-            email: ``,
-          });
-          setEmailSent(true);
-        } else {
-          //setFormErrors(data.errors);
+        const data = await res.json();
+        if (data.errors) {
+          setFormErrors(data.errors);
+          setButtonDisabled(false);
         }
+        setFormErrors({
+          email: ``,
+        });
+        setEmailSent(true);
       } catch {
         let errors = { ...form };
         errors.email = `Something went wrong. Try again soon.`;
         setFormErrors(errors);
+        setButtonDisabled(false);
       }
     }
   }
@@ -126,7 +128,12 @@ export default function width({ style }: widthProps) {
           ariaDescribedBy="email-error"
         />
         <div className={styles.button_container}>
-          <Button variant="primary" type="submit" style={{ width: "80%" }}>
+          <Button
+            variant="primary"
+            type="submit"
+            style={{ width: "80%" }}
+            disabled={buttonDisabled}
+          >
             {`Send Password Reset`}
           </Button>
         </div>

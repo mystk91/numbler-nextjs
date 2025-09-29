@@ -1,0 +1,195 @@
+.arrow_loader {
+  --top: 2rem;
+  --bottom: -2rem;
+  --total_width: 9rem;
+  display: flex;
+}
+
+.middle_wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 3rem;
+  z-index: 9;
+}
+
+.middle {
+  width: 100%;
+  height: 4.25rem;
+  animation: middle 2.4s infinite;
+  display: flex;
+  justify-content: center;
+  column-gap: 0.6rem;
+}
+
+.equals {
+  border-radius: 1rem;
+  background-color: var(--green);
+  width: 1rem;
+}
+
+/*
+.space {
+  width: 1rem;
+  height: 100%;
+  background-color: transparent;
+}
+*/
+
+@keyframes middle {
+  0% {
+    transform: rotateZ(60deg);
+  }
+  20% {
+    transform: rotateZ(270deg);
+  }
+  30% {
+    transform: rotateZ(270deg);
+  }
+  42% {
+    transform: rotateZ(270deg);
+  }
+  50% {
+    transform: rotateZ(420deg);
+  }
+  70% {
+    transform: rotateZ(630deg);
+  }
+  82% {
+    transform: rotateZ(630deg);
+  }
+  90% {
+    transform: rotateZ(630deg);
+  }
+  100% {
+    transform: rotateZ(780deg);
+  }
+}
+
+.left_arrow,
+.right_arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.left_arrow svg,
+.right_arrow svg {
+  width: 6rem;
+  height: auto;
+}
+
+.left_arrow svg {
+  animation: left 2.4s infinite;
+}
+
+.right_arrow svg {
+  animation: right 2.4s infinite;
+}
+
+@keyframes left {
+  0% {
+    transform: rotateZ(180deg) translateX(0rem)
+      translateY(calc(3 * var(--bottom)));
+    fill: var(--higher-color);
+  }
+  20% {
+    transform: rotateZ(180deg) translateX(0rem)
+      translateY(calc(0.5 * var(--top)));
+  }
+  30% {
+    transform: rotateZ(180deg) translateX(0rem)
+      translateY(calc(0.5 * var(--top)));
+  }
+  35% {
+    transform: rotateZ(180deg) translateX(0rem)
+      translateY(calc(0.5 * var(--top)));
+    fill: var(--higher-color);
+  }
+  45% {
+    transform: rotateZ(360deg) translateX(var(--total_width))
+      translateY(calc(3 * var(--bottom)));
+    fill: var(--lower-color);
+  }
+  50% {
+    transform: rotateZ(360deg) translateX(var(--total_width))
+      translateY(calc(3 * var(--bottom)));
+    fill: var(--lower-color);
+  }
+  70% {
+    transform: rotateZ(360deg) translateX(var(--total_width))
+      translateY(calc(0.5 * var(--top)));
+  }
+  80% {
+    transform: rotateZ(360deg) translateX(var(--total_width))
+      translateY(calc(0.5 * var(--top)));
+    fill: var(--lower-color);
+  }
+  85% {
+    transform: rotateZ(360deg) translateX(var(--total_width))
+      translateY(calc(0.5 * var(--top)));
+    fill: var(--lower-color);
+  }
+  95% {
+    transform: rotateZ(540deg) translateX(0rem)
+      translateY(calc(3 * var(--bottom)));
+    fill: var(--higher-color);
+  }
+  100% {
+    transform: rotateZ(540deg) translateX(0rem)
+      translateY(calc(3 * var(--bottom)));
+    fill: var(--higher-color);
+  }
+}
+
+@keyframes right {
+  0% {
+    transform: rotateZ(0deg) translateX(0rem)
+      translateY(calc(3 * var(--bottom)));
+    fill: var(--lower-color);
+  }
+  20% {
+    transform: rotateZ(0deg) translateX(0rem) translateY(calc(0.5 * var(--top)));
+  }
+  30% {
+    transform: rotateZ(0deg) translateX(0rem) translateY(calc(0.5 * var(--top)));
+  }
+  35% {
+    transform: rotateZ(0deg) translateX(0rem) translateY(calc(0.5 * var(--top)));
+    fill: var(--lower-color);
+  }
+  45% {
+    transform: rotateZ(180deg) translateX(var(--total_width))
+      translateY(calc(3 * var(--bottom)));
+    fill: var(--higher-color);
+  }
+  50% {
+    transform: rotateZ(180deg) translateX(var(--total_width))
+      translateY(calc(3 * var(--bottom)));
+    fill: var(--higher-color);
+  }
+  70% {
+    transform: rotateZ(180deg) translateX(var(--total_width))
+      translateY(calc(0.5 * var(--top)));
+  }
+  80% {
+    transform: rotateZ(180deg) translateX(var(--total_width))
+      translateY(calc(0.5 * var(--top)));
+  }
+  85% {
+    transform: rotateZ(180deg) translateX(var(--total_width))
+      translateY(calc(0.5 * var(--top)));
+    fill: var(--higher-color);
+  }
+  95% {
+    transform: rotateZ(360deg) translateX(0rem)
+      translateY(calc(3 * var(--bottom)));
+    fill: var(--lower-color);
+  }
+  100% {
+    transform: rotateZ(360deg) translateX(0rem)
+      translateY(calc(3 * var(--bottom)));
+    fill: var(--lower-color);
+  }
+}

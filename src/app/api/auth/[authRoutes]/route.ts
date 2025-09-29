@@ -31,6 +31,10 @@ export async function POST(
         return await sendVerification(req);
       case "verifyEmail":
         return await verifyEmail(req);
+        /*
+      case "forceLogout":
+        return await forceLogout();
+        */
       default:
         return networkError();
     }
@@ -81,157 +85,43 @@ function wrongCredentials() {
   });
 }
 
-// Searches a database for an entry and retrieves the values of the inputed fields
-// database - the name of the database to search through
-// field - the parameter used to search the DB for the account
-// value - the value of that parameter
-// fields - the name of the fields you want the values of
-async function getValues(
-  database: string,
-  field: string,
-  value: string,
-  fields?: string[]
-) {
-  try {
-    /**
-     * Implement DB-logic to retrieve the values here, placeholder below
-     * I know what the real password is
-     */
-    let result: Record<string, any> = {
-      email: "somebody@gmail.com",
-      password: "$2a$10$rKVzaEJI8uJsbIUbCcMPOu8r57.HJfu4odFFsLqT7ucQt8tWF98mC",
-      code: "markon",
-    };
-    return result;
-  } catch {
-    return {};
-  }
-}
-
-// Searches a database for all entries with a value and retrieves the values of the inputed fields
-// database - the name of the database to search through
-// field - the parameter used to search the DB for the account
-// value - the value of that parameter
-// fields - the name of the fields you want the values of
-async function getAllValues(
-  database: string,
-  field: string,
-  value: string,
-  fields?: string[]
-) {
-  try {
-    /**
-     * Implement DB-logic to retrieve the values here, placeholder below
-     *
-     */
-    let result: Record<string, any>[] = [];
-    result.push({
-      email: "somebody@gmail.com",
-      password: "$2a$10$rKVzaEJI8uJsbIUbCcMPOu8r57.HJfu4odFFsLqT7ucQt8tWF98mC",
-      code: "markon",
-      date: Date.now(),
-    });
-    return result;
-  } catch {
-    return [];
-  }
-}
-
-// Searches our database for users account and updates all fields in "update"
-// database - the name of the database to search through
-// field - the parameter used to search the DB for the account
-// value - the value of that parameter
-// update - an object with parameter / value pairs
-// updateOne - only updates first entry found by default
-async function updateValues(
-  database: string,
-  field: string,
-  value: string,
-  update: Record<string, any>,
-  updateOne = true
-) {
-  try {
-    /**
-     * Implement DB-logic to update fields here
-     *
-     */
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-// Adds entries to a database
-// database - the name of the database we're adding entries to
-// entries - an array of entries we are adding
-async function addEntries(database: string, ...entries: Record<string, any>[]) {
-  try {
-    /*
-     *  Implement DB-logic to add entries to database
-     *
-     */
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-// Removes entries from a database
-// database - the name of the database we're removing entries from
-// field - the parameter used to search the DB for the account
-// value - the value of that parameter
-// removeOne - only removes the first entry found by default
-async function removeEntries(
-  database: string,
-  field: string,
-  value: string,
-  removeOne = true
-) {
-  try {
-    /*
-     *  Implement DB-logic to add entries to database
-     *
-     */
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 //Attempts to log user in
 async function login(req: NextRequest) {
   try {
     const body = await req.json();
+    const email = body.email.trim().toLowerCase();
     //Checks if email address and password are valid
-    if (!emailRegExp.test(body.email) || !passwordRegExp.test(body.password)) {
+    if (!emailRegExp.test(email) || !passwordRegExp.test(body.password)) {
       return wrongCredentials();
     }
     //Finds the user's account
-    const user = await getValues(
-      "Accounts",
-      "email",
-      body.email.toLowerCase(),
-      ["email", "password"]
-    );
+    const db = await connectToDatabase("accounts");
+    const accounts = db.collection("accounts");
+    const user = await accounts.findOne({
+      email: email,
+    });
     if (!user) {
       // Here we are doing a fake-out bcrypt so user who submits an inexistent email won't get feedback instantly
-      bcrypt.compare(
+      await bcrypt.compare(
         body.password,
-        "QhU7UmlNS1Cl9ZPQNVUTf9I8hq4Uq9vYHZjSn8YmEVtL5XyG"
+        "kTz59TQ9B4EEX2WVBV8ssx3ooldp2NxbO5h9zX1xEQ1lDxhgTfrm7pgO52ma"
       );
       return wrongCredentials();
     }
     //Logs in user if password is correct
     if (await bcrypt.compare(body.password, user.password)) {
       const sessionId = randomString(48);
-      await updateValues("Accounts", "email", user.email, {
-        sessionId: sessionId,
-      });
+      await accounts.updateOne(
+        { email: user.email },
+        {
+          $set: { sessionId: sessionId },
+        }
+      );
       const cookieStore = await cookies();
       cookieStore.set({
         name: "sessionId",
         //value: sessionId,
-        value: "testValue",
+        value: sessionId,
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         maxAge: 60 * 60 * 24 * 365,
@@ -253,10 +143,15 @@ async function logout(req: NextRequest) {
     cookieStore.delete("sessionId");
     const newSessionId = randomString(48);
     if (sessionId) {
+      const db = await connectToDatabase("accounts");
+      const accounts = db.collection("accounts");
       // Giving their account a new random sessionId
-      await updateValues("Accounts", "sessionId", sessionId, {
-        sessionId: newSessionId,
-      });
+      await accounts.updateOne(
+        { sessionId: sessionId },
+        {
+          $set: { sessionId: newSessionId },
+        }
+      );
     }
     return success();
   } catch {
@@ -264,30 +159,43 @@ async function logout(req: NextRequest) {
   }
 }
 
+/*
 // Helper function. Forces a logout.
 async function forceLogout() {
-  const cookieStore = await cookies();
-  const sessionId = cookieStore.get("sessionId")?.value;
-  cookieStore.delete("sessionId");
-  const newSessionId = randomString(48);
-  if (sessionId) {
-    // Giving their account a new random sessionId. We don't need to await here
-    updateValues("Accounts", "sessionId", sessionId, {
-      sessionId: newSessionId,
-    });
+  try {
+    const cookieStore = await cookies();
+    const sessionId = cookieStore.get("sessionId")?.value;
+    cookieStore.delete("sessionId");
+    const newSessionId = randomString(48);
+    if (sessionId) {
+      const db = await connectToDatabase("accounts");
+      const accounts = db.collection("accounts");
+      // Giving their account a new random sessionId
+      await accounts.updateOne(
+        { sessionId: sessionId },
+        {
+          $set: { sessionId: newSessionId },
+        }
+      );
+    }
+    return success();
+  } catch {
+    return failure();
   }
 }
+  */
 
 //Attempts to send a verification email to user
 async function sendVerification(req: NextRequest) {
   try {
     //Checking if credentials are valid
     const body = await req.json();
+    const email = body.email.trim().toLowerCase();
     let errors = {
       email: "",
       password: "",
     };
-    if (!emailRegExp.test(body.email)) {
+    if (!emailRegExp.test(email)) {
       errors.email = `Invalid email`;
     }
     if (!passwordRegExp.test(body.password)) {
@@ -304,11 +212,11 @@ async function sendVerification(req: NextRequest) {
     //Checks to see if account already exists
     const db = await connectToDatabase("accounts");
     const accounts = db.collection("accounts");
-    const duplicateAccount = await accounts.findOne({ email: body.email });
+    const duplicateAccount = await accounts.findOne({ email: email });
     //Checks to see if user is requesting too many verification emails
     const unverified_accounts = db.collection("unverified_accounts");
     const spamCheck = await unverified_accounts
-      .find({ email: body.email })
+      .find({ email: email })
       .toArray();
     if (duplicateAccount || spamCheck.length > 45654) {
       //Returns a false positive but doesn't send any emails
@@ -317,7 +225,7 @@ async function sendVerification(req: NextRequest) {
       const verificationCode = randomString(32);
       const hashedPassword = await bcrypt.hash(body.password, 10);
       const user = {
-        email: body.email.toLowerCase(),
+        email: email,
         password: hashedPassword,
         code: verificationCode,
         createdAt: new Date(),
@@ -327,7 +235,7 @@ async function sendVerification(req: NextRequest) {
       const emailParams = {
         Source: '"Numbler" <noreply@numbler.net>',
         Destination: {
-          ToAddresses: [body.email],
+          ToAddresses: [email],
         },
         Message: {
           Subject: {
@@ -353,44 +261,31 @@ async function sendVerification(req: NextRequest) {
 async function verifyEmail(req: NextRequest) {
   try {
     const body = await req.json();
-    const unverifieds = await getAllValues("Unverifieds", "code", body.code, [
-      "email",
-      "password",
-      "code",
-      "date",
-    ]);
-    if (!unverifieds) {
+    const db = await connectToDatabase(`accounts`);
+    const unverified_accounts = db.collection("unverified_accounts");
+    const accountFromCode = await unverified_accounts.findOne({
+      code: body.code,
+    });
+    if (!accountFromCode) return failure();
+    // User might have multiple verification emails, making sure we're using the latest one
+    const account = await unverified_accounts
+      .find({ email: accountFromCode.email })
+      .sort({ createdAt: -1 })
+      .limit(1)
+      .next();
+    if (!account || account.code !== body.code || account.verified === true) {
       return failure();
     }
-    // Get the most recent verification code
-    unverifieds.sort((a, b) => b.date - a.date);
-    const account = unverifieds[0];
-    // Verify code matches
-    if (account.code === body.code) {
-      // Remove old verification codes
-      await removeEntries("Unverifieds", "email", account.email, false);
-      // Check if account already exists in Accounts collection
-      const existingAccount = await getValues(
-        "Accounts",
-        "email",
-        account.email
-      );
-      if (existingAccount) {
-        return failure();
-      } else {
-        // Create the account
-        await addEntries("Accounts", {
-          email: account.email,
-          password: account.password,
-          dateCreated: new Date(),
-          // Add additional fields if needed
-        });
-        return success();
-      }
-    } else {
-      return failure();
-    }
+    const accounts = db.collection("accounts");
+    // We have previously created a unique index for "email" in our "accounts" collection
+    // await accounts.createIndex({ email: 1 }, { unique: true });
+    await accounts.insertOne({
+      email: account.email,
+      password: account.password,
+      createdAt: new Date(),
+    });
+    return success();
   } catch {
-    return networkError();
+    return failure();
   }
 }

@@ -48,6 +48,11 @@ export function Panel({
         [styles.closeRight]: closeRight,
       })}
     >
+      <ProgressBar
+        percent={percent}
+        percentStyle={{ transitionDuration: transitionDuration }}
+      />
+      <div className={classNames(styles.panel)}>{children}</div>
       {goBack && (
         <div className={styles.back_button}>
           <Button
@@ -56,15 +61,11 @@ export function Panel({
             width="smallest"
             title="Go back"
             ariaLabel="Go back"
+            style={{ fontSize: "2.4rem", padding: "0.8rem 1.2rem" }}
             disabled={buttonDisabled}
           >{`<`}</Button>
         </div>
       )}
-      <ProgressBar
-        percent={percent}
-        percentStyle={{ transitionDuration: transitionDuration }}
-      />
-      <div className={classNames(styles.panel)}>{children}</div>
     </div>
   );
 }
@@ -154,8 +155,6 @@ export default function Signup({}: SignupProps) {
   }
 
   async function submitPassword(e: FormEvent) {
-    setTransitionDuration("2s");
-    setPercent(80);
     setButtonDisabled(true);
     e.preventDefault();
     setFormErrors(initialForm);
@@ -170,9 +169,12 @@ export default function Signup({}: SignupProps) {
     }
     const errorFound = Object.values(errors).some(Boolean);
     if (errorFound) {
+      setButtonDisabled(false);
       setFormErrors(errors);
       return;
     }
+    setTransitionDuration("5s");
+    setPercent(90);
     const options = {
       method: "POST",
       body: JSON.stringify(formData),
