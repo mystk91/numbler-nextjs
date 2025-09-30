@@ -6,15 +6,16 @@ import styles from "./passwordReset.module.css";
 import classNames from "classnames";
 import { useRouter } from "next/navigation";
 import InputWrapper from "@/app/components/inputs/Text Input Wrapper - Trendy/input_wrapper";
+import ArrowLoader from "@/app/components/loaders/arrow_loader";
 import Button from "@/app/components/buttons/Button Set/button";
 
-interface PasswordReset {
+interface PasswordResetProps {
   style?: React.CSSProperties;
 }
 
-export default function PasswordReset({ style }: widthProps) {
+export default function PasswordReset({ style }: PasswordResetProps) {
   //URLS
-  const resetUrl = "/api/auth/passwordReset";
+  const resetUrl = "/api/auth/sendPasswordReset";
   // Used to give focus to the form input on load
 
   const inputReference = useRef<HTMLInputElement | null>(null);
@@ -24,9 +25,8 @@ export default function PasswordReset({ style }: widthProps) {
     }
   }, []);
 
-  const router = useRouter();
-
   const [emailSent, setEmailSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // State for form data and errors
   const form = {
@@ -41,15 +41,16 @@ export default function PasswordReset({ style }: widthProps) {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   }
-  // Handle login submission
+  // Handle form submission
   async function resetPassword(e: React.FormEvent) {
     e.preventDefault();
     setButtonDisabled(true);
     setFormErrors(form);
     if (validate()) {
+      setLoading(true);
       try {
         const options = {
-          method: "PUT",
+          method: "POST",
           body: JSON.stringify(formData),
           headers: { "Content-Type": "application/json" },
         };
@@ -62,13 +63,17 @@ export default function PasswordReset({ style }: widthProps) {
         setFormErrors({
           email: ``,
         });
+        setLoading(false);
         setEmailSent(true);
       } catch {
         let errors = { ...form };
         errors.email = `Something went wrong. Try again soon.`;
         setFormErrors(errors);
         setButtonDisabled(false);
+        setLoading(false);
       }
+    } else {
+      setButtonDisabled(false);
     }
   }
 
@@ -86,7 +91,9 @@ export default function PasswordReset({ style }: widthProps) {
     } else return true;
   }
 
-  return emailSent ? (
+  return loading ? (
+    <ArrowLoader />
+  ) : emailSent ? (
     <div
       className={styles.reset_container}
       aria-label="Password Sent Message"
@@ -94,15 +101,7 @@ export default function PasswordReset({ style }: widthProps) {
     >
       <div
         className={styles.message}
-      >{`We've sent a password reset link to your email if it's associated with an account.`}</div>
-      <Button
-        variant="primary"
-        width="full"
-        style={{ width: "80%" }}
-        onClick={() => router.push("/login")}
-      >
-        {`Go to Login`}
-      </Button>
+      >{`We've sent a password reset link to your email.`}</div>
     </div>
   ) : (
     <div

@@ -35,3 +35,28 @@ export const verification_email = (verificationCode: string) => {
     </div>
   `;
 };
+
+export const password_email = (verificationCode: string) => {
+  return `
+    <div style="${email_styles.body}">
+      <h2 style="${email_styles.headline}">
+        Numbler Password Reset
+      </h2>
+      <p style="${email_styles.paragraph}">
+        You have requested a password reset. Click the button below to reset your password.
+      </p>
+
+      <div style="text-align: center; margin: 16px 0 20px;">
+        <a
+          href="${process.env.NEXT_PUBLIC_PROTOCOL}${process.env.NEXT_PUBLIC_DOMAIN}/change-password/${verificationCode}"
+          style="${email_styles.button}"
+        >
+          Reset Password
+        </a>
+      </div>
+      <p style="${email_styles.footnote}">
+        This link expires in 24 hours.
+      </p>
+    </div>
+  `;
+};

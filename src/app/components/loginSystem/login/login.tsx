@@ -54,7 +54,6 @@ export default function Login({ style }: LoginProps) {
         };
         const res = await fetch(loginURL, options);
         const data = await res.json();
-        //console.log(dataLogin);
         if (!data.errors) {
           setFormErrors({
             email: ``,

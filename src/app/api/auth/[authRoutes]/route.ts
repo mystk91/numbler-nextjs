@@ -5,7 +5,10 @@ import { cookies } from "next/headers";
 import { randomString } from "@/app/lib/randomString";
 import { connectToDatabase } from "@/app/lib/mongodb";
 import { SES, SendEmailCommand } from "@aws-sdk/client-ses";
-import { verification_email } from "@/app/lib/emails/account_emails";
+import {
+  verification_email,
+  password_email,
+} from "@/app/lib/emails/account_emails";
 
 const ses = new SES({
   region: "us-east-1",
@@ -31,7 +34,13 @@ export async function POST(
         return await sendVerification(req);
       case "verifyEmail":
         return await verifyEmail(req);
-        /*
+      case "sendPasswordReset":
+        return await sendPasswordReset(req);
+      case "checkPasswordCode":
+        return await checkPasswordCode(req);
+      case "changePassword":
+        return await changePassword(req);
+      /*
       case "forceLogout":
         return await forceLogout();
         */
@@ -155,7 +164,7 @@ async function logout(req: NextRequest) {
     }
     return success();
   } catch {
-    return failure();
+    return networkError();
   }
 }
 
@@ -218,7 +227,7 @@ async function sendVerification(req: NextRequest) {
     const spamCheck = await unverified_accounts
       .find({ email: email })
       .toArray();
-    if (duplicateAccount || spamCheck.length > 45654) {
+    if (duplicateAccount || spamCheck.length > 4) {
       //Returns a false positive but doesn't send any emails
       return success();
     } else {
@@ -287,5 +296,127 @@ async function verifyEmail(req: NextRequest) {
     return success();
   } catch {
     return failure();
+  }
+}
+
+// Sends a password reset email to a user and creates a temporary db entry for it
+async function sendPasswordReset(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const email = body.email.trim().toLowerCase();
+    if (!emailRegExp.test(email)) return wrongCredentials();
+    const db = await connectToDatabase("accounts");
+    const resets = db.collection("password_resets");
+    const accounts = db.collection("accounts");
+    const account = await accounts.findOne({ email: email });
+    const spamCheck = await resets.find({ email: email }).toArray();
+    if (spamCheck.length > 4 || !account) {
+      // We await for a random timeout here to prevent timing attacks
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.floor(Math.random() * 1500) + 300)
+      );
+      return success();
+    }
+    const verificationCode = randomString(32);
+    await resets.insertOne({
+      email: email,
+      code: verificationCode,
+      createdAt: new Date(),
+    });
+    await accounts.updateOne(
+      { email: email },
+      { $set: { passwordCode: verificationCode } }
+    );
+    const emailParams = {
+      Source: '"Numbler" <noreply@numbler.net>',
+      Destination: {
+        ToAddresses: [email],
+      },
+      Message: {
+        Subject: {
+          Data: "Numbler Password Reset",
+        },
+        Body: {
+          Html: {
+            Data: password_email(verificationCode),
+          },
+        },
+      },
+    };
+    const command = new SendEmailCommand(emailParams);
+    await ses.send(command);
+    return success();
+  } catch {
+    return networkError();
+  }
+}
+
+// Verifies the user has a valid code when they visit /change-password/[code]
+async function checkPasswordCode(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const db = await connectToDatabase(`accounts`);
+    const password_resets = db.collection("password_resets");
+    const resetRecord = await password_resets.findOne({
+      code: body.code,
+    });
+    if (!resetRecord) return failure();
+    // User might have multiple password resets, making sure we're using the latest one
+    const latestRecord = await password_resets
+      .find({ email: resetRecord.email })
+      .sort({ createdAt: -1 })
+      .limit(1)
+      .next();
+    if (!latestRecord || latestRecord.code !== body.code) {
+      return failure();
+    }
+    //Checking that the verification code matches the one in their account
+    const accounts = db.collection("accounts");
+    const account = await accounts.findOne({ passwordCode: body.code });
+    if (!account) return failure();
+    return success();
+  } catch {
+    return failure();
+  }
+}
+
+// Changes the users password
+async function changePassword(req: NextRequest) {
+  try {
+    const body = await req.json();
+    //Checking if credentials are valid
+    let errors = {
+      password: "",
+    };
+    if (!passwordRegExp.test(body.password)) {
+      errors.password = `Make your password stronger`;
+    } else if (body.password !== body.verify_password) {
+      errors.password = `Passwords do not match`;
+    }
+    const errorFound = Object.values(errors).some(Boolean);
+    if (errorFound) {
+      return NextResponse.json({
+        errors: errors,
+      });
+    }
+    if (!body.code) return networkErrorPassword();
+    // Updating their password
+    const hashedPassword = await bcrypt.hash(body.password, 10);
+    const db = await connectToDatabase("accounts");
+    const accounts = db.collection("accounts");
+    const result = await accounts.findOneAndUpdate(
+      { passwordCode: body.code },
+      { $set: { password: hashedPassword }, $unset: { passwordCode: "" } }
+    );
+    if (!result) {
+      return NextResponse.json({
+        errors: {
+          alreadyChanged: true,
+        },
+      });
+    }
+    return success();
+  } catch {
+    return networkErrorPassword();
   }
 }
