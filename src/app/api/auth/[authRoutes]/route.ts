@@ -313,7 +313,7 @@ async function sendPasswordReset(req: NextRequest) {
     if (spamCheck.length > 4 || !account) {
       // We await for a random timeout here to prevent timing attacks
       await new Promise((resolve) =>
-        setTimeout(resolve, Math.floor(Math.random() * 1500) + 300)
+        setTimeout(resolve, Math.floor(Math.random() * 1500) + 800)
       );
       return success();
     }

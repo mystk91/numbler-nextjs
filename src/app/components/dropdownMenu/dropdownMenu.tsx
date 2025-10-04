@@ -41,12 +41,15 @@ export type Item = LinkItem | ActionItem | Decoration;
  * */
 interface MenuItemProps {
   item: Item;
-  itemRef: React.RefObject<HTMLLIElement | null>;
+  itemRef: React.RefObject<HTMLElement | null>;
   onClose: () => void;
   onCloseAndFocus: () => void;
   isParentClosing?: boolean;
   index: number;
-  siblings?: React.RefObject<HTMLLIElement | null>[];
+  siblings?: Array<
+    | React.RefObject<HTMLLIElement | null>
+    | React.RefObject<HTMLAnchorElement | null>
+  >;
   direction?: "right" | "left";
   parentRef?: React.RefObject<HTMLElement | null>;
 }
@@ -99,7 +102,9 @@ export function Item({
     }
   }
 
-  function handleKeydownAction(e: React.KeyboardEvent<HTMLLIElement>) {
+  function handleKeydownItem(
+    e: React.KeyboardEvent<HTMLLIElement | HTMLAnchorElement>
+  ) {
     if (
       e.key === "ArrowUp" ||
       e.key === "ArrowRight" ||
@@ -143,76 +148,24 @@ export function Item({
     }
   }
 
-  function handleKeydownLink(
-    e: React.KeyboardEvent<HTMLLIElement>,
-    href: string
-  ) {
-    if (
-      e.key === "ArrowUp" ||
-      e.key === "ArrowRight" ||
-      e.key === "ArrowDown" ||
-      e.key === "ArrowLeft"
-    ) {
-      e.preventDefault();
-    }
-    e.stopPropagation();
-    switch (e.key) {
-      case "ArrowDown": {
-        if (siblings && index + 1 < siblings.length) {
-          setIsActive(false);
-          siblings[index + 1].current?.focus();
-        }
-        break;
-      }
-      case "ArrowUp": {
-        if (index > 0 && siblings) {
-          setIsActive(false);
-          siblings[index - 1].current?.focus();
-        }
-        break;
-      }
-      case "Enter": {
-        onClose();
-        router.push(href);
-        break;
-      }
-      case " ": {
-        onClose();
-        router.push(href);
-        break;
-      }
-      case "Escape": {
-        onCloseAndFocus();
-        break;
-      }
-      case "Backspace": {
-        onCloseAndFocus();
-        break;
-      }
-      default: {
-      }
-    }
-  }
-
   // Renders the item
   switch (item.type) {
     case "link":
       return (
-        <li
-          tabIndex={0}
-          onMouseEnter={() => !isParentClosing && handleMouseEnter()}
-          onMouseLeave={handleMouseLeave}
-          onBlur={() => setTimeout(handleBlur, 0)}
-          onKeyDown={(e) => handleKeydownLink(e, item.href)}
-          ref={itemRef}
-          role="menuitem"
-          aria-label={`Click or press Enter to go to "${item.label}"`}
-          onClick={() => {
-            onClose();
-          }}
-          className={classNames({ [styles.active]: isActive })}
-        >
-          <Link href={item.href} tabIndex={-1}>
+        <li className={classNames({ [styles.active]: isActive })}>
+          <Link
+            tabIndex={0}
+            onMouseEnter={() => !isParentClosing && handleMouseEnter()}
+            onMouseLeave={handleMouseLeave}
+            onBlur={() => setTimeout(handleBlur, 0)}
+            onKeyDown={handleKeydownItem}
+            ref={itemRef as React.RefObject<HTMLAnchorElement>}
+            role="menuitem"
+            onClick={() => {
+              onClose();
+            }}
+            href={item.href}
+          >
             {item.label}
           </Link>
         </li>
@@ -228,13 +181,13 @@ export function Item({
         <li
           role="menuitem"
           tabIndex={0}
-          ref={itemRef}
+          ref={itemRef as React.RefObject<HTMLLIElement>}
           onMouseEnter={() => !isParentClosing && itemRef.current?.focus()}
           onClick={() => {
             item.onClick();
             onClose();
           }}
-          onKeyDown={handleKeydownAction}
+          onKeyDown={handleKeydownItem}
         >
           <div className={styles.li_content_wrapper}>
             <div className={styles.label}>{item.label}</div>
@@ -374,14 +327,31 @@ export default function DropdownMenu({
     .map((item, i) => (item.type !== "decoration" ? i : null))
     .filter((i): i is number => i !== null);
 
-  const itemRefs = useRef<Array<React.RefObject<HTMLLIElement | null>>>([]);
+  const itemRefs = useRef<
+    Array<
+      | React.RefObject<HTMLLIElement | null>
+      | React.RefObject<HTMLAnchorElement | null>
+    >
+  >([]);
 
   // Update itemRefs when actionableIndexes changes
   useEffect(() => {
-    itemRefs.current = actionableIndexes.map(() =>
-      React.createRef<HTMLLIElement>()
-    );
-  }, [actionableIndexes.length]);
+    itemRefs.current = menu
+      .map((item) =>
+        item.type === "link"
+          ? React.createRef<HTMLAnchorElement>()
+          : item.type === "action"
+          ? React.createRef<HTMLLIElement>()
+          : null
+      )
+      .filter(
+        (
+          ref
+        ): ref is
+          | React.RefObject<HTMLLIElement | null>
+          | React.RefObject<HTMLAnchorElement | null> => ref !== null
+      );
+  }, [menu]);
 
   function handleButtonKeydown(e: React.KeyboardEvent<HTMLButtonElement>) {
     if (menuOpen) {

@@ -23,6 +23,7 @@ import { createToast } from "@/app/components/toasts/createToast";
 import InvalidGuess from "@/app/components/toasts/invalidGuessToast";
 import { toast } from "react-toastify";
 import { descramble } from "@/app/lib/descramble";
+import { timeToNextGame } from "@/app/lib/timeToNextGame";
 
 type Digits = 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -30,7 +31,7 @@ interface GameProps {
   digits: Digits;
 }
 
-type GameData = {
+export type GameData = {
   values: Value[][];
   hints: Color[][];
   currentRow: number;
@@ -79,6 +80,10 @@ export default function Game({ digits }: GameProps) {
   const scores = useRef<number[]>([]);
   const checkingGuess = useRef(false);
   const [focusEnter, setFocusEnter] = useState(false);
+  // Used to change the Enter key when the game is over to different functions
+  const [enterKeyText, setEnterKeyText] = useState("Enter");
+  const enterKeyFunction = useRef(handleEnterKey);
+  // Tells us that we have a logged in user
   const user = useUser();
 
   // Returns an object with all the data in the current game
@@ -98,23 +103,50 @@ export default function Game({ digits }: GameProps) {
   useEffect(() => {
     initializeGame();
     window.addEventListener("focus", windowFocus);
-    window.addEventListener("blur", windowBlur);
+    window.addEventListener("blur", () => updateUserGame());
+    window.addEventListener("beforeunload", () => updateUserGame());
+
     return () => {
       window.removeEventListener("focus", windowFocus);
-      window.removeEventListener("blur", windowBlur);
+      window.removeEventListener("blur", () => updateUserGame());
+      window.removeEventListener("beforeunload", () => updateUserGame());
     };
   }, []);
 
   // Re-initalizes the game when user swaps windows
   async function windowFocus() {
-    checkingGuess.current = true;
-    await initializeGame();
-    checkingGuess.current = false;
+    if (gameStatus.current === "playing") {
+      checkingGuess.current = true;
+      await initializeGame();
+      checkingGuess.current = false;
+    }
   }
 
-  // Here we could record a logged in users game when they swap windows
-  function windowBlur() {
-    if (user) {
+  // Updates the game on the backend for logged in users
+  // We use "if (user)"" to either do this or handle data with localStorage
+  // We need to input the score when the game ends
+  async function updateGame(score?: number) {
+    try {
+      const res = await fetch("/api/game/updateGame", {
+        method: "POST",
+        body: JSON.stringify({
+          digits: digits,
+          score: score,
+          game: getGameData(),
+        }),
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      if (data.error && data.logout) {
+        forceLogout();
+      }
+    } catch {}
+  }
+
+  // Wrapper function for updateGame that checks if we have a user first - used in events
+  async function updateUserGame(score?: number) {
+    if (user && gameStatus.current === "playing") {
+      await updateGame(score);
     }
   }
 
@@ -124,7 +156,7 @@ export default function Game({ digits }: GameProps) {
     let game: GameData | null = null;
     let scoresArr: number[] = [];
     let shouldFetch = true;
-    const body: { digits: number; session?: string; game?: GameData } = {
+    const body: { digits: number; game?: GameData } = {
       digits: digits,
     };
     if (!user) {
@@ -176,6 +208,7 @@ export default function Game({ digits }: GameProps) {
       } else {
         updateKeyColors(currentRow.current);
       }
+      checkingGuess.current = false;
       createGameboard();
     }
   }
@@ -460,17 +493,8 @@ export default function Game({ digits }: GameProps) {
       const score =
         gameStatus.current === "victory" ? currentRow.current + 1 : 7;
       scores.current.push(score);
-      const body: {
-        digits: number;
-        score: number;
-        session?: string;
-        game?: GameData;
-      } = {
-        digits: digits,
-        score: score,
-      };
       if (user) {
-        body.game = getGameData();
+        await updateGame(score);
       } else {
         localStorage.setItem("digits" + digits, JSON.stringify(getGameData()));
         localStorage.setItem("scores" + digits, JSON.stringify(scores.current));
@@ -478,16 +502,21 @@ export default function Game({ digits }: GameProps) {
       setTimeout(() => {
         setShowEndPanel(true);
       }, delay + delayIncrement * digits - 200);
-      // We can have the fetch at the end as its just updating backend data
+      // Checks for new game and updates statistics
       try {
         const res = await fetch("/api/game/finishGame", {
           method: "POST",
-          body: JSON.stringify(body),
+          body: JSON.stringify({
+            digits: digits,
+            score: score,
+            gameId: gameId.current,
+          }),
           headers: { "Content-Type": "application/json" },
         });
         const data = await res.json();
-        if (data.error && data.logout) {
-          forceLogout();
+        // We will change the button and its function
+        if (data.newGame === "true") {
+        } else {
         }
       } catch {}
     } else {
@@ -517,20 +546,7 @@ export default function Game({ digits }: GameProps) {
       checkingGuess.current = false;
       // We update the user's game on the backend here
       if (user) {
-        try {
-          const res = await fetch("/api/game/updateGame", {
-            method: "POST",
-            body: JSON.stringify({
-              digits: digits,
-              game: getGameData(),
-            }),
-            headers: { "Content-Type": "application/json" },
-          });
-          const data = await res.json();
-          if (data.error && data.logout) {
-            forceLogout();
-          }
-        } catch {}
+        await updateGame();
       } else {
         localStorage.setItem("digits" + digits, JSON.stringify(getGameData()));
       }
@@ -609,6 +625,7 @@ export default function Game({ digits }: GameProps) {
         <Gameboard rows={gameboard} />
         <Keyboard
           keyColors={keyColors}
+          enterKeyText={enterKeyText}
           keyFunctions={{
             "0": () => handleNumberKey(0),
             "1": () => handleNumberKey(1),
@@ -620,7 +637,9 @@ export default function Game({ digits }: GameProps) {
             "7": () => handleNumberKey(7),
             "8": () => handleNumberKey(8),
             "9": () => handleNumberKey(9),
-            Enter: () => handleEnterKey(),
+            Enter: () => {
+              enterKeyFunction.current();
+            },
             Backspace: () => handleBackspaceKey(),
           }}
           focusEnter={focusEnter}

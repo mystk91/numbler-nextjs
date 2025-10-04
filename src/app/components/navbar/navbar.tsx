@@ -123,7 +123,7 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
                     style={{
                       borderColor: "var(--grey-text)",
                       backgroundColor:
-                        n === digits ? "rgb(80, 80, 80)" : "var(--lower-color)",
+                        n === digits ? "var(--green)" : "var(--lower-color)",
                       minHeight: "4.8rem",
                     }}
                     ariaLabel={`Go to the ${n} digit mode of Numbler`}

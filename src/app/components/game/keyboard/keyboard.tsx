@@ -37,6 +37,7 @@ export type KeyFunctions = {
 interface KeyboardProps {
   keyColors: KeyColors;
   keyFunctions: KeyFunctions;
+  enterKeyText?: string;
   focusEnter?: boolean; // If true, the Enter key will get focused
 }
 
@@ -62,6 +63,7 @@ export function useKeyColors() {
 export default function Keyboard({
   keyColors,
   keyFunctions,
+  enterKeyText = "Enter",
   focusEnter = false,
 }: KeyboardProps) {
   const keyboardRef = useRef<HTMLDivElement>(null);
@@ -301,7 +303,7 @@ export default function Keyboard({
           ariaLabel="Enter a guess!"
           keyType="enter"
           tabIndex={1}
-        >{`Enter`}</KeyboardButton>
+        >{enterKeyText}</KeyboardButton>
         <KeyboardButton
           backgroundColor="none"
           width={"smallest"}

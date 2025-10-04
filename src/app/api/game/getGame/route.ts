@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { Color, Value } from "@/app/components/game/rectangle/rectangle";
 import { connectToDatabase } from "@/app/lib/mongodb";
+import { cookies } from "next/headers";
 
-//Creates a new game with an empty board
-async function createNewGame(digits: number) {
+// Returns today's game
+async function getTodaysGame(digits: number) {
   try {
     const valuesArr = [];
     const hintsArr = [];
@@ -44,32 +45,62 @@ async function createNewGame(digits: number) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    if (body.user && body.user.session) {
+    const digits = Math.max(2, Number(body.digits));
+    const todaysGame = await getTodaysGame(digits);
+    if (!todaysGame) {
+      throw new Error(`Game not found`);
+    }
+    const cookieStore = await cookies();
+    const sessionId = cookieStore.get("sessionId")?.value;
+    if (sessionId) {
       // Here we will retrieve users current game from their account
       // If they have an old game, we will send them that
       // Otherwise we will send them today's puzzle
-      try {
-      } catch {
+      const accountsDb = await connectToDatabase("accounts");
+      const accounts = accountsDb.collection("accounts");
+      const account = await accounts.findOne({ sessionId: sessionId });
+      if (!account) throw new Error("Invalid credentials");
+      const currentGame = account[`${digits}digits`];
+      if (!currentGame) {
+        await accounts.updateOne(
+          { sessionId: sessionId },
+          { $set: { [`${digits}digits`]: todaysGame } }
+        );
         return NextResponse.json({
-          error: "Invalid credentials",
-          logout: true, //Indicates user may not be logged in anymore and we should force a logout
+          game: todaysGame,
+          scores: account[`${digits}scores`],
         });
       }
+      if (
+        currentGame.gameId === todaysGame.gameId ||
+        currentGame.gameStatus === "playing"
+      ) {
+        return NextResponse.json({
+          game: currentGame,
+          scores: account[`${digits}scores`],
+        });
+      }
+      return NextResponse.json({
+        game: todaysGame,
+        scores: account[`${digits}scores`],
+      });
     } else {
       // LocalStorage version
-      // If the user's current game is the latest daily game, we need to simply return what they sent us
-
-
-      
-      // Here we are mocking retreiving a new daily game
-      const digits = Math.max(2, Number(body.digits));
-      const game = await createNewGame(digits);
-      if (!game) {
-        throw new Error(`Game not found`);
+      // We just need to send today's new game if they don't have it already
+      if (body.game.gameId === todaysGame.gameId) {
+        // They do have today's game already, so we send their game back to them
+        return NextResponse.json({ game: body.game });
       }
-      return NextResponse.json({ game: game });
+      return NextResponse.json({ game: todaysGame });
     }
-  } catch {
-    return NextResponse.json({ error: "Something went wrong" });
+  } catch (error) {
+    if (error === "Invalid credentials") {
+      return NextResponse.json({
+        error: "Invalid credentials",
+        logout: true, //Indicates user may not be logged in anymore and we should force a logout
+      });
+    } else {
+      return NextResponse.json({ error: "Something went wrong" });
+    }
   }
 }

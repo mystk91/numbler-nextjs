@@ -1,23 +1,38 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { Color, Value } from "@/app/components/game/rectangle/rectangle";
+import { connectToDatabase } from "@/app/lib/mongodb";
+import zod from "zod";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    // If the user is logged in, we will update their account's game data
-    if (body.user && body.user.session) {
-      try {
-        //Update their account here
-      } catch {
-        return NextResponse.json({
-          error: "Invalid credentials",
-          logout: true, //Indicates user may not be logged in anymore and we should force a logout
-        });
-      }
+    const DigitsSchema = zod.number().int().min(2).max(7);
+    const ScoreScheme = zod.number().int().min(1).max(7);
+    const GameIdSchema = zod.string().max(20);
+    if (
+      !DigitsSchema.safeParse(body.digits) ||
+      !ScoreScheme.safeParse(body.score) ||
+      !GameIdSchema.safeParse(body.gameId)
+    ) {
+      throw new Error();
     }
-    // Here we will update the global stats
-    return NextResponse.json({ success: true });
+    const daily_games_db = await connectToDatabase("daily_games");
+    const daily_games = daily_games_db.collection("daily_games");
+    const todaysGame = await daily_games.findOne({ gameId: body.gameId });
+    const analytics = await connectToDatabase("analytics");
+    const game_stats = analytics.collection("game_stats");
+    const result = await game_stats.updateOne(
+      { digits: body.digits },
+      { $push: { scores: body.score } }
+    );
+    if (result.matchedCount === 0) {
+      game_stats.insertOne({ digits: body.digits, scores: [body.score] });
+    }
+    if (todaysGame && todaysGame.gameId === body.gameId) {
+      return NextResponse.json({ newGame: false });
+    } else {
+      return NextResponse.json({ newGame: true });
+    }
   } catch {
     return NextResponse.json({ error: "Something went wrong" });
   }

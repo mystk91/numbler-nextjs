@@ -6,11 +6,12 @@ import { connectToDatabase } from "./mongodb";
 //if (process.env.NODE_ENV === 'production') {
 if (process.env.NODE_ENV === "development") {
   const updateGames = cron.schedule(
-    `0 0 * * *`,
-    //"*/2 * * * *",
+    //`0 0 * * *`,
+    "*/2 * * * *",
     async () => {
       const db = await connectToDatabase(`daily_games`);
       let dailyGames = db.collection(`daily_games`);
+      console.log(`running at` + new Date());
       let date = new Date().toLocaleString("en-US", {
         timeZone: "America/New_York",
       });
@@ -72,7 +73,13 @@ if (process.env.NODE_ENV === "development") {
   );
   updateGames.start();
 
+  // Calculates the stats of averages of daily games once a game
+  const calculateStats = cron.schedule(`0 3 * * *`, async () => {
+
+  });
+
   // Sets all inactive accounts to "status: inactive" every day if they've been inactive for 48 hours
+  // We could implement this system later if we wanted
   const manageInactiveAccounts = cron.schedule(
     `0 3 * * *`,
     async () => {
