@@ -20,13 +20,16 @@ export async function POST(req: NextRequest) {
     const daily_games = daily_games_db.collection("daily_games");
     const todaysGame = await daily_games.findOne({ gameId: body.gameId });
     const analytics = await connectToDatabase("analytics");
-    const game_stats = analytics.collection("game_stats");
-    const result = await game_stats.updateOne(
-      { digits: body.digits },
-      { $push: { scores: body.score } }
-    );
+    const game_stats = analytics.collection<Record<string, any>>("game_stats");
+
+    const result = await game_stats.updateOne({ digits: body.digits }, {
+      $push: { scores: { score: body.score, createdAt: new Date() } },
+    } as any);
     if (result.matchedCount === 0) {
-      game_stats.insertOne({ digits: body.digits, scores: [body.score] });
+      game_stats.insertOne({
+        digits: body.digits,
+        scores: [{ score: body.score, createdAt: new Date() }],
+      });
     }
     if (todaysGame && todaysGame.gameId === body.gameId) {
       return NextResponse.json({ newGame: false });

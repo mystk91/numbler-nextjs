@@ -10,9 +10,5 @@ import { useRef } from "react";
 export default function Page() {
   const containerRef = useRef<null | HTMLDivElement>(null);
 
-  return (
-    <div className={styles.page} ref={containerRef}>
-      <Game digits={4} />
-    </div>
-  );
+  return <Game digits={4} />;
 }

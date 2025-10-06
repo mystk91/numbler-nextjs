@@ -1,6 +1,6 @@
 //Returns a message telling how much time until the next game will be available
 //This appears on the button at the bottom once game ends
-export function timeToNextGame(digits: number) {
+export function timeToNextGame() {
   let date = new Date().toLocaleString("en-US", {
     timeZone: "America/New_York",
   });
@@ -11,9 +11,9 @@ export function timeToNextGame(digits: number) {
   );
   let message;
   if (timeToNextGame <= 1) {
-    message = `New [${digits}] Soon`;
+    message = `New Puzzle Soon`;
   } else {
-    message = `New [${digits}] in ${timeToNextGame} hours`;
+    message = `New Puzzle in ${timeToNextGame} Hours`;
   }
   return message;
 }

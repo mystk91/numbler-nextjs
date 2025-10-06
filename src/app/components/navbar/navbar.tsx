@@ -62,7 +62,7 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
         },
       ]
     : [];
-  const [initalized, setInitialized] = useState(true);
+  const [initalized, setInitialized] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
   const [mobileSize, setMobileSize] = useState(false);

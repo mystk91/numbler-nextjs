@@ -6,6 +6,7 @@ import styles from "./keyboard.module.css";
 import classNames from "classnames";
 import KeyboardButton from "@/app/components/buttons/keyboardButton/keyboardButton";
 import Backspace from "@/app/components/icons/backspace";
+import { timeToNextGame } from "@/app/lib/timeToNextGame";
 
 //The color the keys will be
 type KeyColor = "none" | "grey" | "yellow" | "green";
@@ -22,6 +23,9 @@ const keyList = [
   "9",
   "Enter",
   "Backspace",
+  "Reset",
+  "Countdown",
+  "Scores",
 ] as const;
 export type Keys = (typeof keyList)[number];
 export type KeyColors = {
@@ -37,8 +41,9 @@ export type KeyFunctions = {
 interface KeyboardProps {
   keyColors: KeyColors;
   keyFunctions: KeyFunctions;
-  enterKeyText?: string;
   focusEnter?: boolean; // If true, the Enter key will get focused
+  enterButton?: "Enter" | "Reset" | "Countdown";
+  showScoresButton?: boolean;
 }
 
 // A hook used by the game component to control the key colors
@@ -56,6 +61,9 @@ export function useKeyColors() {
     9: "none",
     Enter: "none",
     Backspace: "none",
+    Reset: "none",
+    Countdown: "none",
+    Scores: "none",
   });
   return { keyColors, setKeyColors };
 }
@@ -63,8 +71,9 @@ export function useKeyColors() {
 export default function Keyboard({
   keyColors,
   keyFunctions,
-  enterKeyText = "Enter",
   focusEnter = false,
+  enterButton = "Enter",
+  showScoresButton = false,
 }: KeyboardProps) {
   const keyboardRef = useRef<HTMLDivElement>(null);
   const buttonRefs = useRef<Record<Keys, HTMLButtonElement | null>>({
@@ -81,6 +90,7 @@ export default function Keyboard({
     Enter: null,
     Backspace: null,
   });
+  const [resetKeyPressToken, setResetKeyPressToken] = useState(undefined);
 
   //Used to create a navigation map on the keyboard from pressing directional arrows
   const navigationMap: Record<
@@ -98,6 +108,7 @@ export default function Keyboard({
     "9": { ArrowLeft: "8", ArrowRight: "0", ArrowDown: "Backspace" },
     "0": { ArrowLeft: "9", ArrowDown: "Backspace" },
     Enter: { ArrowLeft: "1", ArrowUp: "5", ArrowRight: "Backspace" },
+    Reset: { ArrowLeft: "1", ArrowUp: "5", ArrowRight: "Backspace" },
     Backspace: { ArrowLeft: "Enter", ArrowUp: "8", ArrowRight: "0" },
   };
   //Focuses an adjacent key when user hits directional arrow
@@ -142,13 +153,17 @@ export default function Keyboard({
     9: 0,
     Enter: 0,
     Backspace: 0,
+    Countdown: 0,
+    Reset: 0,
+    Scores: 0,
   });
 
   function handleKeydown(e: KeyboardEvent) {
     if (!keyList.includes(e.key as Keys)) return;
+    let tokenKey = e.key as Keys;
     setTokens((prev) => ({
       ...prev,
-      [e.key]: (prev[e.key as Keys] ?? 0) + 1,
+      [tokenKey]: (prev[tokenKey] ?? 0) + 1,
     }));
     if (
       keyboardRef.current &&
@@ -175,150 +190,120 @@ export default function Keyboard({
     }
   }, [focusEnter]);
 
+  // Needed to reset enterButton when user hits reset button so "Enter" doesn't execute as well
+  useEffect(() => {
+    if (enterButton === "Reset") {
+      setTokens((prev) => ({
+        ...prev,
+        Enter: 0,
+      }));
+      buttonRefs.current.Enter?.focus();
+    }
+  }, [enterButton]);
+
   return (
     <div className={styles.keyboard} ref={keyboardRef} aria-label="Keyboard">
       <div className={styles.number_keys} aria-label="Number keys">
-        <KeyboardButton
-          backgroundColor={keyColors[1]}
-          width={"smallest"}
-          onClick={keyFunctions[`1`]}
-          keyPressToken={tokens[1]}
-          ref={(el) => {
-            buttonRefs.current[1] = el;
-          }}
-          onKeyDown={(e) => onButtonKeydown(e, "1")}
-          tabIndex={1}
-        >{`1`}</KeyboardButton>
-        <KeyboardButton
-          backgroundColor={keyColors[2]}
-          width={"smallest"}
-          onClick={keyFunctions[`2`]}
-          keyPressToken={tokens[2]}
-          ref={(el) => {
-            buttonRefs.current[2] = el;
-          }}
-          onKeyDown={(e) => onButtonKeydown(e, "2")}
-          tabIndex={1}
-        >{`2`}</KeyboardButton>
-        <KeyboardButton
-          backgroundColor={keyColors[3]}
-          width={"smallest"}
-          onClick={keyFunctions[`3`]}
-          keyPressToken={tokens[3]}
-          ref={(el) => {
-            buttonRefs.current[3] = el;
-          }}
-          onKeyDown={(e) => onButtonKeydown(e, "3")}
-          tabIndex={1}
-        >{`3`}</KeyboardButton>
-        <KeyboardButton
-          backgroundColor={keyColors[4]}
-          width={"smallest"}
-          onClick={keyFunctions[`4`]}
-          keyPressToken={tokens[4]}
-          ref={(el) => {
-            buttonRefs.current[4] = el;
-          }}
-          onKeyDown={(e) => onButtonKeydown(e, "4")}
-          tabIndex={1}
-        >{`4`}</KeyboardButton>
-        <KeyboardButton
-          backgroundColor={keyColors[5]}
-          width={"smallest"}
-          onClick={keyFunctions[`5`]}
-          keyPressToken={tokens[5]}
-          ref={(el) => {
-            buttonRefs.current[5] = el;
-          }}
-          onKeyDown={(e) => onButtonKeydown(e, "5")}
-          tabIndex={1}
-        >{`5`}</KeyboardButton>
-        <KeyboardButton
-          backgroundColor={keyColors[6]}
-          width={"smallest"}
-          onClick={keyFunctions[`6`]}
-          keyPressToken={tokens[6]}
-          ref={(el) => {
-            buttonRefs.current[6] = el;
-          }}
-          onKeyDown={(e) => onButtonKeydown(e, "6")}
-          tabIndex={1}
-        >{`6`}</KeyboardButton>
-        <KeyboardButton
-          backgroundColor={keyColors[7]}
-          width={"smallest"}
-          onClick={keyFunctions[`7`]}
-          keyPressToken={tokens[7]}
-          ref={(el) => {
-            buttonRefs.current[7] = el;
-          }}
-          onKeyDown={(e) => onButtonKeydown(e, "7")}
-          tabIndex={1}
-        >{`7`}</KeyboardButton>
-        <KeyboardButton
-          backgroundColor={keyColors[8]}
-          width={"smallest"}
-          onClick={keyFunctions[`8`]}
-          keyPressToken={tokens[8]}
-          ref={(el) => {
-            buttonRefs.current[8] = el;
-          }}
-          onKeyDown={(e) => onButtonKeydown(e, "8")}
-          tabIndex={1}
-        >{`8`}</KeyboardButton>
-        <KeyboardButton
-          backgroundColor={keyColors[9]}
-          width={"smallest"}
-          onClick={keyFunctions[`9`]}
-          keyPressToken={tokens[9]}
-          ref={(el) => {
-            buttonRefs.current[9] = el;
-          }}
-          onKeyDown={(e) => onButtonKeydown(e, "9")}
-          tabIndex={1}
-        >{`9`}</KeyboardButton>
-        <KeyboardButton
-          backgroundColor={keyColors[0]}
-          width={"smallest"}
-          onClick={keyFunctions[`0`]}
-          keyPressToken={tokens[0]}
-          ref={(el) => {
-            buttonRefs.current[0] = el;
-          }}
-          onKeyDown={(e) => onButtonKeydown(e, "0")}
-          tabIndex={1}
-        >{`0`}</KeyboardButton>
+        {["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].map((i) => (
+          <KeyboardButton
+            key={i}
+            backgroundColor={keyColors[i]}
+            width={"smallest"}
+            onClick={keyFunctions[i]}
+            keyPressToken={tokens[i]}
+            ref={(el) => {
+              buttonRefs.current[i] = el;
+            }}
+            onKeyDown={(e) => onButtonKeydown(e, i)}
+            tabIndex={1}
+          >
+            {i}
+          </KeyboardButton>
+        ))}
       </div>
       <div className={styles.input_keys} aria-label="Input keys">
-        <KeyboardButton
-          backgroundColor={keyColors.Enter}
-          style={{ minHeight: `4.8rem` }}
-          width={"default"}
-          onClick={keyFunctions[`Enter`]}
-          keyPressToken={tokens.Enter}
-          ref={(el) => {
-            buttonRefs.current.Enter = el;
-          }}
-          onKeyDown={(e) => onButtonKeydown(e, "Enter")}
-          ariaLabel="Enter a guess!"
-          keyType="enter"
-          tabIndex={1}
-        >{enterKeyText}</KeyboardButton>
-        <KeyboardButton
-          backgroundColor="none"
-          width={"smallest"}
-          style={{ minHeight: `4.8rem` }}
-          onClick={keyFunctions[`Backspace`]}
-          icon={<Backspace />}
-          keyPressToken={tokens.Backspace}
-          ref={(el) => {
-            buttonRefs.current.Backspace = el;
-          }}
-          onKeyDown={(e) => onButtonKeydown(e, "Backspace")}
-          ariaLabel="Backspace key"
-          keyType="backspace"
-          tabIndex={1}
-        ></KeyboardButton>
+        {enterButton === "Enter" && (
+          <KeyboardButton
+            backgroundColor={keyColors.Enter}
+            style={{ minHeight: `4.8rem` }}
+            width={"default"}
+            onClick={keyFunctions[`Enter`]}
+            keyPressToken={tokens.Enter}
+            ref={(el) => {
+              buttonRefs.current.Enter = el;
+            }}
+            onKeyDown={(e) => onButtonKeydown(e, "Enter")}
+            ariaLabel="Enter a guess!"
+            keyType="enter"
+            tabIndex={1}
+          >
+            {"Enter"}
+          </KeyboardButton>
+        )}
+        {enterButton === "Reset" && (
+          <KeyboardButton
+            backgroundColor={keyColors.Reset}
+            style={{ minHeight: `4.8rem`, aspectRatio: "27/5" }}
+            width={"default"}
+            onClick={keyFunctions[`Reset`]}
+            keyPressToken={resetKeyPressToken}
+            ref={(el) => {
+              buttonRefs.current.Enter = el;
+            }}
+            onKeyDown={(e) => onButtonKeydown(e, "Enter")}
+            keyType="enter"
+            tabIndex={1}
+          >
+            {"Play Newest Puzzle"}
+          </KeyboardButton>
+        )}
+        {enterButton === "Countdown" && (
+          <KeyboardButton
+            backgroundColor={keyColors.Enter}
+            style={{ minHeight: `4.8rem`, aspectRatio: "35/6" }}
+            width={"default"}
+            onClick={keyFunctions[`Countdown`]}
+            ref={(el) => {
+              buttonRefs.current.Enter = el;
+            }}
+            onKeyDown={(e) => onButtonKeydown(e, "Enter")}
+            ariaLabel="A new puzzle will be available tomorrow."
+            keyType="enter"
+            tabIndex={1}
+          >
+            {timeToNextGame()}
+          </KeyboardButton>
+        )}
+        {!showScoresButton ? (
+          <KeyboardButton
+            backgroundColor="none"
+            width={"smallest"}
+            style={{ minHeight: `4.8rem` }}
+            onClick={keyFunctions[`Backspace`]}
+            icon={<Backspace />}
+            keyPressToken={tokens.Backspace}
+            ref={(el) => {
+              buttonRefs.current.Backspace = el;
+            }}
+            onKeyDown={(e) => onButtonKeydown(e, "Backspace")}
+            ariaLabel="Backspace key"
+            keyType="backspace"
+            tabIndex={1}
+          ></KeyboardButton>
+        ) : (
+          <KeyboardButton
+            backgroundColor="none"
+            width={"smallest"}
+            style={{ minHeight: `4.8rem`, aspectRatio: "2 / 1" }}
+            onClick={keyFunctions[`Scores`]}
+            ref={(el) => {
+              buttonRefs.current.Backspace = el;
+            }}
+            onKeyDown={(e) => onButtonKeydown(e, "Backspace")}
+            ariaLabel="Show Scores"
+            tabIndex={1}
+          >{`Scores`}</KeyboardButton>
+        )}
       </div>
     </div>
   );

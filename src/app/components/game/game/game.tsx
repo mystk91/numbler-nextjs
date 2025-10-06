@@ -23,7 +23,6 @@ import { createToast } from "@/app/components/toasts/createToast";
 import InvalidGuess from "@/app/components/toasts/invalidGuessToast";
 import { toast } from "react-toastify";
 import { descramble } from "@/app/lib/descramble";
-import { timeToNextGame } from "@/app/lib/timeToNextGame";
 
 type Digits = 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -80,9 +79,11 @@ export default function Game({ digits }: GameProps) {
   const scores = useRef<number[]>([]);
   const checkingGuess = useRef(false);
   const [focusEnter, setFocusEnter] = useState(false);
-  // Used to change the Enter key when the game is over to different functions
-  const [enterKeyText, setEnterKeyText] = useState("Enter");
-  const enterKeyFunction = useRef(handleEnterKey);
+  // Used to change the Enter and Backpace key when the game is over to different buttons
+  const [enterButton, setEnterButton] = useState<
+    "Enter" | "Reset" | "Countdown"
+  >("Enter");
+  const [showScoresButton, setShowScoresButton] = useState(false);
   // Tells us that we have a logged in user
   const user = useUser();
 
@@ -152,7 +153,11 @@ export default function Game({ digits }: GameProps) {
 
   // Initalizes the game on mount
   async function initializeGame() {
-    // Here we need to decide if we're loading user game data, local storage game data, or just creating an empty game
+    setShowEndPanel(false);
+    setShowScoresButton(false);
+    setEnterButton("Enter");
+    // Here we need to decide if we're
+    // loading user game data, local storage game data, or just creating an empty game
     let game: GameData | null = null;
     let scoresArr: number[] = [];
     let shouldFetch = true;
@@ -205,6 +210,8 @@ export default function Game({ digits }: GameProps) {
         currentColumn.current = digits;
         updateKeyColors(currentRow.current + 1);
         setShowEndPanel(true);
+        setEnterButton("Countdown");
+        setShowScoresButton(true);
       } else {
         updateKeyColors(currentRow.current);
       }
@@ -341,7 +348,11 @@ export default function Game({ digits }: GameProps) {
           },
         },
       ]);
+    }
+    // This will make it so Enter always focuses when the digits are full
+    if (currentColumn.current > digits - 1) {
       setFocusEnter(true);
+      setTimeout(() => setFocusEnter(false), 1);
     }
     if (!user) {
       localStorage.setItem("digits" + digits, JSON.stringify(getGameData()));
@@ -515,9 +526,15 @@ export default function Game({ digits }: GameProps) {
         });
         const data = await res.json();
         // We will change the button and its function
-        if (data.newGame === "true") {
-        } else {
-        }
+        setTimeout(() => {
+          if (data.newGame === true) {
+            setEnterButton("Reset");
+            setShowScoresButton(true);
+          } else {
+            setEnterButton("Countdown");
+            setShowScoresButton(true);
+          }
+        }, delay + delayIncrement * digits + 200);
       } catch {}
     } else {
       //Moving player to the next row
@@ -625,7 +642,6 @@ export default function Game({ digits }: GameProps) {
         <Gameboard rows={gameboard} />
         <Keyboard
           keyColors={keyColors}
-          enterKeyText={enterKeyText}
           keyFunctions={{
             "0": () => handleNumberKey(0),
             "1": () => handleNumberKey(1),
@@ -637,12 +653,15 @@ export default function Game({ digits }: GameProps) {
             "7": () => handleNumberKey(7),
             "8": () => handleNumberKey(8),
             "9": () => handleNumberKey(9),
-            Enter: () => {
-              enterKeyFunction.current();
-            },
+            Enter: () => handleEnterKey(),
             Backspace: () => handleBackspaceKey(),
+            Countdown: () => {},
+            Reset: () => initializeGame(),
+            Scores: () => setShowEndPanel(!showEndPanel),
           }}
           focusEnter={focusEnter}
+          showScoresButton={showScoresButton}
+          enterButton={enterButton}
         />
         {showEndPanel && (
           <div className={styles.end_panel_wrapper}>
@@ -652,7 +671,9 @@ export default function Game({ digits }: GameProps) {
               hints={hints.current}
               scores={scores.current}
               date={date.current}
-              closeFunction={() => setShowEndPanel(false)}
+              closeFunction={() => {
+                setShowEndPanel(false);
+              }}
             />
           </div>
         )}

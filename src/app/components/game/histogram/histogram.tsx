@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./histogram.module.css";
 import classNames from "classnames";
-import { createHistogram } from "perf_hooks";
 
 interface HistogramProps {
   scores: number[];
@@ -81,7 +80,9 @@ export default function Histogram({ scores, numDigits }: HistogramProps) {
                 )}
                 style={
                   {
-                    width: `${(value / highestFrequency.current) * 100}%`,
+                    width: `calc((100% - 4rem) * ${
+                      value / highestFrequency.current
+                    })`,
                     "--bar-index": index,
                   } as React.CSSProperties
                 }
