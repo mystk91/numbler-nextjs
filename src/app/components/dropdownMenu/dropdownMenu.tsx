@@ -52,6 +52,7 @@ interface MenuItemProps {
   >;
   direction?: "right" | "left";
   parentRef?: React.RefObject<HTMLElement | null>;
+  style: React.CSSProperties;
 }
 export function Item({
   item,
@@ -62,6 +63,7 @@ export function Item({
   index,
   siblings,
   parentRef,
+  style,
 }: MenuItemProps) {
   const router = useRouter();
   const [isActive, setIsActive] = useState(false);
@@ -204,12 +206,16 @@ interface DropdownMenuProps {
   menu: Item[];
   containerRef?: React.RefObject<HTMLElement | null>;
   title?: string;
+  buttonStyle?: React.CSSProperties;
+  itemStyle?: React.CSSProperties;
 }
 export default function DropdownMenu({
   label,
   menu,
   containerRef,
   title,
+  buttonStyle,
+  itemStyle,
 }: DropdownMenuProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [direction, setDirection] = useState<"left" | "right" | undefined>();
@@ -400,6 +406,7 @@ export default function DropdownMenu({
         aria-label={`Click to ${menuOpen ? `close` : `open`} dropdown menu`}
         title={title}
         ref={buttonRef}
+        style={{ ...buttonStyle }}
       >
         {label}
       </button>
@@ -432,6 +439,7 @@ export default function DropdownMenu({
                 index={actionableIndexes.indexOf(i)}
                 siblings={itemRefs.current}
                 parentRef={buttonRef}
+                style={{ ...itemStyle }}
                 key={i}
               />
             );

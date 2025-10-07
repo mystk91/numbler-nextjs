@@ -15,7 +15,6 @@ import Modal from "@/app/components/Modal Versatile Portal/modal";
 import Instructions from "@/app/components/navbar/instructions/instructions";
 import Login from "@/app/components/loginSystem/login/login";
 import Rectangle from "@/app/components/game/rectangle/rectangle";
-import { useRouter } from "next/navigation";
 import { useUser } from "@/app/contexts/userContext";
 
 const linksMenu: Item[] = [
@@ -38,7 +37,6 @@ interface NavbarProps {
 
 export default function Navbar({ digits, containerRef, style }: NavbarProps) {
   const user = useUser();
-  const router = useRouter();
   const profileMenu: Item[] = user
     ? [
         { type: "link", label: "Your Profile", href: "/profile" },
@@ -51,12 +49,8 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
               };
-              const res = await fetch("/api/auth/logout", options);
-              const data = await res.json();
-              if (data.success || data.errors) {
-                window.location.reload();
-                //router.push("/");
-              }
+              fetch("/api/auth/logout", options);
+              window.location.reload();
             } catch {}
           },
         },
@@ -89,9 +83,68 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
         <div className={styles.game_mode_links}>
           <DropdownMenu
             menu={linksMenu}
-            label="Game Modes"
+            buttonStyle={{
+              padding: "0",
+              width: "9rem",
+              display: "flex",
+              justifyContent: "center",
+            }}
+            label={
+              <div
+                style={{
+                  position: "absolute",
+                  width: "6.48rem",
+                  height: "100%",
+                }}
+                role="image"
+              >
+                {["", "", "", "", "", digits].map((value, i) => {
+                  return (
+                    <Rectangle
+                      color="none"
+                      type="digit"
+                      value={
+                        value as
+                          | ""
+                          | 0
+                          | 1
+                          | 2
+                          | 3
+                          | 4
+                          | 5
+                          | 6
+                          | 7
+                          | 8
+                          | 9
+                          | "equals"
+                          | "higher"
+                          | "lower"
+                      }
+                      style={{
+                        borderColor:
+                          i === 5 ? "var(--grey-text)" : "var(--grey)",
+                        backgroundColor:
+                          i === 5 ? "var(--lower-color)" : "var(--lower-color)",
+                        color:
+                          i === 5 ? "var(--grey-text)" : "var(--grey-text)",
+                        borderWidth: i === 5 ? "0.3rem" : "0.2rem",
+                        width: "3.6rem",
+                        height: "auto",
+                        minHeight: "0rem",
+                        transform: `translateX(${i * 16}%) translateY(${
+                          9 + i * 2
+                        }%)`,
+                        position: "absolute",
+                      }}
+                      key={i}
+                      ariaLabel={""}
+                    />
+                  );
+                })}
+              </div>
+            }
             containerRef={containerRef}
-            title={`Game Modes`}
+            title={`Games Modes`}
           />
         </div>
       ) : (
@@ -121,9 +174,15 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
                         | "lower"
                     }
                     style={{
-                      borderColor: "var(--grey-text)",
+                      borderColor:
+                        n === digits ? "var(--grey-text)" : "var(--grey)",
                       backgroundColor:
-                        n === digits ? "var(--green)" : "var(--lower-color)",
+                        n === digits
+                          ? "var(--lower-color)"
+                          : "var(--lower-color)",
+                      color:
+                        n === digits ? "var(--grey-text)" : "var(--grey-text)",
+                      borderWidth: n === digits ? "0.3rem" : "0.2rem",
                       minHeight: "4.8rem",
                     }}
                     ariaLabel={`Go to the ${n} digit mode of Numbler`}
@@ -146,7 +205,7 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
             onClick={() => setShowInstructions(true)}
             style={{ padding: "1.2rem", width: "4.8rem" }}
           >
-            <QuestionMark />
+            <QuestionMark style={{ transform: "translateX(-2px)" }} />
           </NavbarButton>
         )}
         {user ? (

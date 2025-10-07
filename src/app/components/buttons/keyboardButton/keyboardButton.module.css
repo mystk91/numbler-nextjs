@@ -25,13 +25,6 @@
   container-type: size;
 }
 
-/* Stops darker shade from appearing on IOS after click */
-@media (hover: none) and (pointer: coarse) {
-  .keyboard:hover:not(.active) {
-    background-color: light-dark(white, rgb(60, 60, 60));
-  }
-}
-
 .number.button {
   aspect-ratio: 4 / 6;
 }
@@ -86,7 +79,6 @@
 }
 
 .keyboard:hover {
-  background-color: light-dark(rgb(240, 240, 240), rgb(90, 90, 90));
   color: light-dark(black, rgba(255, 255, 255));
 }
 
@@ -110,17 +102,17 @@
 
 .grey,
 .keyboard.grey.active,
-.grey:hover {
+.keyboard .grey:hover {
   background-color: var(--grey);
 }
 .yellow,
 .keyboard.yellow.active,
-.yellow:hover {
+.keyboard .yellow:hover {
   background-color: var(--yellow);
 }
 .green,
 .keyboard.green.active,
-.green:hover {
+.keyboard .green:hover {
   background-color: var(--green);
 }
 .grey,
@@ -134,7 +126,6 @@
 .grey:hover,
 .yellow:hover,
 .green:hover {
-  filter: brightness(0.9);
   transition: filter 0.15s;
   color: white;
 }
@@ -143,4 +134,22 @@
 .green.active {
   filter: brightness(0.85);
   transition: filter 0.15s;
+}
+
+@media (hover: hover) {
+  .keyboard.grey:hover {
+    filter: brightness(0.9);
+    background-color: var(--grey);
+  }
+  .keyboard.yellow:hover {
+    filter: brightness(0.9);
+    background-color: var(--yellow);
+  }
+  .keyboard.green:hover {
+    filter: brightness(0.9);
+    background-color: var(--green);
+  }
+  .keyboard:hover {
+    background-color: light-dark(rgb(240, 240, 240), rgb(90, 90, 90));
+  }
 }

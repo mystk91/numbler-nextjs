@@ -113,7 +113,7 @@ export default function Rectangle({
         animationDelay: animationDelay ? `${animationDelay}s` : ``,
         ...style,
       }}
-      aria-label={ariaLabel ? ariaLabel : getAriaLabel()}
+      aria-label={ariaLabel !== undefined ? ariaLabel : getAriaLabel()}
     >
       {type === "hint" && value ? (
         value === `equals` ? (

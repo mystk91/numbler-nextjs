@@ -292,6 +292,7 @@ async function verifyEmail(req: NextRequest) {
       email: account.email,
       password: account.password,
       createdAt: new Date(),
+      lastActive: new Date(),
     });
     return success();
   } catch {

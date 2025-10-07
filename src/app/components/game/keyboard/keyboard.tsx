@@ -89,6 +89,9 @@ export default function Keyboard({
     9: null,
     Enter: null,
     Backspace: null,
+    Reset: null,
+    Countdown: null,
+    Scores: null,
   });
   const [resetKeyPressToken, setResetKeyPressToken] = useState(undefined);
 
@@ -108,8 +111,10 @@ export default function Keyboard({
     "9": { ArrowLeft: "8", ArrowRight: "0", ArrowDown: "Backspace" },
     "0": { ArrowLeft: "9", ArrowDown: "Backspace" },
     Enter: { ArrowLeft: "1", ArrowUp: "5", ArrowRight: "Backspace" },
-    Reset: { ArrowLeft: "1", ArrowUp: "5", ArrowRight: "Backspace" },
     Backspace: { ArrowLeft: "Enter", ArrowUp: "8", ArrowRight: "0" },
+    Reset: {},
+    Countdown: {},
+    Scores: {},
   };
   //Focuses an adjacent key when user hits directional arrow
   function onButtonKeydown(
@@ -207,14 +212,14 @@ export default function Keyboard({
         {["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].map((i) => (
           <KeyboardButton
             key={i}
-            backgroundColor={keyColors[i]}
+            backgroundColor={keyColors[i as Keys]}
             width={"smallest"}
-            onClick={keyFunctions[i]}
-            keyPressToken={tokens[i]}
+            onClick={keyFunctions[i as Keys]}
+            keyPressToken={tokens[i as Keys]}
             ref={(el) => {
-              buttonRefs.current[i] = el;
+              buttonRefs.current[i as Keys] = el;
             }}
-            onKeyDown={(e) => onButtonKeydown(e, i)}
+            onKeyDown={(e) => onButtonKeydown(e, i as Keys)}
             tabIndex={1}
           >
             {i}

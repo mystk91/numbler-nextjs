@@ -1,7 +1,8 @@
 .navbar {
-  --height: 6.0rem;
+  --height: 6rem;
   width: 100vw;
   height: var(--height);
+  min-height: var(--height);
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -46,4 +47,14 @@
   align-items: center;
   height: 100%;
   color: var(--grey-text);
+}
+
+@media screen and (max-width: 875px) {
+  .navbar .menu_icons {
+    justify-content: center;
+  }
+
+  .navbar .game_mode_links {
+    justify-content: center;
+  }
 }

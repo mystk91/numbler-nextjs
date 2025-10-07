@@ -28,25 +28,6 @@
   color: light-dark(var(--grey-text), var(--grey-text));
 }
 
-/* Stops darker shade from appearing on IOS after click */
-@media (hover: none) and (pointer: coarse) {
-  .primary:hover:not(.active) {
-    background-color: var(--buttonColor);
-  }
-  .red:hover:not(.active) {
-    background-color: var(--higher-color);
-  }
-  .green:hover:not(.active) {
-    background-color: var(--green);
-  }
-  .secondary:hover:not(.active) {
-    border: 0.2rem solid var(--buttonColor);
-  }
-  .tertiary:hover:not(.active) {
-    background-color: transparent;
-  }
-}
-
 .primary:hover,
 .secondary:hover,
 .tertiary:hover {

@@ -20,17 +20,6 @@
   transition: all 0.1s;
 }
 
-.dropdown_menu_wrapper:hover > button {
-  color: white;
-  filter: brightness(1.15);
-  transition: all 0.1s;
-}
-
-.dropdown_menu_wrapper:hover > button svg {
-  fill: white;
-  transition: all 0.1s;
-}
-
 .dropdown_menu_wrapper > button > svg {
   height: 100%;
   width: auto;
@@ -75,7 +64,7 @@
 
 .dropdown_menu li {
   border-radius: 0.4rem;
-  height: 3.6rem;
+  height: 5.6rem;
   margin: 0 0.2rem;
   list-style: none;
   position: relative;
@@ -94,10 +83,10 @@
     opacity: 0;
   }
   80% {
-    height: 4.2rem;
+    height: 6.5rem;
   }
   100% {
-    height: 3.6rem;
+    height: 5.6rem;
     opacity: 1;
   }
 }
@@ -121,7 +110,7 @@
 
 @keyframes close {
   0% {
-    height: 3.6rem;
+    height: 5.6rem;
     opacity: 1;
   }
   100% {
@@ -191,4 +180,17 @@
   height: 0.1rem;
   margin: 0.4rem 5%;
   background-color: light-dark(rgb(180, 180, 180), rgb(60, 60, 60));
+}
+
+@media (hover: hover) {
+  .dropdown_menu_wrapper:hover > button {
+    color: white;
+    filter: brightness(1.15);
+    transition: all 0.1s;
+  }
+
+  .dropdown_menu_wrapper:hover > button svg {
+    fill: white;
+    transition: all 0.1s;
+  }
 }

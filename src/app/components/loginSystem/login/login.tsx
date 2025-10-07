@@ -13,7 +13,6 @@ interface LoginProps {
 }
 
 export default function Login({ style }: LoginProps) {
-  const router = useRouter();
 
   //URLS
   const loginURL = "/api/auth/login";
@@ -93,7 +92,7 @@ export default function Login({ style }: LoginProps) {
 
   //Sends user to google login
   function googleLogin() {
-    router.push("/api/auth/google");
+    window.location.href = "/api/auth/google/login";
   }
 
   return (
