@@ -1,0 +1,64 @@
+.delete_account_container {
+  background-color: var(--background);
+  width: 36rem;
+  max-width: 36rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.8rem 0.6rem 1.2rem;
+  row-gap: 1.6rem;
+  height: max-content;
+}
+
+.delete_account_container > * {
+  width: 95%;
+  display: flex;
+  justify-content: center;
+}
+
+.delete_account_form {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 1.6rem;
+  padding: 0 2.4rem;
+}
+
+.delete_account_form > * {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 0.8rem;
+}
+
+.delete_account_container a {
+  color: var(--link-color);
+}
+
+.delete_account_form a,
+.delete_account_form {
+  align-self: flex-start;
+  font-size: 1.6rem;
+}
+
+.message {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.delete_account_container button {
+  width: 80%;
+}
+
+.buttons_wrapper{
+    display: flex;
+    justify-content: center;
+    column-gap: 1.2rem;
+}
+
+

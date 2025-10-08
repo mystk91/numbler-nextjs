@@ -80,22 +80,22 @@ export default function Modal({
         }
       }
     },
-    [closeFunction]
+    [closeFunction, animate]
   );
 
   //Adds a keydown listener for escapeKey, and prevents the page from scrolling
   useEffect(() => {
     document.body.style.overflow = "hidden";
     if (closeOnEscape) {
-      window.addEventListener("keydown", escapeKey);
+      document.addEventListener("keydown", escapeKey, true);
     }
     return () => {
       document.body.style.overflow = "auto";
       if (closeOnEscape) {
-        window.removeEventListener("keydown", escapeKey);
+        document.removeEventListener("keydown", escapeKey, true);
       }
     };
-  }, [escapeKey]);
+  }, [escapeKey, closeOnEscape]);
 
   //Closes the modal on click: for the backdrop and other buttons
   function closeModal(event: React.MouseEvent): void {

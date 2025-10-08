@@ -10,7 +10,7 @@ export default function Page() {
   return (
     <div className={styles.page} ref={pageRef}>
       <div className={styles.wrapper}>
-        <Navbar digits={4} containerRef={pageRef} />
+        <Navbar digits={5} containerRef={pageRef} />
       </div>
     </div>
   );

@@ -47,6 +47,7 @@ export default function Page() {
           <Link href="/dev/login/change-password/5oi4m352im">{`Password Change Page`}</Link>
           <Link href="/dev/login/verify">{`Verification Message`}</Link>
           <Link href="/dev/login/verify/5oi4m352im">{`Verify Page`}</Link>
+          <Link href="/dev/login/delete-account">{`Delete Account`}</Link>
         </div>
         <div>
           <h1>{`Emails`}</h1>

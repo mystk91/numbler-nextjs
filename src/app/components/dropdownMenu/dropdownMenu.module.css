@@ -28,7 +28,7 @@
 }
 
 .dropdown_menu_wrapper > button:focus-visible {
-  outline: 0.1rem solid blue;
+  outline: 0.1rem solid var(--focus-color);
   outline-offset: 0.2rem;
 }
 

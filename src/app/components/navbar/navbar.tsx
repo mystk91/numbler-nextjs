@@ -61,6 +61,16 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
   const [showInstructions, setShowInstructions] = useState(false);
   const [mobileSize, setMobileSize] = useState(false);
 
+  // Showing instructions on first visit to a game
+  useEffect(() => {
+    if (!digits) return;
+    const visited = localStorage.getItem("visited");
+    if (!visited && !user) {
+      setShowInstructions(true);
+      localStorage.setItem("visited", "true");
+    }
+  }, [digits]);
+
   //componentDidMount, runs when component mounts and returns on dismount
   useEffect(() => {
     handleResize();
@@ -98,7 +108,7 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
                 }}
                 role="image"
               >
-                {["", "", "", "", "", digits].map((value, i) => {
+                {["", "", "", "", "", digits ? digits : "4"].map((value, i) => {
                   return (
                     <Rectangle
                       color="none"
@@ -213,10 +223,17 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
             menu={profileMenu}
             label={
               user && user.avatar ? (
-                <img
+                <Image
                   src={user.avatar}
-                  alt="Your profile picture"
-                  style={{ padding: "0.4rem" }}
+                  alt="Profile picture"
+                  width={256}
+                  height={256}
+                  style={{
+                    height: "100%",
+                    width: "auto",
+                    borderRadius: "5rem",
+                    padding: "0.3rem",
+                  }}
                 />
               ) : (
                 <ProfileLoggedIn style={{ padding: "0.4rem" }} />

@@ -40,10 +40,26 @@ export async function POST(
         return await checkPasswordCode(req);
       case "changePassword":
         return await changePassword(req);
-      /*
-      case "forceLogout":
-        return await forceLogout();
-        */
+      case "deleteAccount":
+        return await deleteAccount(req);
+      default:
+        return networkError();
+    }
+  } catch {
+    return networkError();
+  }
+}
+
+//Delete Routes
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ authRoutes: string }> }
+) {
+  try {
+    const { authRoutes } = await params;
+    switch (authRoutes) {
+      case "deleteAccount":
+        return await deleteAccount(req);
       default:
         return networkError();
     }
@@ -155,7 +171,7 @@ async function logout(req: NextRequest) {
       const db = await connectToDatabase("accounts");
       const accounts = db.collection("accounts");
       // Giving their account a new random sessionId
-      await accounts.updateOne(
+      accounts.updateOne(
         { sessionId: sessionId },
         {
           $set: { sessionId: newSessionId },
@@ -167,32 +183,6 @@ async function logout(req: NextRequest) {
     return networkError();
   }
 }
-
-/*
-// Helper function. Forces a logout.
-async function forceLogout() {
-  try {
-    const cookieStore = await cookies();
-    const sessionId = cookieStore.get("sessionId")?.value;
-    cookieStore.delete("sessionId");
-    const newSessionId = randomString(48);
-    if (sessionId) {
-      const db = await connectToDatabase("accounts");
-      const accounts = db.collection("accounts");
-      // Giving their account a new random sessionId
-      await accounts.updateOne(
-        { sessionId: sessionId },
-        {
-          $set: { sessionId: newSessionId },
-        }
-      );
-    }
-    return success();
-  } catch {
-    return failure();
-  }
-}
-  */
 
 //Attempts to send a verification email to user
 async function sendVerification(req: NextRequest) {
@@ -419,5 +409,42 @@ async function changePassword(req: NextRequest) {
     return success();
   } catch {
     return networkErrorPassword();
+  }
+}
+
+async function deleteAccount(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const email = body.email.trim().toLowerCase();
+    //Checking if email is valid
+    let errors = {
+      email: "",
+    };
+    if (!emailRegExp.test(email)) {
+      errors.email = `Enter your email`;
+      return NextResponse.json({ errors: errors });
+    }
+    const cookieStore = await cookies();
+    const sessionId = cookieStore.get("sessionId")?.value;
+    if (!sessionId) {
+      return NextResponse.json({ errors: { logout: true } });
+    }
+    const db = await connectToDatabase("accounts");
+    const accounts = db.collection("accounts");
+    const account = await accounts.findOne({ sessionId: sessionId });
+    if (!account) {
+      cookieStore.delete("sessionId");
+      return NextResponse.json({ errors: { logout: true } });
+    }
+    if (account.email === email) {
+      await accounts.deleteOne({ sessionId: sessionId });
+      cookieStore.delete("sessionId");
+      return success();
+    } else {
+      errors.email = `Incorrect email`;
+      return NextResponse.json({ errors: errors });
+    }
+  } catch {
+    return networkError();
   }
 }

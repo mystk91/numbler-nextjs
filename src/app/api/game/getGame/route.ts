@@ -95,6 +95,7 @@ export async function POST(req: NextRequest) {
     }
   } catch (error) {
     if (error === "Invalid credentials") {
+      cookieStore.delete("sessionId");
       return NextResponse.json({
         error: "Invalid credentials",
         logout: true, //Indicates user may not be logged in anymore and we should force a logout

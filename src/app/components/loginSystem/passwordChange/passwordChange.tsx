@@ -83,7 +83,6 @@ export default function PasswordChange({ code }: PasswordChangeProps) {
         };
         const res = await fetch(changeUrl, options);
         const data = await res.json();
-        console.log(data);
         if (data.errors) {
           if (data.errors.alreadyChanged) {
             setFailure(true);
@@ -93,11 +92,9 @@ export default function PasswordChange({ code }: PasswordChangeProps) {
           setLoading(false);
           return;
         }
-        console.log("smooth");
         setPasswordChanged(true);
         setLoading(false);
       } catch {
-        console.log("error");
         let errors = { ...form };
         errors.verify_password = `Something went wrong. Try again soon.`;
         setFormErrors(errors);
@@ -147,7 +144,7 @@ export default function PasswordChange({ code }: PasswordChangeProps) {
             className={styles.message}
           >{`Your password has been changed.`}</div>
           <Link href="/login" style={{ width: "80%" }}>
-            <Button variant="primary" width="full">
+            <Button variant="primary" width="full" tabIndex={-1}>
               {`Go to Login`}
             </Button>
           </Link>
