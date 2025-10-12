@@ -40,6 +40,10 @@ export default function Page() {
           <Link href="/dev/scramble">{`Scramble / Descramble`}</Link>
         </div>
         <div>
+          <h1>{`Profile`}</h1>
+          <Link href="/dev/profile">{`Profile`}</Link>
+        </div>
+        <div>
           <h1>{`Login`}</h1>
           <Link href="/dev/login">{`Login`}</Link>
           <Link href="/dev/login/signup">{`Signup`}</Link>
@@ -57,6 +61,11 @@ export default function Page() {
         <div>
           <h1>{`Loaders`}</h1>
           <Link href="/dev/loaders/arrow_loader">{`Arrow Loader`}</Link>
+        </div>
+        <div>
+          <h1>{`TOS & PP`}</h1>
+          <Link href="/dev/policy/tos">{`Terms of Service`}</Link>
+          <Link href="/dev/policy/pp">{`Privacy Policy`}</Link>
         </div>
       </div>
     </div>

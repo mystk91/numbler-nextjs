@@ -84,3 +84,11 @@
   align-items: center;
   row-gap: 0.8rem;
 }
+
+.policy_wrapper {
+  display: flex;
+  justify-content: center;
+  column-gap: 0.4rem;
+  font-size: 1.4rem;
+  margin: 0.8rem 0 0;
+}

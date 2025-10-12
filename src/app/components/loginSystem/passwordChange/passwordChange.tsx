@@ -33,25 +33,24 @@ export default function PasswordChange({ code }: PasswordChangeProps) {
       const res = await fetch(checkUrl, options);
       const data = await res.json();
       if (data.errors) {
-        setFailure(true);
+        setPanel("failure");
+      } else {
+        setPanel("change");
       }
-      setLoading(false);
     } catch {
-      setFailure(true);
-      setLoading(false);
+      setPanel("failure");
     }
   }
-
-  const [passwordChanged, setPasswordChanged] = useState(false);
-  const [failure, setFailure] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [panel, setPanel] = useState<
+    "success" | "failure" | "loading" | "change"
+  >("loading");
 
   // Focuses the input once loading ends
   useEffect(() => {
     if (inputReference.current) {
       inputReference.current.focus();
     }
-  }, [loading]);
+  }, [panel]);
 
   // State for form data and errors
   const form = {
@@ -75,7 +74,7 @@ export default function PasswordChange({ code }: PasswordChangeProps) {
     setFormErrors(form);
     if (validate()) {
       try {
-        setLoading(true);
+        setPanel("loading");
         const options = {
           method: "POST",
           body: JSON.stringify({ ...formData, code: code }),
@@ -85,21 +84,21 @@ export default function PasswordChange({ code }: PasswordChangeProps) {
         const data = await res.json();
         if (data.errors) {
           if (data.errors.alreadyChanged) {
-            setFailure(true);
+            setPanel("failure");
+          } else {
+            setFormErrors(data.errors);
+            setButtonDisabled(false);
+            setPanel("change");
           }
-          setFormErrors(data.errors);
-          setButtonDisabled(false);
-          setLoading(false);
           return;
         }
-        setPasswordChanged(true);
-        setLoading(false);
+        setPanel("success");
       } catch {
         let errors = { ...form };
         errors.verify_password = `Something went wrong. Try again soon.`;
         setFormErrors(errors);
         setButtonDisabled(false);
-        setLoading(false);
+        setPanel("change");
       }
     } else {
       setButtonDisabled(false);
@@ -124,8 +123,8 @@ export default function PasswordChange({ code }: PasswordChangeProps) {
 
   return (
     <>
-      {loading && <ArrowLoader />}
-      {failure && (
+      {panel === "loading" && <ArrowLoader />}
+      {panel === "failure" && (
         <div
           className={styles.change_password_container}
           aria-label="Failure Message"
@@ -135,7 +134,7 @@ export default function PasswordChange({ code }: PasswordChangeProps) {
           >{`This password link has expired or does not exist.`}</div>
         </div>
       )}
-      {passwordChanged && (
+      {panel === "success" && (
         <div
           className={styles.change_password_container}
           aria-label="Password Changed Message"
@@ -150,7 +149,7 @@ export default function PasswordChange({ code }: PasswordChangeProps) {
           </Link>
         </div>
       )}
-      {!loading && !failure && !passwordChanged && (
+      {panel === "change" && (
         <div
           className={styles.change_password_container}
           aria-label="Change Password Container"

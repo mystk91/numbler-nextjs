@@ -13,7 +13,6 @@ interface LoginProps {
 }
 
 export default function Login({ style }: LoginProps) {
-
   //URLS
   const loginURL = "/api/auth/login";
   // Used to give focus to the form input on load
@@ -140,12 +139,13 @@ export default function Login({ style }: LoginProps) {
       <div className={styles.links_container}>
         <div className={styles.signup_link_container}>
           {`Not a member?`}&nbsp;
-          <a href="/signup">{`Sign up!`}</a>
+          <Link href="/signup" title={`Sign up`}>{`Sign up!`}</Link>
         </div>
-        <a
+        <Link
           href="/password-reset"
           className={styles.forgot_password}
-        >{`Forgot Password?`}</a>
+          title="Reset your password"
+        >{`Forgot Password?`}</Link>
       </div>
       <div className={styles.divider}></div>
       <div className={styles.login_options}>
@@ -164,6 +164,19 @@ export default function Login({ style }: LoginProps) {
           onClick={googleLogin}
           width="full"
         />
+      </div>
+      <div className={styles.policy_wrapper}>
+        <Link
+          href="/policy/privacy"
+          target="_blank"
+          title="Open privacy policy in a new window"
+        >{`Privacy Policy`}</Link>
+        {`&`}
+        <Link
+          href="/policy/tos"
+          target="_blank"
+          title="Open terms of service in a new window"
+        >{`Terms of Service`}</Link>
       </div>
     </div>
   );
