@@ -18,7 +18,7 @@
   --icon-color: light-dark(black, rgb(230, 230, 230));
   --error-color: light-dark(brown, rgb(249, 105, 105));
   --focus-color: light-dark(rgba(47, 96, 149, 1), rgba(200, 200, 200, 1));
-  --focus-outline: 0.1rem solid var(--focus-color);
+  --focus-outline: 0.3rem solid var(--focus-color);
   --focus-outline-offset: 0.1rem;
   --grey-text: light-dark(rgb(240, 240, 240), rgb(230, 230, 230));
 }
@@ -35,6 +35,11 @@
   outline-offset: var(--focus-outline-offset);
   transition: outline 0.1s ease-in-out, outline-offset 0.1s ease-in-out;
 }
+
+nav *:focus-visible {
+  outline: 0.3rem solid var(--green);
+}
+
 
 input {
   background-color: var(--background);

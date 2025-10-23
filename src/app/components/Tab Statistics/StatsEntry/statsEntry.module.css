@@ -1,0 +1,155 @@
+.stat_entry {
+  border-radius: 4rem;
+  border: 2.4rem solid var(--lower-color);
+  width: min(90rem, 100%);
+}
+
+.stat_entry .entry_header {
+  background-color: var(--lower-color);
+  height: 6.4rem;
+  padding: 0 2.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header_stats {
+  display: flex;
+  flex-direction: column;
+  transform: translateY(-1.2rem);
+}
+
+.header_stat {
+  display: flex;
+  background-color: var(--background);
+  color: var(--foreground);
+  border: var(--small-border);
+}
+
+.header_stat > * {
+  height: 3rem;
+  width: 6rem;
+  padding: 0.6rem;
+  border: 0.05rem solid var(--border-color);
+}
+
+.header_stat_label {
+  width: 12rem;
+}
+
+.histograms_wrapper {
+  display: flex;
+  align-items: flex-end;
+  column-gap: 0.8rem;
+  width: 100%;
+}
+
+.histogram {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  row-gap: 0.8rem;
+  padding: 1.2rem;
+}
+
+.divider {
+  width: 0.2rem;
+  height: 20rem;
+  background-color: var(--lower-color);
+  align-self: center;
+}
+
+.histogram_header {
+  display: flex;
+  align-items: center;
+  font-size: 1.6rem;
+  column-gap: 1.2rem;
+  font-weight: 400;
+}
+
+.histogram_header > .average {
+  font-weight: 500;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  height: 2.4rem;
+}
+
+.row > * {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.score,
+.frequency {
+  width: max-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.score {
+  margin-right: 1.6rem;
+}
+
+.frequency {
+  margin-left: 0.8rem;
+}
+
+.bar {
+  display: flex;
+  height: 100%;
+  border-left: 0.05rem solid var(--border-color);
+  border-top: 0.05rem solid var(--border-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.lightGreen {
+  background-color: light-dark(rgb(110, 214, 110), rgb(96, 179, 96));
+}
+
+.darkGreen {
+  background-color: var(--green);
+}
+
+.yellow {
+  background-color: var(--yellow);
+}
+
+.red {
+  background-color: var(--higher-color);
+}
+
+
+@media screen and (max-width: 580px) {
+  .histograms_wrapper {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    column-gap: 0rem;
+    row-gap: 0.8rem;
+    width: 100%;
+  }
+
+  .histograms_wrapper .divider {
+    width: 30rem;
+    height: 0.2rem;
+  }
+
+  .histogram {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    row-gap: 0.8rem;
+    padding: 1.2rem 2.4rem;
+  }
+}

@@ -167,16 +167,16 @@ export default function Login({ style }: LoginProps) {
       </div>
       <div className={styles.policy_wrapper}>
         <Link
-          href="/policy/privacy"
-          target="_blank"
-          title="Open privacy policy in a new window"
-        >{`Privacy Policy`}</Link>
-        {`&`}
-        <Link
           href="/policy/tos"
           target="_blank"
           title="Open terms of service in a new window"
         >{`Terms of Service`}</Link>
+        {`&`}
+        <Link
+          href="/policy/privacy"
+          target="_blank"
+          title="Open privacy policy in a new window"
+        >{`Privacy Policy`}</Link>
       </div>
     </div>
   );

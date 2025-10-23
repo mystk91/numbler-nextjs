@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
     } else {
       // LocalStorage version
       // We just need to send today's new game if they don't have it already
-      if (body.game.gameId === todaysGame.gameId) {
+      if (body.game && body.game.gameId === todaysGame.gameId) {
         // They do have today's game already, so we send their game back to them
         return NextResponse.json({ game: body.game });
       }

@@ -269,7 +269,7 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
           closeButton={true}
           closeOnBackdropClick={true}
           animate={true}
-          modalStyle={{ paddingTop: "0.4rem" }}
+          modalStyle={{ paddingTop: "0.4rem", paddingBottom: "0rem" }}
         >
           <Login style={{ border: "none" }} />
         </Modal>

@@ -15,8 +15,8 @@
 }
 
 .navbar_button:focus-visible {
-  outline: 0.1rem solid var(--focus-color);
-  outline-offset: 0.2rem;
+  outline: 0.3rem solid var(--green);
+  outline-offset: 0.1rem;
 }
 
 .navbar_button:hover {

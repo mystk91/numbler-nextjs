@@ -35,11 +35,13 @@ export default function DeleteAccount({ closeFunction, style }: DeleteAccount) {
     "default"
   );
   // Focuses the input on mount
+  /*
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
   }, []);
+  */
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -96,7 +98,7 @@ export default function DeleteAccount({ closeFunction, style }: DeleteAccount) {
   return (
     <>
       {panel === "loading" && (
-        <Modal unstyled={true} closeFunction={() => {}}>
+        <Modal unstyled={true} closeOnEscape={false} closeFunction={() => {}}>
           <div
             tabIndex={0}
             aria-label="Deleting your account. Please wait..."
@@ -111,7 +113,7 @@ export default function DeleteAccount({ closeFunction, style }: DeleteAccount) {
         </Modal>
       )}
       {panel === "confirmation" && (
-        <Modal closeButton={true} closeFunction={closeFunction}>
+        <Modal closeButton={false} closeFunction={closeFunction}>
           <div
             className={styles.delete_account_container}
             aria-label="Delete Confirmation Container"

@@ -26,6 +26,8 @@ const HintColors = zod.enum([
 ]);
 
 export async function POST(req: NextRequest) {
+  const cookieStore = await cookies();
+  const sessionId = cookieStore.get("sessionId")?.value;
   try {
     const body = await req.json();
     const game = body.game;
@@ -75,8 +77,6 @@ export async function POST(req: NextRequest) {
       gameId: game.gameId,
     };
     // Updating the game data in backend
-    const cookieStore = await cookies();
-    const sessionId = cookieStore.get("sessionId")?.value;
     if (!sessionId) throw new Error("Invalid credentials");
     const accountsDb = await connectToDatabase("accounts");
     const accounts = accountsDb.collection("accounts");

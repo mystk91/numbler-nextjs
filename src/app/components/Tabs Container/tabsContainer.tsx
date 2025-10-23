@@ -12,14 +12,19 @@ interface TabPanelProps {
 // Creates a panel which will be displayed when we click a tab
 function TabPanel({ children, index, value }: TabPanelProps) {
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`tabpanel-${index}`}
-      aria-labelledby={`tab-${index}`}
-    >
-      {value === index && <div className={styles.tab_panel}>{children}</div>}
-    </div>
+    <>
+      {value === index && (
+        <div
+          role="tabpanel"
+          hidden={value !== index}
+          id={`tabpanel-${index}`}
+          aria-labelledby={`tab-${index}`}
+          className={styles.tab_panel}
+        >
+          {children}
+        </div>
+      )}
+    </>
   );
 }
 
@@ -40,6 +45,7 @@ export default function TabContainer({
 }: TabContainerProps) {
   const [initialized, setInitialized] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const tabsWrapperRef = useRef<HTMLDivElement | null>(null);
   // Creates a ref array to hold the button elements for each tab
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [currentTab, setCurrentTab] = useState(defaultTab);
@@ -76,11 +82,11 @@ export default function TabContainer({
   // Adds a resize observer so the indicator will move correctly
   useEffect(() => {
     setInitialized(true);
-    if (!containerRef?.current) return;
+    if (!tabsWrapperRef?.current) return;
     const observer = new ResizeObserver(() => {
       updateIndicator(currentTabRef.current, false);
     });
-    observer.observe(containerRef.current);
+    observer.observe(tabsWrapperRef.current);
     return () => observer.disconnect();
   }, []);
 
@@ -90,7 +96,7 @@ export default function TabContainer({
       ref={containerRef}
       style={{ opacity: initialized ? "1" : "0" }}
     >
-      <div className={styles.tabs_wrapper}>
+      <div className={styles.tabs_wrapper} ref={tabsWrapperRef}>
         <div className={styles.tabs} role="tablist">
           {tabs.map((tab, index) => (
             <button
