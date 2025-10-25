@@ -73,6 +73,21 @@ export default function TabContainer({
     }
   }
 
+  function handleKeydown(e: React.KeyboardEvent, index: number) {
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      e.preventDefault();
+      if (e.key === "ArrowLeft") {
+        if (index > 0) {
+          tabRefs.current[index - 1]?.focus();
+        }
+      } else {
+        if (index + 1 < tabRefs.current.length) {
+          tabRefs.current[index + 1]?.focus();
+        }
+      }
+    }
+  }
+
   // Moves the indicator
   useEffect(() => {
     currentTabRef.current = currentTab;
@@ -112,6 +127,7 @@ export default function TabContainer({
               aria-controls={`tabpanel-${index}`}
               aria-selected={currentTab === index}
               style={tab.style}
+              onKeyDown={(e) => handleKeydown(e, index)}
             >
               <div className={styles.tab_label}>{tab.label}</div>
             </button>
