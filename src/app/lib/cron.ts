@@ -78,6 +78,7 @@ export default function startCronJobs() {
     const calculateStats = cron.schedule(`0 6 * * *`, async () => {
       const db = await connectToDatabase("analytics");
       const game_stats = db.collection(`game_stats`);
+      const current_metrics = db.collection(`current_metrics`);
       try {
         const averages: { [key: string]: number | string } = {
           average2: 0,
@@ -87,11 +88,23 @@ export default function startCronJobs() {
           average6: 0,
           average7: 0,
         };
+        const totalGamesPlayed: { [key: string]: number | string } = {
+          digits2: 0,
+          digits3: 0,
+          digits4: 0,
+          digits5: 0,
+          digits6: 0,
+          digits7: 0,
+        };
         for (let i = 2; i <= 7; i++) {
           try {
-            const record = await game_stats.findOne({ digits: i });
+            // Gets todays scores and resets its scores
+            const record = await game_stats.findOneAndUpdate(
+              { digits: i },
+              { $set: { scores: [] } },
+              { returnDocument: "before" }
+            );
             if (record && record.scores) {
-              const date = new Date(Date.now() - 24 * 60 * 60 * 1000);
               let gamesTotal = record.gamesTotal ? record.gamesTotal : 0;
               let scoresTotal = record.scoresTotal ? record.scoresTotal : 0;
               let oneCount = 0;
@@ -114,6 +127,7 @@ export default function startCronJobs() {
               // Adding 1 for each game that should have a score of 1
               scoresTotal += legitGamesTotal - legitGames;
               gamesTotal += legitGamesTotal;
+              totalGamesPlayed[`digits${i}`] = legitGamesTotal;
               if (!gamesTotal) continue; //Stops us from dividing by zero
               averages[`average${i}`] = (scoresTotal / gamesTotal).toFixed(3);
               // Update the totals in the "averages" record
@@ -121,19 +135,11 @@ export default function startCronJobs() {
                 { digits: i },
                 { $set: { gamesTotal: gamesTotal, scoresTotal: scoresTotal } }
               );
-              // Remove old scores from the "averages" record
-              await game_stats.updateOne({ digits: i }, {
-                $pull: {
-                  scores: {
-                    createdAt: { $lt: date },
-                  },
-                },
-              } as any);
             }
           } catch {}
         }
-        const result = await game_stats.findOneAndUpdate(
-          { _name: "averages" },
+        await game_stats.updateOne(
+          { name: "averages" },
           {
             $set: {
               averages2: averages.average2,
@@ -143,22 +149,175 @@ export default function startCronJobs() {
               averages6: averages.average6,
               averages7: averages.average7,
             },
-          }
+          },
+          { upsert: true }
         );
-        if (result && result.matchedCount === 0) {
-          await game_stats.insertOne({
-            _name: "averages",
-            averages2: averages.average2,
-            averages3: averages.average3,
-            averages4: averages.average4,
-            averages5: averages.average5,
-            averages6: averages.average6,
-            averages7: averages.average7,
-          });
-        }
+        await current_metrics.updateOne(
+          { name: "weekly_games_played" },
+          {
+            $inc: {
+              digits2: totalGamesPlayed.digits2,
+              digits3: totalGamesPlayed.digits3,
+              digits4: totalGamesPlayed.digits4,
+              digits5: totalGamesPlayed.digits5,
+              digits6: totalGamesPlayed.digits6,
+              digits7: totalGamesPlayed.digits7,
+            },
+          },
+          { upsert: true }
+        );
       } catch {}
     });
     calculateStats.start();
+
+    // Tabulates the past days user visits
+    const updateDailyAnalytics = cron.schedule(
+      `0 0 * * *`,
+      async () => {
+        const db = await connectToDatabase("analytics");
+        const current_metrics = db.collection("current_metrics");
+        const daily_metrics = db.collection("daily_metrics");
+        const today = new Date(
+          new Date().toLocaleString("en-US", {
+            timeZone: "America/New_York",
+          })
+        );
+        const dateString = `${today.getFullYear()}-${String(
+          today.getMonth() + 1
+        ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+        // Retrieve today's metrics and resets them
+        const todaysMetrics = await current_metrics.findOneAndUpdate(
+          { name: "daily_visitors" },
+          {
+            $set: {
+              daily_visitors: 0,
+              new_visitors: 0,
+            },
+          },
+          { returnDocument: "before" }
+        );
+        // Creates a new entry for today's data, tabulates them into the weekly metrics
+        if (todaysMetrics) {
+          await daily_metrics.insertOne({
+            date: dateString,
+            daily_visitors: todaysMetrics.daily_visitors || 0,
+            new_visitors: todaysMetrics.new_visitors || 0,
+          });
+          await current_metrics.updateOne(
+            { name: "weekly_visitors" },
+            {
+              $inc: {
+                weekly_visitors: todaysMetrics.daily_visitors || 0,
+                new_visitors: todaysMetrics.new_visitors || 0,
+              },
+            },
+            { upsert: true }
+          );
+        }
+      },
+      {
+        timezone: "America/New_York",
+      }
+    );
+    updateDailyAnalytics.start();
+
+    // Tabulates the past weeks user visits
+    const updateWeeklyAnalytics = cron.schedule(
+      `0 6 * * 1`,
+      async () => {
+        const db = await connectToDatabase("analytics");
+        const current_metrics = db.collection("current_metrics");
+        const weekly_metrics = db.collection("weekly_metrics");
+        const weekly_games = db.collection("weekly_games");
+        const today = new Date(
+          new Date().toLocaleString("en-US", {
+            timeZone: "America/New_York",
+          })
+        );
+        const date = new Date(today);
+        const dateString = `${date.getFullYear()}-${String(
+          date.getMonth() + 1
+        ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
+        // Retrieves this week's metrics and resets them
+        const weeklyMetrics = await current_metrics.findOneAndUpdate(
+          { name: "weekly_visitors" },
+          {
+            $set: {
+              weekly_visitors: 0,
+              new_visitors: 0,
+            },
+          },
+          { returnDocument: "before" }
+        );
+        // Creates a new entry for this weeks's data, tabulates them into totals
+        if (weeklyMetrics) {
+          await weekly_metrics.insertOne({
+            date: dateString,
+            weekly_visitors: weeklyMetrics.weekly_visitors || 0,
+            new_visitors: weeklyMetrics.new_visitors || 0,
+          });
+
+          // Add to overall totals
+          await current_metrics.updateOne(
+            { name: "total_visitors" },
+            {
+              $inc: {
+                total_visitors: weeklyMetrics.weekly_visitors || 0,
+                total_new_visitors: weeklyMetrics.new_visitors || 0,
+              },
+            },
+            { upsert: true }
+          );
+        }
+        // Retrieves this week's games and resets them
+        const weeklyGames = await current_metrics.findOneAndUpdate(
+          { name: "weekly_games_played" },
+          {
+            $set: {
+              digits2: 0,
+              digits3: 0,
+              digits4: 0,
+              digits5: 0,
+              digits6: 0,
+              digits7: 0,
+            },
+          },
+          { returnDocument: "before" }
+        );
+        // Creates a new entry for this weeks's game data, tabulates them into totals
+        if (weeklyGames) {
+          await weekly_games.insertOne({
+            date: dateString,
+            digits2: weeklyGames.digits2 || 0,
+            digits3: weeklyGames.digits3 || 0,
+            digits4: weeklyGames.digits4 || 0,
+            digits5: weeklyGames.digits5 || 0,
+            digits6: weeklyGames.digits6 || 0,
+            digits7: weeklyGames.digits7 || 0,
+          });
+          // Add to overall totals
+          await current_metrics.updateOne(
+            { name: "total_games_played" },
+            {
+              $inc: {
+                digits2: weeklyGames.digits2 || 0,
+                digits3: weeklyGames.digits3 || 0,
+                digits4: weeklyGames.digits4 || 0,
+                digits5: weeklyGames.digits5 || 0,
+                digits6: weeklyGames.digits6 || 0,
+                digits7: weeklyGames.digits7 || 0,
+              },
+            },
+            { upsert: true }
+          );
+        }
+      },
+      {
+        timezone: "America/New_York",
+      }
+    );
+    updateWeeklyAnalytics.start();
 
     // Sets all inactive accounts to "status: inactive" every day if they've been inactive for 48 hours
     // We could implement this system later if we wanted

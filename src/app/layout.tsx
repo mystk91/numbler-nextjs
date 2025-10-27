@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "@/app/globals.css";
+import { User, UserProvider } from "@/app/contexts/userContext";
+import { getCurrentUser } from "@/app/lib/auth/getCurrentUser";
 
 export const metadata: Metadata = {
   title: "Numbler",
@@ -24,14 +26,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
+  const user = await getCurrentUser(["avatar"]);
+  return <UserProvider user={user}>{children}</UserProvider>;
 }

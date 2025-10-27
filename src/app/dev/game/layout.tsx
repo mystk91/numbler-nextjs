@@ -17,10 +17,24 @@ export default function ToastLayout({
     exit: exit,
   });
   const containerRef = useRef<null | HTMLDivElement>(null);
+
+  
   return (
     <div className={styles.page} ref={containerRef}>
       <Navbar digits={4} containerRef={containerRef} />
       {children}
+      <div
+        style={{
+          height: "10vh",
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+          display: "flex",
+          backgroundColor: "grey",
+          color: "white",
+          fontSize: "1.8rem",
+        }}
+      >{`Ad space`}</div>
       <ToastContainer
         limit={1}
         transition={transition}
