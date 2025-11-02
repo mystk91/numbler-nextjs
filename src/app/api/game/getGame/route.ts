@@ -60,15 +60,15 @@ export async function POST(req: NextRequest) {
       const accounts = accountsDb.collection("accounts");
       const account = await accounts.findOne({ sessionId: sessionId });
       if (!account) throw new Error("Invalid credentials");
-      const currentGame = account[`${digits}digits`];
+      const currentGame = account[`digits${digits}`];
       if (!currentGame) {
         await accounts.updateOne(
           { sessionId: sessionId },
-          { $set: { [`${digits}digits`]: todaysGame } }
+          { $set: { [`digits${digits}`]: todaysGame } }
         );
         return NextResponse.json({
           game: todaysGame,
-          scores: account[`${digits}scores`],
+          scores: account[`scores${digits}`],
         });
       }
       if (
@@ -77,12 +77,12 @@ export async function POST(req: NextRequest) {
       ) {
         return NextResponse.json({
           game: currentGame,
-          scores: account[`${digits}scores`],
+          scores: account[`scores${digits}`],
         });
       }
       return NextResponse.json({
         game: todaysGame,
-        scores: account[`${digits}scores`],
+        scores: account[`scores${digits}`],
       });
     } else {
       // LocalStorage version

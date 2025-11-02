@@ -59,8 +59,9 @@ export default function Page() {
           <Link href="/dev/emails/password_reset">{`Password`}</Link>
         </div>
         <div>
-          <h1>{`Loaders`}</h1>
+          <h1>{`Loaders & Errors`}</h1>
           <Link href="/dev/loaders/arrow_loader">{`Arrow Loader`}</Link>
+          <Link href="/dev/error">{`Error`}</Link>
         </div>
         <div>
           <h1>{`TOS & PP`}</h1>

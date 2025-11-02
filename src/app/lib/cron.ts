@@ -75,7 +75,8 @@ export default function startCronJobs() {
     updateGames.start();
 
     // Calculates the stats of averages of daily games once a day
-    const calculateStats = cron.schedule(`0 6 * * *`, async () => {
+    //const calculateStats = cron.schedule(`0 6 * * *`, async () => {
+    const calculateStats = cron.schedule(`*/5 * * * *`, async () => {
       const db = await connectToDatabase("analytics");
       const game_stats = db.collection(`game_stats`);
       const current_metrics = db.collection(`current_metrics`);
@@ -109,8 +110,7 @@ export default function startCronJobs() {
               let scoresTotal = record.scoresTotal ? record.scoresTotal : 0;
               let oneCount = 0;
               const scores = record.scores;
-              scores.forEach((entry: any) => {
-                const score = entry.score;
+              scores.forEach((score: number) => {
                 // We do these to filter out illegitimate perfect scores, and use the mathematical average instead
                 if (score === 1) {
                   oneCount++;
@@ -156,12 +156,12 @@ export default function startCronJobs() {
           { name: "weekly_games_played" },
           {
             $inc: {
-              digits2: totalGamesPlayed.digits2,
-              digits3: totalGamesPlayed.digits3,
-              digits4: totalGamesPlayed.digits4,
-              digits5: totalGamesPlayed.digits5,
-              digits6: totalGamesPlayed.digits6,
-              digits7: totalGamesPlayed.digits7,
+              digits2: Number(totalGamesPlayed.digits2),
+              digits3: Number(totalGamesPlayed.digits3),
+              digits4: Number(totalGamesPlayed.digits4),
+              digits5: Number(totalGamesPlayed.digits5),
+              digits6: Number(totalGamesPlayed.digits6),
+              digits7: Number(totalGamesPlayed.digits7),
             },
           },
           { upsert: true }

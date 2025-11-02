@@ -23,7 +23,7 @@ export async function DELETE(req: NextRequest) {
     const accounts = db.collection("accounts");
     const fields: any = {};
     body.digits.forEach((digit: number) => {
-      fields[`${digit}scores`] = "";
+      fields[`scores${digit}`] = "";
     });
     const result = await accounts.updateOne(
       { sessionId: sessionId },

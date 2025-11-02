@@ -120,3 +120,7 @@
   object-fit: cover;
   object-position: center center;
 }
+
+.disabled{
+  cursor: auto;
+}

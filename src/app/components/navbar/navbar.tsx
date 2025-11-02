@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./navbar.module.css";
@@ -31,11 +32,17 @@ const gameModes = [2, 3, 4, 5, 6, 7];
 4;
 interface NavbarProps {
   containerRef?: React.RefObject<HTMLElement | null>;
+  showLoginButton?: boolean;
   digits?: Digit;
   style?: React.CSSProperties;
 }
 
-export default function Navbar({ digits, containerRef, style }: NavbarProps) {
+export default function Navbar({
+  digits,
+  containerRef,
+  showLoginButton = true,
+  style,
+}: NavbarProps) {
   const user = useUser();
   const profileMenu: Item[] = user
     ? [
@@ -57,9 +64,18 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
       ]
     : [];
   const [initalized, setInitialized] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-  const [showInstructions, setShowInstructions] = useState(false);
   const [mobileSize, setMobileSize] = useState(false);
+
+  // Handling modals for the navbar
+  const [showInstructions, setShowInstructions] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+
+  // Needed since the navbar is in a layout
+  const pathname = usePathname();
+  useEffect(() => {
+    setShowInstructions(false);
+    setShowLogin(false);
+  }, [pathname]);
 
   // Showing instructions on first visit to a game
   useEffect(() => {
@@ -67,8 +83,14 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
     const visited = localStorage.getItem("visited");
     if (!visited && !user) {
       setShowInstructions(true);
-      localStorage.setItem("visited", "true");
     }
+    const date = new Date(
+      new Date().toLocaleString("en-US", {
+        timeZone: "America/New_York",
+      })
+    );
+    const dateString = `${date.getMonth() + 1}-${date.getDate()}`;
+    localStorage.setItem("visited", dateString);
   }, [digits]);
 
   //componentDidMount, runs when component mounts and returns on dismount
@@ -243,14 +265,16 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
             title="Your Profile"
           />
         ) : (
-          <NavbarButton
-            title="Login"
-            aria-label="Click to open the login panel"
-            onClick={() => setShowLogin(true)}
-            style={{ padding: "0.8rem", width: "6.4rem" }}
-          >
-            <ProfileIcon />
-          </NavbarButton>
+          showLoginButton && (
+            <NavbarButton
+              title="Login"
+              aria-label="Click to open the login panel"
+              onClick={() => setShowLogin(true)}
+              style={{ padding: "0.8rem", width: "6.4rem" }}
+            >
+              <ProfileIcon />
+            </NavbarButton>
+          )
         )}
       </div>
       {showInstructions && (
@@ -271,7 +295,7 @@ export default function Navbar({ digits, containerRef, style }: NavbarProps) {
           animate={true}
           modalStyle={{ paddingTop: "0.4rem", paddingBottom: "0rem" }}
         >
-          <Login style={{ border: "none" }} />
+          <Login style={{ border: "none" }} onNavigate={() => setShowLogin(false)} />
         </Modal>
       )}
     </nav>

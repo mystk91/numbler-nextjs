@@ -6,7 +6,6 @@
 
 .top_wrapper {
   display: flex;
-  justify-content: space-between;
   height: 24rem;
 }
 
@@ -31,12 +30,20 @@
   background-color: var(--lower-color);
 }
 
+.info_wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex: 1;
+  column-gap: 6rem;
+  padding: 1.8rem 1.2rem;
+}
+
 .sections_wrapper {
   display: flex;
   flex-direction: column;
-  padding: 1.8rem 1.2rem;
   row-gap: 3.6rem;
-  width: max-content;
+  height: 30rem;
 }
 
 .sections_wrapper section {
@@ -83,12 +90,61 @@
 
 .info_tab a:hover,
 .link_button:hover {
-  text-decoration: underline;
-  text-underline-offset: 0.4rem;
+  color: var(--link-color-hover);
 }
 
-@media screen and (max-width: 359px) {
+.contact_us_wrapper {
+  display: flex;
+}
+
+.sections_wrapper .contact_us {
+  display: flex;
+  flex-direction: column;
+  margin-top: 5.4rem;
+  row-gap: 0.4rem;
+  text-align: start;
+  max-width: 24rem;
+}
+
+.contact_message {
+  font-style: italic;
+}
+
+.email {
+  margin-left: 0.4rem;
+  font-style: oblique;
+  font-weight: bold;
+  color: var(--link-color-hover);
+}
+
+@media screen and (max-width: 580px) {
   .pillar_decoration {
     display: none;
+  }
+
+  .top_wrapper {
+    margin: 0 3.6rem;
+  }
+}
+@media screen and (max-width: 500px) {
+  .info_wrapper {
+    column-gap: 3.6rem;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .info_wrapper {
+    column-gap: 2rem;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .info_wrapper {
+    column-gap: 1.2rem;
+  padding: 1.8rem 0rem;
+  }
+
+  .sections_wrapper h1 {
+    transform: translateX(0rem);
   }
 }

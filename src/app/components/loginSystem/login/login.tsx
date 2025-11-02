@@ -10,9 +10,10 @@ import Button from "@/app/components/buttons/Button Set/button";
 
 interface LoginProps {
   style?: React.CSSProperties;
+  onNavigate?: () => void; //Needed for the navbar version when revisiting the same page
 }
 
-export default function Login({ style }: LoginProps) {
+export default function Login({ style, onNavigate }: LoginProps) {
   //URLS
   const loginURL = "/api/auth/login";
   // Used to give focus to the form input on load
@@ -139,12 +140,17 @@ export default function Login({ style }: LoginProps) {
       <div className={styles.links_container}>
         <div className={styles.signup_link_container}>
           {`Not a member?`}&nbsp;
-          <Link href="/signup" title={`Sign up`}>{`Sign up!`}</Link>
+          <Link
+            href="/signup"
+            title={`Sign up`}
+            onClick={onNavigate}
+          >{`Sign up!`}</Link>
         </div>
         <Link
           href="/password-reset"
           className={styles.forgot_password}
-          title="Reset your password"
+          title="Go to password reset"
+          onClick={onNavigate}
         >{`Forgot Password?`}</Link>
       </div>
       <div className={styles.divider}></div>
@@ -169,13 +175,13 @@ export default function Login({ style }: LoginProps) {
         <Link
           href="/policy/tos"
           target="_blank"
-          title="Open terms of service in a new window"
+          title="Open terms of service"
         >{`Terms of Service`}</Link>
         {`&`}
         <Link
           href="/policy/privacy"
           target="_blank"
-          title="Open privacy policy in a new window"
+          title="Open privacy policy"
         >{`Privacy Policy`}</Link>
       </div>
     </div>

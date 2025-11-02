@@ -9,10 +9,6 @@ export const metadata: Metadata = {
   description: `We are checking if things work here!`,
 };
 
-export const viewport: Viewport = {
-  themeColor: `#434360`,
-};
-
 export default async function RootLayout({
   children,
 }: Readonly<{

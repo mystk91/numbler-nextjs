@@ -89,15 +89,15 @@ export async function POST(req: NextRequest) {
         { sessionId: sessionId },
         {
           $set: {
-            [`${digits}digits`]: gameUpdate,
+            [`digits${digits}`]: gameUpdate,
           },
-          $push: { [`${digits}scores`]: score },
+          $push: { [`scores${digits}`]: score },
         }
       );
     } else {
       result = await accounts.updateOne(
         { sessionId: sessionId },
-        { $set: { [`${digits}digits`]: gameUpdate } }
+        { $set: { [`digits${digits}`]: gameUpdate } }
       );
     }
     if (!result || !result.acknowledged) {

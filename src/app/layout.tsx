@@ -2,10 +2,14 @@ import type { Metadata } from "next";
 import "@/app/globals.css";
 import { User, UserProvider } from "@/app/contexts/userContext";
 import { getCurrentUser } from "@/app/lib/auth/getCurrentUser";
+import type { Viewport } from "next";
+
+export const viewport: Viewport = {
+  themeColor: `#434360`,
+};
 
 export const metadata: Metadata = {
   title: "Numbler",
-  themeColor: `#434360`,
   description: `A number guessing game. Use hints to zero in on the correct number!`,
   openGraph: {
     title: "Numbler",
@@ -32,5 +36,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const user = await getCurrentUser(["avatar"]);
-  return <UserProvider user={user}>{children}</UserProvider>;
+  return (
+    <UserProvider user={user}>
+      <html>
+        <body>{children}</body>
+      </html>
+    </UserProvider>
+  );
 }

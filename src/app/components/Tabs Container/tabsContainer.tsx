@@ -52,7 +52,7 @@ export default function TabContainer({
   // We need this also to make resize observer work correctly
   const currentTabRef = useRef(currentTab);
   const [indicatorStyle, setIndicatorStyle] = useState({
-    height: Number(tabRefs.current[currentTab]?.clientHeight) - 12,
+    height: Number(tabRefs.current[currentTab]?.clientHeight) || 0 - 12,
     width: tabRefs.current[currentTab]?.clientWidth,
     left: tabRefs.current[currentTab]?.offsetLeft,
     transition: "",

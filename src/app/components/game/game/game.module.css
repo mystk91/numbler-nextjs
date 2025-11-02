@@ -6,6 +6,17 @@
   position: relative;
 }
 
+.loading_game {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading_game > * {
+  transform: translateY(-5.6rem);
+}
+
 .end_panel_wrapper {
   position: absolute;
   top: 0;

@@ -23,6 +23,8 @@ import { createToast } from "@/app/components/toasts/createToast";
 import InvalidGuess from "@/app/components/toasts/invalidGuessToast";
 import { toast } from "react-toastify";
 import { descramble } from "@/app/lib/descramble";
+import ArrowLoader from "@/app/components/loaders/arrow_loader";
+import ExpectedError from "@/app/components/errors/Expected Error/error";
 
 type Digits = 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -68,6 +70,7 @@ export default function Game({ digits }: GameProps) {
   const currentRow = useRef(0);
   const currentColumn = useRef(0);
   const gameStatus = useRef<`playing` | `victory` | `defeat`>(`playing`);
+  const [loading, setLoading] = useState(true);
   const correctNumber = useRef("");
   const [showEndPanel, setShowEndPanel] = useState(false);
   const { keyColors, setKeyColors } = useKeyColors();
@@ -153,70 +156,84 @@ export default function Game({ digits }: GameProps) {
 
   // Initalizes the game on mount
   async function initializeGame() {
-    setShowEndPanel(false);
-    setShowScoresButton(false);
-    setEnterButton("Enter");
-    // Here we need to decide if we're
-    // loading user game data, local storage game data, or just creating an empty game
-    let game: GameData | null = null;
-    let scoresArr: number[] = [];
-    let shouldFetch = true;
-    const body: { digits: number; game?: GameData } = {
-      digits: digits,
-    };
-    if (!user) {
-      game = await getLocalGameData(digits);
-      const scoresStorage = localStorage.getItem("scores" + digits);
-      if (scoresStorage) {
-        scoresArr = JSON.parse(scoresStorage);
-      }
-      if (game && game.gameStatus === "playing" && game.currentRow > 0) {
-        shouldFetch = false;
-      } else {
-        body.game = game as GameData;
-      }
-    }
-    if (shouldFetch) {
-      try {
-        const res = await fetch("/api/game/getGame", {
-          method: "POST",
-          body: JSON.stringify(body),
-          headers: { "Content-Type": "application/json" },
-        });
-        const data = await res.json();
-        if (data.game) {
-          game = data.game;
-        } else if (data.error && data.logout) {
-          forceLogout();
+    try {
+      setShowEndPanel(false);
+      setShowScoresButton(false);
+      setEnterButton("Enter");
+      // Here we need to decide if we're
+      // loading user game data, local storage game data, or just creating an empty game
+      let game: GameData | null = null;
+      let scoresArr: number[] = [];
+      let shouldFetch = true;
+      const body: { digits: number; game?: GameData } = {
+        digits: digits,
+      };
+      if (!user) {
+        try {
+          game = await getLocalGameData(digits);
+        } catch {
+          game = null;
         }
-        if (data.scores) {
-          scoresArr = data.scores;
+        const scoresStorage = localStorage.getItem("scores" + digits);
+        if (scoresStorage) {
+          try {
+            scoresArr = JSON.parse(scoresStorage);
+          } catch {
+            scoresArr = [];
+          }
         }
-      } catch {}
-    }
-    if (game) {
-      values.current = game.values;
-      hints.current = game.hints;
-      currentRow.current = game.currentRow;
-      currentColumn.current = Math.max(
-        game.values[game.currentRow].findIndex((value) => value === ""),
-        0
-      );
-      gameStatus.current = game.gameStatus;
-      gameId.current = game.gameId;
-      correctNumber.current = game.correctNumber;
-      scores.current = scoresArr;
-      if (gameStatus.current !== "playing") {
-        currentColumn.current = digits;
-        updateKeyColors(currentRow.current + 1);
-        setShowEndPanel(true);
-        setEnterButton("Countdown");
-        setShowScoresButton(true);
-      } else {
-        updateKeyColors(currentRow.current);
+        if (game && game.gameStatus === "playing" && game.currentRow > 0) {
+          shouldFetch = false;
+        } else {
+          body.game = game as GameData;
+        }
       }
-      checkingGuess.current = false;
-      createGameboard();
+      if (shouldFetch) {
+        try {
+          const res = await fetch("/api/game/getGame", {
+            method: "POST",
+            body: JSON.stringify(body),
+            headers: { "Content-Type": "application/json" },
+          });
+          const data = await res.json();
+          if (data.game) {
+            game = data.game;
+          } else if (data.error && data.logout) {
+            forceLogout();
+          }
+          if (data.scores) {
+            scoresArr = data.scores;
+          }
+        } catch {}
+      }
+      if (game) {
+        values.current = game.values;
+        hints.current = game.hints;
+        currentRow.current = game.currentRow;
+        currentColumn.current = Math.max(
+          game.values[game.currentRow].findIndex((value) => value === ""),
+          0
+        );
+        gameStatus.current = game.gameStatus;
+        gameId.current = game.gameId;
+        correctNumber.current = game.correctNumber;
+        scores.current = scoresArr;
+        if (gameStatus.current !== "playing") {
+          currentColumn.current = digits;
+          updateKeyColors(currentRow.current + 1);
+          setShowEndPanel(true);
+          setEnterButton("Countdown");
+          setShowScoresButton(true);
+        } else {
+          updateKeyColors(currentRow.current);
+        }
+        checkingGuess.current = false;
+        createGameboard();
+      }
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
     }
   }
 
@@ -510,6 +527,13 @@ export default function Game({ digits }: GameProps) {
         localStorage.setItem("digits" + digits, JSON.stringify(getGameData()));
         localStorage.setItem("scores" + digits, JSON.stringify(scores.current));
       }
+      if (digits < 4) {
+        if (digits == 2) {
+          delay += 360;
+        } else {
+          delay += 160;
+        }
+      }
       setTimeout(() => {
         setShowEndPanel(true);
       }, delay + delayIncrement * digits - 200);
@@ -636,48 +660,62 @@ export default function Game({ digits }: GameProps) {
     }
   }
 
-  return (
-    gameboard.length > 0 && (
-      <div className={styles.game}>
-        <Gameboard rows={gameboard} />
-        <Keyboard
-          keyColors={keyColors}
-          keyFunctions={{
-            "0": () => handleNumberKey(0),
-            "1": () => handleNumberKey(1),
-            "2": () => handleNumberKey(2),
-            "3": () => handleNumberKey(3),
-            "4": () => handleNumberKey(4),
-            "5": () => handleNumberKey(5),
-            "6": () => handleNumberKey(6),
-            "7": () => handleNumberKey(7),
-            "8": () => handleNumberKey(8),
-            "9": () => handleNumberKey(9),
-            Enter: () => handleEnterKey(),
-            Backspace: () => handleBackspaceKey(),
-            Countdown: () => {},
-            Reset: () => initializeGame(),
-            Scores: () => setShowEndPanel(!showEndPanel),
-          }}
-          focusEnter={focusEnter}
-          showScoresButton={showScoresButton}
-          enterButton={enterButton}
-        />
-        {showEndPanel && (
-          <div className={styles.end_panel_wrapper}>
-            <EndPanel
-              result={gameStatus.current === "victory" ? "victory" : "defeat"}
-              correctNumber={descramble(correctNumber.current)}
-              hints={hints.current}
-              scores={scores.current}
-              date={date.current}
-              closeFunction={() => {
-                setShowEndPanel(false);
-              }}
-            />
-          </div>
-        )}
-      </div>
-    )
+  return gameboard.length > 0 ? (
+    //return false ? (
+    <div className={styles.game}>
+      <Gameboard rows={gameboard} />
+      <Keyboard
+        keyColors={keyColors}
+        keyFunctions={{
+          "0": () => handleNumberKey(0),
+          "1": () => handleNumberKey(1),
+          "2": () => handleNumberKey(2),
+          "3": () => handleNumberKey(3),
+          "4": () => handleNumberKey(4),
+          "5": () => handleNumberKey(5),
+          "6": () => handleNumberKey(6),
+          "7": () => handleNumberKey(7),
+          "8": () => handleNumberKey(8),
+          "9": () => handleNumberKey(9),
+          Enter: () => handleEnterKey(),
+          Backspace: () => handleBackspaceKey(),
+          Countdown: () => {},
+          Reset: () => initializeGame(),
+          Scores: () => setShowEndPanel(!showEndPanel),
+        }}
+        focusEnter={focusEnter}
+        showScoresButton={showScoresButton}
+        enterButton={enterButton}
+      />
+      {showEndPanel && (
+        <div className={styles.end_panel_wrapper}>
+          <EndPanel
+            result={gameStatus.current === "victory" ? "victory" : "defeat"}
+            correctNumber={descramble(correctNumber.current)}
+            hints={hints.current}
+            scores={scores.current}
+            date={date.current}
+            closeFunction={() => {
+              setShowEndPanel(false);
+            }}
+          />
+        </div>
+      )}
+    </div>
+  ) : loading ? (
+    <div
+      className={styles.loading_game}
+      role="status"
+      aria-label="Loading game..."
+    >
+      <ArrowLoader />
+    </div>
+  ) : (
+    <ExpectedError
+      reset={() => {
+        setLoading(true);
+        initializeGame();
+      }}
+    />
   );
 }

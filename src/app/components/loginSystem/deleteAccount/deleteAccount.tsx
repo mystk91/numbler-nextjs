@@ -81,7 +81,7 @@ export default function DeleteAccount({ closeFunction, style }: DeleteAccount) {
         return;
       }
       if (data.success) {
-        router.push("/delete-completed");
+        router.push("/account-deleted");
       } else {
         throw new Error();
       }

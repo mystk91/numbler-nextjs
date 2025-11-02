@@ -153,6 +153,7 @@ export function Button(
       title={title}
       className={classNames(styles.button, styles[variant], styles[width], {
         [styles.active]: active,
+        [styles.disabled]: disabled,
       })}
       onPointerDown={
         type === "submit" || disabled ? undefined : handlePointerDown

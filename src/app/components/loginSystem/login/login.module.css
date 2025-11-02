@@ -11,11 +11,6 @@
   row-gap: 1.6rem;
 }
 
-.login_container a:hover {
-  text-decoration: underline;
-  text-underline-offset: 0.4rem;
-}
-
 .login_container > * {
   width: 95%;
   display: flex;
@@ -53,6 +48,10 @@
 
 .login_container a {
   color: var(--link-color);
+}
+
+.login_container a:hover {
+  color: var(--link-color-hover);
 }
 
 .login_form a,

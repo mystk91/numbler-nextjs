@@ -23,10 +23,15 @@ export default function Layout({
 
   async function updateVisitorCount() {
     const visited = localStorage.getItem("visited");
-    const date = new Date();
+    const date = new Date(
+      new Date().toLocaleString("en-US", {
+        timeZone: "America/New_York",
+      })
+    );
     const dateString = `${date.getMonth() + 1}-${date.getDate()}`;
     if (visited === dateString) return;
-    localStorage.setItem("visited", dateString);
+    // We are going to set the localStorage key inside the navbar
+    // This lets us show them the instructions the first time they visit
     const options = {
       method: "POST",
       body: JSON.stringify({
@@ -43,7 +48,8 @@ export default function Layout({
       {children}
       <div
         style={{
-          height: "10vh",
+          height: "7.2rem",
+          flexShrink: 0,
           width: "100%",
           justifyContent: "center",
           alignItems: "center",

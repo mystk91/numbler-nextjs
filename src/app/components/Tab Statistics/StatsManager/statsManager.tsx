@@ -198,7 +198,7 @@ export default function StatsManager({ scores, averages }: StatsManagerProps) {
     const toBeDeleted = checkboxRefs.current
       .map((checkbox) => (checkbox?.checked === true ? checkbox.id : -1))
       .filter((digits) => digits !== -1);
-    if (toBeDeleted.length === checkboxRefs.current.length) {
+    if (toBeDeleted.length === statsEntries.length) {
       confirmDeleteMessage.current = `Delete all stats?`;
       setShowConfirmDelete(true);
       return;
@@ -290,18 +290,35 @@ export default function StatsManager({ scores, averages }: StatsManagerProps) {
           <div className={styles.controls}>
             {showDeleteMenu && (
               <div className={styles.delete_menu}>
-                {showDeleteButton && (
+                <Button
+                  variant="tertiary"
+                  title="Close Delete Menu"
+                  onClick={closeDeleteMenu}
+                  style={{}}
+                >{`Cancel`}</Button>
+                {showDeleteButton ? (
                   <Button
                     variant="red"
                     title="Delete selected stats"
                     onClick={confirmDeletion}
                   >{`Delete`}</Button>
+                ) : (
+                  <Button
+                    variant="tertiary"
+                    style={{
+                      color: "rgb(150,150,150)",
+                      borderColor: "rgb(150,150,150)",
+                      borderWidth: "0rem",
+                      borderTopWidth: "0.05rem",
+                      fontWeight: "100",
+                      opacity: "0.6",
+                    }}
+                    ariaLabel="Select stats to enable this delete button"
+                    aria-disabled="true"
+                    tabIndex={-1}
+                    disabled={true}
+                  >{`Delete`}</Button>
                 )}
-                <Button
-                  variant="tertiary"
-                  title="Close Delete Menu"
-                  onClick={closeDeleteMenu}
-                >{`Cancel`}</Button>
               </div>
             )}
             {!showDeleteMenu && (
