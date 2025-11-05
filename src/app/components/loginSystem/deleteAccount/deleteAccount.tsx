@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import styles from "./deleteAccount.module.css";
 import classNames from "classnames";
 import InputWrapper from "@/app/components/inputs/Text Input Wrapper - Trendy/input_wrapper";
@@ -153,7 +152,7 @@ export default function DeleteAccount({ closeFunction, style }: DeleteAccount) {
                 onChange={handleChange}
                 inputRef={inputRef}
                 error={formErrors.email}
-                ariaDescribedBy="email-error"
+                ariaDescribedBy={formErrors.email ? "email-error" : undefined}
               />
               <div className={styles.button_container}>
                 <Button

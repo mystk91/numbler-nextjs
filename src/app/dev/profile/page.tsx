@@ -5,7 +5,7 @@ import TabContainer from "@/app/components/Tabs Container/tabsContainer";
 import { TabItem } from "@/app/components/Tabs Container/tabsContainer";
 import Navbar from "@/app/components/navbar/navbar";
 import StatsManager from "@/app/components/Tab Statistics/StatsManager/statsManager";
-import InfoTab from "@/app/components/Tab Info/infoTab";
+import AccountTab from "@/app/components/Tab Account/accountTab";
 
 export default function Page() {
   const scores = {
@@ -41,8 +41,8 @@ export default function Page() {
       style: { flex: "3" },
     },
     {
-      label: "Account & Info",
-      content: <InfoTab />,
+      label: "Account Settings",
+      content: <AccountTab />,
       style: { flex: "2" },
     },
   ];

@@ -1,5 +1,6 @@
 .login_wrapper {
   padding: 8vh 0 1.8rem;
   display: flex;
+  flex: 1;
   justify-content: center;
 }

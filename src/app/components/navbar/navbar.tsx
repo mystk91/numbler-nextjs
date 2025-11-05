@@ -108,7 +108,7 @@ export default function Navbar({
   }
 
   return !initalized ? (
-    <nav className={styles.navbar} style={{ opacity: "0" }}></nav>
+    <nav className={styles.navbar}></nav>
   ) : (
     <nav style={{ ...style }} className={classNames(styles.navbar)}>
       {mobileSize ? (
@@ -225,9 +225,10 @@ export default function Navbar({
           </div>
         </div>
       )}
-
       <div className={styles.logo_wrapper} aria-label="Numbler logo">
-        <NumblerIcon />
+        <Link href="/">
+          <NumblerIcon />
+        </Link>
       </div>
       <div className={styles.menu_icons}>
         {digits && (
@@ -295,7 +296,10 @@ export default function Navbar({
           animate={true}
           modalStyle={{ paddingTop: "0.4rem", paddingBottom: "0rem" }}
         >
-          <Login style={{ border: "none" }} onNavigate={() => setShowLogin(false)} />
+          <Login
+            style={{ border: "none" }}
+            onNavigate={() => setShowLogin(false)}
+          />
         </Modal>
       )}
     </nav>

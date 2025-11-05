@@ -1,7 +1,5 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import styles from "../policy.module.css";
 import classNames from "classnames";
 
@@ -134,8 +132,8 @@ export default function TermsOfService({ style }: Props) {
       <section>
         <h2>Advertising</h2>
         <p>
-          The website may display advertisements, including banner ads and
-          sponsored content, to help support operating costs.
+          The website may display advertisements to help support operating
+          costs.
         </p>
       </section>
 

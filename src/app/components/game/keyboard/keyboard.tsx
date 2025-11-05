@@ -1,7 +1,5 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import styles from "./keyboard.module.css";
 import classNames from "classnames";
 import KeyboardButton from "@/app/components/buttons/keyboardButton/keyboardButton";

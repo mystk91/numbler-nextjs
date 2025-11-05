@@ -6,9 +6,15 @@ import type { Metadata } from "next";
 import Navbar from "@/app/components/navbar/navbar";
 import Game from "@/app/components/game/game/game";
 import { useRef } from "react";
+import FooterAd from "@/app/components/Ads/FooterAd";
 
 export default function Page() {
   const containerRef = useRef<null | HTMLDivElement>(null);
 
-  return <Game digits={4} />;
+  return (
+    <>
+      <Game digits={4} />
+      <FooterAd />
+    </>
+  );
 }

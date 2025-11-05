@@ -1,0 +1,86 @@
+.account_tab {
+  display: flex;
+  flex-direction: column;
+}
+
+.top_wrapper {
+  display: flex;
+}
+
+.left {
+  left: 0;
+}
+
+.right {
+  right: 0;
+}
+
+.account_wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex: 1;
+  column-gap: 6rem;
+  padding: 1.8rem 1.2rem;
+}
+
+.sections_wrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: 3.6rem;
+}
+
+.footer_wrapper {
+  width: 100vw;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+.sections_wrapper section {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.2rem;
+  align-items: flex-start;
+}
+
+.sections_wrapper h1 {
+  font-size: 3rem;
+  font-weight: 200;
+  margin: 0;
+  padding: 0;
+}
+
+.links_wrapper {
+  display: flex;
+  flex-direction: column;
+  padding-left: 1.2rem;
+  align-items: flex-start;
+  row-gap: 0.6rem;
+  font-size: 1.8rem;
+}
+
+.links_wrapper > * {
+  width: max-content;
+}
+
+.link_button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--link-color);
+  cursor: pointer;
+  text-decoration: none;
+  outline: none;
+}
+
+.link_button:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
+}
+
+.account_tab a:hover,
+.link_button:hover {
+  color: var(--link-color-hover);
+}

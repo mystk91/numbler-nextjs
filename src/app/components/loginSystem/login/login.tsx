@@ -92,7 +92,10 @@ export default function Login({ style, onNavigate }: LoginProps) {
 
   //Sends user to google login
   function googleLogin() {
-    window.location.href = "/api/auth/google/login";
+    const path = window.location.pathname;
+    window.location.href = `/api/auth/google/login?path=${encodeURIComponent(
+      path
+    )}`;
   }
 
   return (
@@ -116,7 +119,7 @@ export default function Login({ style, onNavigate }: LoginProps) {
           onChange={handleChange}
           //inputRef={inputReference}
           error={formErrors.email}
-          ariaDescribedBy="email-error"
+          ariaDescribedBy={formErrors.email ? `email-error` : undefined}
           maxLength={128}
         />
         <InputWrapper
@@ -128,7 +131,7 @@ export default function Login({ style, onNavigate }: LoginProps) {
           togglePassword={true}
           onChange={handleChange}
           error={formErrors.password}
-          ariaDescribedBy="password-error"
+          ariaDescribedBy={formErrors.password ? `password-error` : undefined}
           maxLength={32}
         />
         <div className={styles.button_container}>
@@ -147,7 +150,7 @@ export default function Login({ style, onNavigate }: LoginProps) {
           >{`Sign up!`}</Link>
         </div>
         <Link
-          href="/password-reset"
+          href="/reset-password"
           className={styles.forgot_password}
           title="Go to password reset"
           onClick={onNavigate}

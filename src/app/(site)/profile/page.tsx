@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import TabContainer from "@/app/components/Tabs Container/tabsContainer";
 import { TabItem } from "@/app/components/Tabs Container/tabsContainer";
 import StatsManager from "@/app/components/Tab Statistics/StatsManager/statsManager";
-import InfoTab from "@/app/components/Tab Info/infoTab";
+import AccountTab from "@/app/components/Tab Account/accountTab";
 import { connectToDatabase } from "@/app/lib/mongodb";
 
 export const metadata: Metadata = {
@@ -45,8 +45,8 @@ export default async function ProfilePage() {
       style: { flex: "3" },
     },
     {
-      label: "Account & Info",
-      content: <InfoTab />,
+      label: "Account Settings",
+      content: <AccountTab />,
       style: { flex: "2" },
     },
   ];

@@ -142,7 +142,15 @@ export default function PasswordChange({ code }: PasswordChangeProps) {
           <div
             className={styles.message}
           >{`Your password has been changed.`}</div>
-          <Link href="/login" style={{ width: "80%" }}>
+          <Link
+            href={"/login"}
+            style={{
+              borderRadius: "1.6rem",
+              width: "80%",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
             <Button variant="primary" width="full" tabIndex={-1}>
               {`Go to Login`}
             </Button>
@@ -154,6 +162,7 @@ export default function PasswordChange({ code }: PasswordChangeProps) {
           className={styles.change_password_container}
           aria-label="Change Password Container"
         >
+          <label className={styles.label}>{`Create New Password`}</label>
           <form
             className={styles.change_password_form}
             onSubmit={changePassword}
@@ -170,7 +179,9 @@ export default function PasswordChange({ code }: PasswordChangeProps) {
               onChange={handleChange}
               inputRef={inputReference}
               error={formErrors.password}
-              ariaDescribedBy="password-error"
+              ariaDescribedBy={
+                formErrors.password ? `password-error` : undefined
+              }
             />
             <InputWrapper
               label="Verify Password"
@@ -182,7 +193,9 @@ export default function PasswordChange({ code }: PasswordChangeProps) {
               value={formData.verify_password}
               onChange={handleChange}
               error={formErrors.verify_password}
-              ariaDescribedBy={`verify-password-error`}
+              ariaDescribedBy={
+                formErrors.verify_password ? `verify-password-error` : undefined
+              }
             />
             <div className={styles.button_container}>
               <Button

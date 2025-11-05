@@ -257,6 +257,7 @@ export default function Signup({}: SignupProps) {
           percent={percent}
           transitionDuration={transitionDuration}
         >
+          <label className={styles.label}>{`Sign up`}</label>
           <form onSubmit={submitEmail}>
             <InputWrapper
               id={`email_input`}
@@ -266,7 +267,7 @@ export default function Signup({}: SignupProps) {
               value={formData.email}
               onChange={handleChange}
               maxLength={128}
-              ariaDescribedBy={`email-error`}
+              ariaDescribedBy={formErrors.email ? `email-error` : undefined}
               error={formErrors.email}
               autocomplete="email"
               inputRef={inputRef}
@@ -290,6 +291,7 @@ export default function Signup({}: SignupProps) {
           buttonDisabled={buttonDisabled}
           goBack={() => goBack("email", "password", 33)}
         >
+          <label className={styles.label}>{`Create a Password`}</label>
           <form onSubmit={submitPassword}>
             <div className={styles.inputs_wrapper}>
               <InputWrapper
@@ -300,7 +302,9 @@ export default function Signup({}: SignupProps) {
                 value={formData.password}
                 onChange={handleChange}
                 maxLength={32}
-                ariaDescribedBy={`password-error`}
+                ariaDescribedBy={
+                  formErrors.password ? `password-error` : undefined
+                }
                 error={formErrors.password}
                 autocomplete="password"
                 togglePassword={true}
@@ -314,7 +318,11 @@ export default function Signup({}: SignupProps) {
                 value={formData.verify_password}
                 onChange={handleChange}
                 maxLength={32}
-                ariaDescribedBy={`verify-password-error`}
+                ariaDescribedBy={
+                  formErrors.verify_password
+                    ? `verify-password-error`
+                    : undefined
+                }
                 error={formErrors.verify_password}
                 autocomplete="password"
                 togglePassword={true}

@@ -13,6 +13,12 @@ export default function Page() {
     <div className={styles.page}>
       <div className={styles.wrapper}>
         <div>
+          <h1>{`Page Misc`}</h1>
+          <Link href="/dev/footer">{`Footer`}</Link>
+          <Link href="/dev/contact-us">{`Contact Us`}</Link>
+          <Link href="/dev/404">{`404`}</Link>
+        </div>
+        <div>
           <h1>{`Buttons`}</h1>
           <Link href="/dev/buttons">{`Button Set`}</Link>
         </div>

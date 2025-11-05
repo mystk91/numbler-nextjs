@@ -1,7 +1,5 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import styles from "./deleteComplete.module.css";
 import classNames from "classnames";
 import InputWrapper from "@/app/components/inputs/Text Input Wrapper - Trendy/input_wrapper";

@@ -1,0 +1,11 @@
+.ad {
+  height: 7.2rem;
+  flex-shrink: 0;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  background-color: grey;
+  color: white;
+  font-size: 1.8rem;
+}

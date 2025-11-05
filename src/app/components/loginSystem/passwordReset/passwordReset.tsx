@@ -1,7 +1,5 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import styles from "./passwordReset.module.css";
 import classNames from "classnames";
 import { useRouter } from "next/navigation";
@@ -109,6 +107,7 @@ export default function PasswordReset({ style }: PasswordResetProps) {
       aria-label="Password Reset Container"
       style={{ ...style }}
     >
+      <label className={styles.label}>{`Password Reset`}</label>
       <form
         className={styles.reset_form}
         onSubmit={resetPassword}
@@ -124,7 +123,7 @@ export default function PasswordReset({ style }: PasswordResetProps) {
           onChange={handleChange}
           inputRef={inputReference}
           error={formErrors.email}
-          ariaDescribedBy="email-error"
+          ariaDescribedBy={formErrors.email ? "email-error" : undefined}
         />
         <div className={styles.button_container}>
           <Button

@@ -46,19 +46,6 @@ export default function Layout({
   return (
     <>
       {children}
-      <div
-        style={{
-          height: "7.2rem",
-          flexShrink: 0,
-          width: "100%",
-          justifyContent: "center",
-          alignItems: "center",
-          display: "flex",
-          backgroundColor: "grey",
-          color: "white",
-          fontSize: "1.8rem",
-        }}
-      >{`Ad space`}</div>
       <ToastContainer
         limit={1}
         transition={transition}

@@ -1,7 +1,5 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import styles from "../policy.module.css";
 import classNames from "classnames";
 
@@ -45,20 +43,16 @@ export default function PrivacyPolicy({ style }: Props) {
         </ul>
 
         <h3>Game Data</h3>
-        <p>During gameplay, the site collects:</p>
+        <p>When you complete games, the site may collect:</p>
         <ul>
           <li>
-            <strong>Game scores and statistics:</strong> To display your
-            personal performance and progress
-          </li>
-          <li>
-            <strong>Gameplay patterns:</strong> Anonymized data about game
-            strategies and completion rates for improving the service
+            <strong>Game scores and gameplay data:</strong> To display your
+            personal performance and progress, and for improving the service
           </li>
         </ul>
 
         <h3>Technical Information</h3>
-        <p>The site automatically collects:</p>
+        <p>The site may automatically collect:</p>
         <ul>
           <li>
             <strong>Usage analytics:</strong> Basic, non-invasive statistics
@@ -69,33 +63,20 @@ export default function PrivacyPolicy({ style }: Props) {
 
       <section>
         <h2>Cookies and Local Storage</h2>
-        <p>
-          The site uses cookies and browser storage technologies to enhance your
-          experience:
-        </p>
+        <p>The site uses cookies and browser storage technologies:</p>
         <ul>
           <li>
-            <strong>Session Cookies:</strong> Essential cookies that keep you
-            logged in and maintain your authenticated session
+            <strong>Essential Cookies and Storage:</strong> Necessary for login
+            sessions, game progress, and site functionality
           </li>
           <li>
-            <strong>Game State Storage:</strong> Local browser storage to save
-            your current game progress and settings
-          </li>
-          <li>
-            <strong>User Preferences:</strong> Storage of your game preferences
-            and settings for a personalized experience
-          </li>
-          <li>
-            <strong>Analytics Cookies:</strong> May be used by advertising
-            partners for service optimization
+            <strong>Third-Party Cookies:</strong> May be used by third-party
+            services for various purposes including advertising and analytics
           </li>
         </ul>
         <p>
-          You can control cookie settings through your browser, but disabling
-          essential cookies may affect site functionality. Game progress for
-          non-registered users is stored locally in your browser and is not
-          transmitted to the servers.
+          Game progress for non-registered users is stored locally in your
+          browser.
         </p>
       </section>
 
@@ -120,17 +101,16 @@ export default function PrivacyPolicy({ style }: Props) {
         </p>
         <ul>
           <li>
-            <strong>Service Providers:</strong> With trusted third-party
-            services that help operate the website (authentication services,
-            email delivery, data storage)
+            <strong>Service Providers:</strong> With third-party services that
+            help operate the website (authentication services, email delivery,
+            data storage)
           </li>
           <li>
-            <strong>Legal Requirements:</strong> When required by law or to
-            protect rights and user safety
+            <strong>Legal Requirements:</strong> When required by law
           </li>
           <li>
             <strong>Aggregated Data:</strong> Anonymized, aggregated statistics
-            that cannot identify individual users may be shared
+            may be shared
           </li>
         </ul>
       </section>
@@ -138,10 +118,10 @@ export default function PrivacyPolicy({ style }: Props) {
       <section>
         <h2>Advertising</h2>
         <p>
-          The site may display advertisements, including third-party advertising
-          services and sponsored content. Personal information is not shared
-          with advertisers. Advertising partners may use cookies and similar
-          technologies for ad personalization.
+          The site may display advertisements and use third-party advertising
+          services. Advertising partners may use cookies and similar
+          technologies for ad personalization and operate under their own
+          privacy policies.
         </p>
       </section>
 

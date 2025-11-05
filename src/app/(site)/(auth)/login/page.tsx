@@ -18,7 +18,9 @@ export default async function LoginPage() {
 
   return (
     <div className={styles.login_wrapper}>
-      <Login />
+      <div>
+        <Login />
+      </div>
     </div>
   );
 }

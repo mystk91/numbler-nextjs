@@ -1,0 +1,31 @@
+.error_wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.error {
+  display: flex;
+  border-radius: 1.2rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: max-content;
+  width: 36rem;
+  margin: 10vh 0 2.4rem;
+  border: var(--border);
+  row-gap: 1.8rem;
+  padding: 2.4rem 1.2rem;
+}
+
+.errors > * {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.error_message {
+  text-align: center;
+  text-wrap: pretty;
+  max-width: 32rem;
+}

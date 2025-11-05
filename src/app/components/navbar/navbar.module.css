@@ -10,7 +10,19 @@
   border-bottom: 0.05rem var(--border-color);
   column-gap: 1.2rem;
   padding: 0 1.6rem;
-  transition: opacity 0.1s;
+}
+
+.navbar > * {
+  animation: appear 0.1s;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .navbar > div {
@@ -20,11 +32,25 @@
   width: 33.3%;
 }
 
-.logo_wrapper > svg {
-  width: 30%;
+.logo_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo_wrapper a {
+  display: flex;
+  align-items: center;
+}
+
+.logo_wrapper svg {
   height: calc(0.6 * var(--height));
   width: auto;
   fill: var(--grey-text);
+}
+.logo_wrapper svg:hover {
+  fill: white;
+  cursor: pointer;
 }
 
 .navbar .menu_icons {

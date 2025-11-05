@@ -8,6 +8,8 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const code = searchParams.get("code");
+    const state = searchParams.get("state");
+    const returnPath = state ? decodeURIComponent(state) : "";
 
     if (!code) {
       return NextResponse.redirect(
@@ -103,9 +105,10 @@ export async function GET(req: NextRequest) {
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 365,
     });
-    // Redirect to homepage
+    // Redirect to original page or homepage
+    const redirectPath = returnPath || "/";
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_PROTOCOL}${process.env.NEXT_PUBLIC_DOMAIN}`
+      `${process.env.NEXT_PUBLIC_PROTOCOL}${process.env.NEXT_PUBLIC_DOMAIN}${redirectPath}`
     );
   } catch (error) {
     // Redirect to login

@@ -1,7 +1,5 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import styles from "./arrow_loader.module.css";
 import DownArrow from "@/app/components/icons/downArrow";
 

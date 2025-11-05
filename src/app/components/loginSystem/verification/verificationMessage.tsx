@@ -13,7 +13,15 @@ export default function VertificationMessage({ success }: VerifyProps) {
   return success ? (
     <div className={styles.verify}>
       <div className={styles.message}>{`Your account has been created!`}</div>
-      <Link href={"/login"} style={{ borderRadius: "1.6rem", width: "80%" }}>
+      <Link
+        href={"/login"}
+        style={{
+          borderRadius: "1.6rem",
+          width: "80%",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
         <Button variant="primary" tabIndex={-1} style={{ width: "100%" }}>
           {`Go to Login`}
         </Button>

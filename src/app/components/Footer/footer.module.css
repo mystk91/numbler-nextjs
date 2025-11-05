@@ -1,0 +1,26 @@
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 4.2rem;
+  width: 100%;
+  font-size: 1.4rem;
+  column-gap: 3.6rem;
+  flex-shrink: 0;
+  background-color: var(--lower-color);
+}
+
+.footer a {
+  color: var(--grey-text);
+  opacity: 0.9;
+}
+
+.footer a:hover {
+  color: white;
+  opacity: 1;
+}
+
+.footer a:focus-visible {
+  outline: 0.2rem solid var(--green);
+  outline-offset: 0.2rem;
+}
