@@ -3,10 +3,9 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  row-gap: 1.2rem;
-  width: 100%;
+  row-gap: 0.8rem;
   width: 100vw;
-  padding: 0.4rem 0.8rem 1.2rem;
+  padding: 0rem 0.8rem 1rem;
   flex: 0 0 22.5%;
   height: 100%;
 }
@@ -38,5 +37,36 @@
   .number_keys {
     column-gap: 0rem;
     transition: column-gap 0.6s;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .keyboard {
+    row-gap: 0.6rem;
+    padding: 0 0.8rem 1.2rem;
+  }
+  .number_keys {
+    justify-content: center;
+    flex-wrap: wrap;
+    column-gap: 1vw;
+    row-gap: 0.2rem;
+    height: max-content;
+  }
+
+  .number_keys > * {
+    height: 5svh !important;
+    min-height: 3.6rem !important;
+    width: 30vw !important;
+    aspect-ratio: unset !important;
+  }
+
+  .number_keys > * > * {
+    font-size: 90cqh !important;
+  }
+}
+
+@media screen and (max-width: 370px) {
+  .keyboard {
+    padding: 1.2rem 0.8rem;
   }
 }

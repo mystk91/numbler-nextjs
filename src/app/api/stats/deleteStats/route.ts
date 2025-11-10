@@ -33,11 +33,11 @@ export async function DELETE(req: NextRequest) {
       throw new Error();
     }
     if (result.matchedCount === 0) {
-      throw "Invalid credentials";
+      throw new Error("Invalid credentials");
     }
     return NextResponse.json({ success: true });
   } catch (error) {
-    if (error === "Invalid credentials") {
+    if (error instanceof Error && error.message === "Invalid credentials") {
       cookieStore.delete("sessionId");
       return NextResponse.json({
         error: "Invalid credentials",

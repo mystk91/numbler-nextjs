@@ -73,6 +73,7 @@
 .entry_row {
   display: flex;
   justify-content: center;
+  max-width: 98vw;
 }
 
 .select_all_wrapper {
@@ -100,6 +101,7 @@
 
 .checkbox_wrapper {
   width: 5.4rem;
+  min-width: 3rem;
   opacity: 1;
   display: flex;
   justify-content: center;
@@ -111,9 +113,13 @@
   0% {
     width: 0;
     opacity: 0;
+    min-width: 0;
   }
   40% {
     opacity: 0;
+  }
+  100% {
+    min-width: 3rem;
   }
 }
 
@@ -194,5 +200,15 @@
   .pillar_decoration.right,
   .circle_decoration.right {
     right: calc((90rem - 100vw) / 2 + 2rem);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .show_delete_menu h1 {
+    display: none;
+  }
+
+  .stats_header.show_delete_menu {
+    justify-content: flex-end;
   }
 }

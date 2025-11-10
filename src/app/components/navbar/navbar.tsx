@@ -46,7 +46,7 @@ export default function Navbar({
   const user = useUser();
   const profileMenu: Item[] = user
     ? [
-        { type: "link", label: "Your Profile", href: "/profile" },
+        { type: "link", label: "Your Account", href: "/account" },
         {
           type: "action",
           label: "Logout",

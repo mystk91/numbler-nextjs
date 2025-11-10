@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Contact information for Numbler",
 };
 
-export default function ContactUsPage() {
+export default function Page() {
   return (
     <>
       <Contact />

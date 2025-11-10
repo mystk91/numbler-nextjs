@@ -283,7 +283,11 @@ export default function StatsManager({ scores, averages }: StatsManagerProps) {
         </Modal>
       )}
       <div className={styles.content_wrapper}>
-        <div className={styles.stats_header}>
+        <div
+          className={classNames(styles.stats_header, {
+            [styles.show_delete_menu]: showDeleteMenu,
+          })}
+        >
           <h1>{`Your Stats`}</h1>
           <div className={styles.controls}>
             {showDeleteMenu && (
@@ -343,10 +347,6 @@ export default function StatsManager({ scores, averages }: StatsManagerProps) {
                 onKeyDown={handleSelectAllKeydown}
                 ref={selectAllRef}
                 aria-label="Select all stat entries"
-                aria-selected={
-                  (selectAllRef.current && selectAllRef.current.checked) ||
-                  false
-                }
               />
               <div>{`Select All`}</div>
             </div>
@@ -365,11 +365,6 @@ export default function StatsManager({ scores, averages }: StatsManagerProps) {
                       onClick={(e) => handleCheckboxClick(e, index)}
                       onKeyDown={(e) => handleCheckboxKeydown(e, index)}
                       id={`${entry.digits}`}
-                      aria-selected={
-                        (checkboxRefs.current[index] &&
-                          checkboxRefs.current[index].checked) ||
-                        false
-                      }
                       aria-label={
                         checkboxRefs.current[index] &&
                         checkboxRefs.current[index].checked

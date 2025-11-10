@@ -6,7 +6,8 @@ import type { Metadata } from "next";
 import Row from "@/app/components/game/row/row";
 import Rectangle from "@/app/components/game/rectangle/rectangle";
 
-export function PageOne() {
+/*
+export default function Page() {
   const guesses = 6;
   const columns = 6;
   return (
@@ -349,8 +350,9 @@ export function PageOne() {
     </div>
   );
 }
+  */
 
-export default function PageTwo() {
+export default function Page() {
   const guesses = 6;
   const columns = 8;
   return (

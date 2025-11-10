@@ -46,6 +46,10 @@
   font-size: 50cqh;
 }
 
+.toggle .text_wrapper {
+  font-size: 40cqh;
+}
+
 .keyboard:hover {
   transition: all 0.15s;
 }

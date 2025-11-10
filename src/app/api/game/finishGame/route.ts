@@ -21,7 +21,8 @@ export async function POST(req: NextRequest) {
     const todaysGame = await daily_games.findOne({ gameId: body.gameId });
     const analytics = await connectToDatabase("analytics");
     const game_stats = analytics.collection<Record<string, any>>("game_stats");
-    await game_stats.updateOne(
+    // We don't need to make the user wait for this
+    game_stats.updateOne(
       { digits: body.digits },
       {
         $push: { scores: body.score },
@@ -29,6 +30,13 @@ export async function POST(req: NextRequest) {
       { upsert: true }
     );
     if (todaysGame && todaysGame.gameId === body.gameId) {
+      // To simplify things, we'll only update individual game scores on the latest daily puzzle
+      daily_games.findOneAndUpdate(
+        { gameId: todaysGame.gameId },
+        {
+          $push: { scores: body.score },
+        }
+      );
       return NextResponse.json({ newGame: false });
     } else {
       return NextResponse.json({ newGame: true });

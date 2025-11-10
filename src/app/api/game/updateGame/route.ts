@@ -90,6 +90,7 @@ export async function POST(req: NextRequest) {
         {
           $set: {
             [`digits${digits}`]: gameUpdate,
+            lastActive: new Date(),
           },
           $push: { [`scores${digits}`]: score },
         }
@@ -108,7 +109,7 @@ export async function POST(req: NextRequest) {
     }
     return NextResponse.json({ success: true });
   } catch (error) {
-    if (error === "Invalid credentials") {
+    if (error instanceof Error && error.message === "Invalid credentials") {
       cookieStore.delete("sessionId");
       return NextResponse.json({
         error: "Invalid credentials",

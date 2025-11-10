@@ -1,21 +1,18 @@
-import Image from "next/image";
-import Link from "next/link";
 import styles from "./page.module.css";
 import type { Metadata } from "next";
 import Verify from "@/app/components/loginSystem/verification/verify";
 import { Suspense } from "react";
 import ArrowLoader from "@/app/components/loaders/arrow_loader";
-import Navbar from "@/app/components/navbar/navbar";
 
 export const metadata: Metadata = {
-  title: "Verifying...",
+  title: "Numbler - Verification",
   description: `This is a description about the page`,
 };
 
-export default async function VerifyPage({
+export default async function Page({
   params,
 }: {
-  params: { code: string };
+  params: Promise<{ code: string }>;
 }) {
   const { code } = await params;
   return (

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "Create a Numbler account",
 };
 
-export default async function SignupPage() {
+export default async function Page() {
   return (
     <div className={styles.wrapper}>
       <Signup />

@@ -12,10 +12,10 @@ export const metadata: Metadata = {
   description: `This is a description about the page`,
 };
 
-export default async function VerifyPage({
+export default async function Page({
   params,
 }: {
-  params: { code: string };
+  params: Promise<{ code: string }>;
 }) {
   const { code } = await params;
   return (

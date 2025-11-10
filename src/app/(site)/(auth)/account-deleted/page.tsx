@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Your account has been deleted",
 };
 
-export default async function PasswordResetPage() {
+export default async function Page() {
   return (
     <div className={styles.wrapper}>
       <AccountDeleted />

@@ -79,6 +79,7 @@
 .row {
   display: flex;
   height: 2.4rem;
+  overflow: hidden;
 }
 
 .row > * {
@@ -129,7 +130,6 @@
   background-color: var(--higher-color);
 }
 
-
 @media screen and (max-width: 580px) {
   .histograms_wrapper {
     flex-direction: column;
@@ -141,7 +141,7 @@
   }
 
   .histograms_wrapper .divider {
-    width: 30rem;
+    width: 20rem;
     height: 0.2rem;
   }
 
@@ -151,5 +151,17 @@
     width: 100%;
     row-gap: 0.8rem;
     padding: 1.2rem 2.4rem;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .divider,
+  .histogram:not(:last-of-type),
+  .histogram_header:last-of-type {
+    display: none;
+  }
+
+  .stat_entry .entry_header{
+    padding: 0rem 1.2rem;
   }
 }

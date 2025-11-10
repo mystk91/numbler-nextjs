@@ -49,6 +49,15 @@ export default function Page() {
     Backspace: () => {
       console.log("Backspace");
     },
+    Reset: function (): void {
+      console.log("Reset");
+    },
+    Countdown: function (): void {
+      console.log("Countdown");
+    },
+    Scores: function (): void {
+      console.log("Scores");
+    },
   };
 
   function changeColors() {

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: "Log in to your Numbler account",
 };
 
-export default async function LoginPage() {
+export default async function Page() {
   // Checks if user is logged in
   const user = await getCurrentUser();
   if (user && user.loggedIn) {

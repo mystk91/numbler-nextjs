@@ -10,10 +10,10 @@ export const metadata: Metadata = {
   description: `Change your password`,
 };
 
-export default async function ChangePasswordPage({
+export default async function Page({
   params,
 }: {
-  params: { code: string };
+  params: Promise<{ code: string }>;
 }) {
   const { code } = await params;
   return (

@@ -35,7 +35,7 @@ interface KeyboardButtonProps {
   style?: React.CSSProperties;
   onKeyDown?: (e?: React.KeyboardEvent<HTMLButtonElement>) => void;
   keyPressToken?: number | string;
-  keyType?: "number" | "enter" | "backspace";
+  keyType?: "number" | "enter" | "backspace" | "toggle";
 }
 
 function KeyboardButton(

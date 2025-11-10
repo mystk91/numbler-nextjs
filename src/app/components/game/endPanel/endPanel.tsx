@@ -56,7 +56,7 @@ export default function EndPanel({
     const equals: string = `\u{2705}`;
     const upArrow: string = `\u{2B06}`;
     const downArrow: string = `\u{2B07}`;
-    const headerSpacesLeft: number[] = [0, 1, 2, 5, 7, 9];
+    const headerSpacesLeft: number[] = [0, 0, 2, 5, 7, 9];
     const bodySpacesLeft: number[] = [2, 1, 0, 0, 0, 0];
     const labelSpacesLeft: number[] = [1, 1, 3, 5, 7, 10];
 

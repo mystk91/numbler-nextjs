@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description: "Your profile for Numbler",
 };
 
-export default async function ProfilePage() {
+export default async function Page() {
   // Retrieve the users scores, in a form like: user = {scores2: [5,4,3]}
   const user = await getCurrentUser([
     "scores2",

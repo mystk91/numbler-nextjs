@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "Reset your password",
 };
 
-export default async function PasswordResetPage() {
+export default async function Page() {
   return (
     <div className={styles.wrapper}>
       <PasswordReset />

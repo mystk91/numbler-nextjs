@@ -42,6 +42,7 @@ interface KeyboardProps {
   focusEnter?: boolean; // If true, the Enter key will get focused
   enterButton?: "Enter" | "Reset" | "Countdown";
   showScoresButton?: boolean;
+  endPanelOpen?: boolean; // Whether the end panel is currently open
 }
 
 // A hook used by the game component to control the key colors
@@ -72,6 +73,7 @@ export default function Keyboard({
   focusEnter = false,
   enterButton = "Enter",
   showScoresButton = false,
+  endPanelOpen = false,
 }: KeyboardProps) {
   const keyboardRef = useRef<HTMLDivElement>(null);
   const buttonRefs = useRef<Record<Keys, HTMLButtonElement | null>>({
@@ -299,13 +301,16 @@ export default function Keyboard({
             width={"smallest"}
             style={{ minHeight: `4.8rem`, aspectRatio: "2 / 1" }}
             onClick={keyFunctions[`Scores`]}
+            keyType="toggle"
             ref={(el) => {
               buttonRefs.current.Backspace = el;
             }}
             onKeyDown={(e) => onButtonKeydown(e, "Backspace")}
-            ariaLabel="Show Scores"
+            ariaLabel={endPanelOpen ? "Hide Scores" : "Show Scores"}
             tabIndex={1}
-          >{`Scores`}</KeyboardButton>
+          >
+            {endPanelOpen ? "Hide Scores" : "Show Scores"}
+          </KeyboardButton>
         )}
       </div>
     </div>

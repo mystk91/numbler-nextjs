@@ -542,6 +542,7 @@ export default function Game({ digits }: GameProps) {
           body: JSON.stringify({
             digits: digits,
             score: score,
+            values: values.current,
             gameId: gameId.current,
           }),
           headers: { "Content-Type": "application/json" },
@@ -684,6 +685,7 @@ export default function Game({ digits }: GameProps) {
         focusEnter={focusEnter}
         showScoresButton={showScoresButton}
         enterButton={enterButton}
+        endPanelOpen={showEndPanel}
       />
       {showEndPanel && (
         <div className={styles.end_panel_wrapper}>

@@ -4,8 +4,10 @@ import { randomString } from "./randomString";
 import { connectToDatabase } from "./mongodb";
 
 export default function startCronJobs() {
-  //if (process.env.NODE_ENV === 'production') {
-  if (process.env.NODE_ENV === "development") {
+  if (
+    process.env.NODE_ENV === "production" ||
+    process.env.NODE_ENV === "development"
+  ) {
     const updateGames = cron.schedule(
       //`0 0 * * *`,
       "*/2 * * * *",
@@ -27,7 +29,31 @@ export default function startCronJobs() {
           let oldGames = db.collection(`old_games_` + i);
           // Checks to see we already have games in the DB
           if (todaysGame) {
+            const scores = todaysGame.scores ? todaysGame.scores : [];
+            let scoresTotal = 0;
+            let oneCount = 0;
+            scores.forEach((score: number) => {
+              // We do these to filter out illegitimate perfect scores, and use the mathematical average instead
+              if (score === 1) {
+                oneCount++;
+              } else {
+                scoresTotal += score;
+              }
+            });
+            let legitGames = scores.length - oneCount;
+            const legitGamesTotal =
+              // This should end up being legitGames / .99... representing the 1 / 100... chance of getting guessing correctly
+              Math.floor(
+                legitGames / ((Math.pow(10, i) - 1) / Math.pow(10, i))
+              );
+            // Adding 1 for each game that should have a score of 1
+            scoresTotal += legitGamesTotal - legitGames;
+            if (legitGamesTotal === 0) legitGames++;
+            const average = (scoresTotal / legitGamesTotal).toFixed(3);
+
             await oldGames.insertOne({
+              average: average,
+              gamesPlayed: legitGamesTotal,
               digits: todaysGame.digits,
               unscrambled: todaysGame.unscrambled,
               correctNumber: todaysGame.correctNumber,
@@ -52,6 +78,7 @@ export default function startCronJobs() {
                   correctNumber: scramble(unscrambled),
                   unscrambled: unscrambled,
                   gameId: newGameId,
+                  scores: [],
                   date: date,
                 },
               }
@@ -75,7 +102,7 @@ export default function startCronJobs() {
     updateGames.start();
 
     // Calculates the stats of averages of daily games once a day
-    //const calculateStats = cron.schedule(`0 6 * * *`, async () => {
+    //const calculateStats = cron.schedule(`0 5 * * *`, async () => {
     const calculateStats = cron.schedule(`*/5 * * * *`, async () => {
       const db = await connectToDatabase("analytics");
       const game_stats = db.collection(`game_stats`);
@@ -172,7 +199,8 @@ export default function startCronJobs() {
 
     // Tabulates the past days user visits
     const updateDailyAnalytics = cron.schedule(
-      `0 0 * * *`,
+      //`0 6 * * *`,
+      `*/5 * * * *`,
       async () => {
         const db = await connectToDatabase("analytics");
         const current_metrics = db.collection("current_metrics");
@@ -182,6 +210,7 @@ export default function startCronJobs() {
             timeZone: "America/New_York",
           })
         );
+        today.setDate(today.getDate() - 1);
         const dateString = `${today.getFullYear()}-${String(
           today.getMonth() + 1
         ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
@@ -223,7 +252,10 @@ export default function startCronJobs() {
 
     // Tabulates the past weeks user visits
     const updateWeeklyAnalytics = cron.schedule(
-      `0 6 * * 1`,
+      /*
+      `0 4 * * 1`,
+      */
+      `*/12 * * * *`,
       async () => {
         const db = await connectToDatabase("analytics");
         const current_metrics = db.collection("current_metrics");
@@ -235,6 +267,7 @@ export default function startCronJobs() {
           })
         );
         const date = new Date(today);
+        date.setDate(date.getDate() - 7);
         const dateString = `${date.getFullYear()}-${String(
           date.getMonth() + 1
         ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
@@ -253,7 +286,7 @@ export default function startCronJobs() {
         // Creates a new entry for this weeks's data, tabulates them into totals
         if (weeklyMetrics) {
           await weekly_metrics.insertOne({
-            date: dateString,
+            weekOf: dateString,
             weekly_visitors: weeklyMetrics.weekly_visitors || 0,
             new_visitors: weeklyMetrics.new_visitors || 0,
           });
@@ -287,15 +320,25 @@ export default function startCronJobs() {
         );
         // Creates a new entry for this weeks's game data, tabulates them into totals
         if (weeklyGames) {
+          const totalWeeklyGames =
+            (weeklyGames.digits2 || 0) +
+            (weeklyGames.digits3 || 0) +
+            (weeklyGames.digits4 || 0) +
+            (weeklyGames.digits5 || 0) +
+            (weeklyGames.digits6 || 0) +
+            (weeklyGames.digits7 || 0);
+
           await weekly_games.insertOne({
-            date: dateString,
+            weekOf: dateString,
             digits2: weeklyGames.digits2 || 0,
             digits3: weeklyGames.digits3 || 0,
             digits4: weeklyGames.digits4 || 0,
             digits5: weeklyGames.digits5 || 0,
             digits6: weeklyGames.digits6 || 0,
             digits7: weeklyGames.digits7 || 0,
+            total_game: totalWeeklyGames,
           });
+
           // Add to overall totals
           await current_metrics.updateOne(
             { name: "total_games_played" },
@@ -307,6 +350,7 @@ export default function startCronJobs() {
                 digits5: weeklyGames.digits5 || 0,
                 digits6: weeklyGames.digits6 || 0,
                 digits7: weeklyGames.digits7 || 0,
+                total_games: totalWeeklyGames,
               },
             },
             { upsert: true }

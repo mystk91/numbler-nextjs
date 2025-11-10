@@ -1,8 +1,5 @@
-import Image from "next/image";
-import Link from "next/link";
 import styles from "./page.module.css";
 import type { Metadata } from "next";
-import Navbar from "@/app/components/navbar/navbar";
 import ChangePassword from "@/app/components/loginSystem/passwordChange/passwordChange";
 
 export const metadata: Metadata = {
@@ -10,10 +7,10 @@ export const metadata: Metadata = {
   description: `Change your password`,
 };
 
-export default async function ChangePasswordPage({
+export default async function Page({
   params,
 }: {
-  params: { code: string };
+  params: Promise<{ code: string }>;
 }) {
   const { code } = await params;
   return (

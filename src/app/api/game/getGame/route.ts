@@ -94,7 +94,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ game: todaysGame });
     }
   } catch (error) {
-    if (error === "Invalid credentials") {
+    if (error instanceof Error && error.message === "Invalid credentials") {
+      const cookieStore = await cookies();
       cookieStore.delete("sessionId");
       return NextResponse.json({
         error: "Invalid credentials",
