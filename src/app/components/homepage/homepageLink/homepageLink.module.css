@@ -1,0 +1,74 @@
+.link {
+  border: var(--border);
+  min-height: 16rem;
+  width: 46%;
+  transform: scale(1);
+  border-radius: 1.6rem;
+  position: relative;
+  z-index: 0;
+  background-color: var(--background);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--foreground);
+  padding: 0 1.6rem 2.4rem;
+  transition: transform 0.4s, opacity 0.1s ease-in-out;
+}
+
+.link:hover {
+  transform: scale(1.04);
+  transition: transform 0.6s;
+  z-index: 1;
+}
+
+.link h2 {
+  padding: 0;
+  margin: 2.4rem 0 1.2rem;
+  font-size: 2.4rem;
+}
+
+.recommended {
+  position: absolute;
+  top: -0.8rem;
+  left: 0.8rem;
+  font-size: 1.8rem;
+  color: var(--grey-text);
+  background-color: var(--green);
+  border-radius: 1.2rem;
+  padding: 0.4rem 1.2rem;
+  animation: float 4s infinite;
+}
+
+@keyframes float {
+  0% {
+    top: -0.6rem;
+    left: 0.4rem;
+  }
+  33% {
+    left: -0.4rem;
+  }
+  66% {
+    left: -0.8rem;
+  }
+  100% {
+    top: -0.6rem;
+    left: 0.4rem;
+  }
+}
+
+.gameboard_wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  container-type: inline-size;
+  row-gap: 0.2rem;
+  height: 100%;
+  width: 100%;
+}
+
+@media screen and (min-width: 1028px) {
+  .link {
+    width: 31%;
+  }
+}

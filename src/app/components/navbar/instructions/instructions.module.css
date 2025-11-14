@@ -7,6 +7,14 @@
   padding: 0 2.4rem;
 }
 
+.instructions h3 {
+  display: flex;
+  justify-content: center;
+  width: 90%;
+  border-bottom: 0.05rem solid var(--foreground);
+  padding-bottom: 0.2rem;
+}
+
 .instructions_wrapper,
 .example_wrapper {
   display: flex;
@@ -27,8 +35,8 @@
 
 .instruction_text {
   font-size: 1.8rem;
-  text-decoration: underline;
-  text-underline-offset: 0.6rem;
+  border-bottom: 0.05rem solid var(--foreground);
+  padding-bottom: 0.2rem;
 }
 
 .arrows_wrapper {

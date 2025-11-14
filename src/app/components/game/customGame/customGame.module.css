@@ -1,0 +1,93 @@
+.game {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.loading_game {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading_game > * {
+  transform: translateY(-5.6rem);
+}
+
+.end_panel_wrapper {
+  position: absolute;
+  top: 0;
+}
+
+/* Styles exclusive to custom game  */
+.game_creator_wrapper {
+  width: 100vw;
+  height: 100svh;
+  display: flex;
+  justify-content: center;
+  margin: 10vh 0;
+}
+
+.game_creator {
+  width: 36rem;
+  height: max-content;
+  padding: 2.4rem 1.6rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  row-gap: 1.8rem;
+  border: var(--border);
+}
+
+.game_creator h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 3rem;
+  font-family: "Urbanist", "Segoe UI", "Arial", sans-serif;
+  width: max-content;
+  border-bottom: 0.05rem solid var(--foreground);
+  padding: 0 2rem 0.1rem 0;
+}
+
+.game_creator h2 {
+  margin: 0;
+  padding: 0;
+  font-size: 2rem;
+  font-weight: 300;
+}
+
+.forms_wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-left: 1.2rem;
+  row-gap: 2.4rem;
+}
+
+.form_wrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.6rem;
+}
+
+.form_wrapper form {
+  display: flex;
+  justify-content: flex-start;
+  column-gap: 1.8rem;
+}
+
+.forms_wrapper select {
+  padding: 0.8rem;
+  border: var(--border);
+  border-radius: 0.4rem;
+  font-size: 1.6rem;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.forms_wrapper optgroup {
+  text-align: center;
+}

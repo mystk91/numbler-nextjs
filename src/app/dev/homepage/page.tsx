@@ -1,9 +1,8 @@
-import Image from "next/image";
-import Link from "next/link";
 import styles from "./page.module.css";
+import type { Metadata } from "next";
+import Navbar from "@/app/components/navbar/navbar";
 import Homepage from "@/app/components/homepage/homepage";
 import Footer from "@/app/components/Footer/footer";
-import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Numbler",
@@ -12,9 +11,10 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <>
+    <div className={styles.page}>
+      <Navbar />
       <Homepage />
       <Footer />
-    </>
+    </div>
   );
 }

@@ -110,6 +110,40 @@ function wrongCredentials() {
   });
 }
 
+//Checks if max email limit has been exceeded. We are setting it up as 1000 per day
+async function canSendEmail(): Promise<boolean> {
+  try {
+    const db = await connectToDatabase("analytics");
+    const current_metrics = db.collection("current_metrics");
+    const record = await current_metrics.findOne({ name: "emails_sent" });
+    if (record) {
+      if (record.emails_sent < record.max_emails) {
+        return true;
+      }
+      return false;
+    } else {
+      await current_metrics.insertOne({
+        name: "emails_sent",
+        emails_sent: 0,
+        max_emails: 1000,
+      });
+      return true;
+    }
+  } catch {
+    return false;
+  }
+}
+
+// Increments the daily emails sent, should occur after a successful email send
+async function updateEmailCount() {
+  const db = await connectToDatabase("analytics");
+  const current_metrics = db.collection("current_metrics");
+  await current_metrics.updateOne(
+    { name: "emails_sent" },
+    { $inc: { emails_sent: 1 } }
+  );
+}
+
 //Attempts to log user in
 async function login(req: NextRequest) {
   try {
@@ -160,26 +194,33 @@ async function login(req: NextRequest) {
   }
 }
 
+// Replaces users sessionId with a new random one. Used on logout
+async function invalidateSession(sessionId: string) {
+  try {
+    const db = await connectToDatabase("accounts");
+    const accounts = db.collection("accounts");
+    const newSessionId = randomString(48);
+    await accounts.updateOne(
+      { sessionId: sessionId },
+      { $set: { sessionId: newSessionId } }
+    );
+  } catch {}
+}
+
 //Logs the user out
 async function logout(req: NextRequest) {
   try {
     const cookieStore = await cookies();
     const sessionId = cookieStore.get("sessionId")?.value;
     cookieStore.delete("sessionId");
-    const newSessionId = randomString(48);
     if (sessionId) {
-      const db = await connectToDatabase("accounts");
-      const accounts = db.collection("accounts");
-      // Giving their account a new random sessionId
-      accounts.updateOne(
-        { sessionId: sessionId },
-        {
-          $set: { sessionId: newSessionId },
-        }
-      );
+      // Replaces users sessionId in the db, we can run this without waiting for it
+      invalidateSession(sessionId);
     }
     return success();
   } catch {
+    const cookieStore = await cookies();
+    cookieStore.delete("sessionId");
     return networkError();
   }
 }
@@ -208,6 +249,9 @@ async function sendVerification(req: NextRequest) {
         errors: errors,
       });
     }
+    //Checking if we can send an email currently
+    const canEmail = await canSendEmail();
+    if (!canEmail) return networkError();
     //Checks to see if account already exists
     const db = await connectToDatabase("accounts");
     const accounts = db.collection("accounts");
@@ -248,7 +292,8 @@ async function sendVerification(req: NextRequest) {
         },
       };
       const command = new SendEmailCommand(emailParams);
-      await ses.send(command);
+      ses.send(command);
+      updateEmailCount();
       return success();
     }
   } catch {
@@ -296,6 +341,10 @@ async function sendPasswordReset(req: NextRequest) {
     const body = await req.json();
     const email = body.email.trim().toLowerCase();
     if (!emailRegExp.test(email)) return wrongCredentials();
+    //Checking if we can send an email currently
+    const canEmail = await canSendEmail();
+    if (!canEmail) return networkError();
+    //Getting their account
     const db = await connectToDatabase("accounts");
     const resets = db.collection("password_resets");
     const accounts = db.collection("accounts");
@@ -308,15 +357,15 @@ async function sendPasswordReset(req: NextRequest) {
       );
       return success();
     }
-    const verificationCode = randomString(32);
+    const passwordCode = randomString(48);
     await resets.insertOne({
       email: email,
-      code: verificationCode,
+      code: passwordCode,
       createdAt: new Date(),
     });
     await accounts.updateOne(
       { email: email },
-      { $set: { passwordCode: verificationCode } }
+      { $set: { passwordCode: passwordCode } }
     );
     const emailParams = {
       Source: '"Numbler" <noreply@numbler.net>',
@@ -329,13 +378,14 @@ async function sendPasswordReset(req: NextRequest) {
         },
         Body: {
           Html: {
-            Data: password_email(verificationCode),
+            Data: password_email(passwordCode),
           },
         },
       },
     };
     const command = new SendEmailCommand(emailParams);
-    await ses.send(command);
+    ses.send(command);
+    updateEmailCount();
     return success();
   } catch {
     return networkError();

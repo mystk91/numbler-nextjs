@@ -10,7 +10,7 @@ export interface RowProps {
   rectangles: RectangleProps[];
   row?: number;
   currentRow?: boolean;
-  ariaLabel?: string;
+  ariaLabel?: string | undefined;
   style?: React.CSSProperties;
 }
 
@@ -26,7 +26,7 @@ export default function Row({
     <div
       className={styles.row}
       aria-label={
-        ariaLabel
+        ariaLabel !== undefined
           ? ariaLabel
           : currentRow
           ? `Row ${row}, current row`

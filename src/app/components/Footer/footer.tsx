@@ -12,8 +12,8 @@ interface FooterProps {
 export default function Footer({ style }: FooterProps) {
   return (
     <div style={{ ...style }} className={styles.footer}>
-      <Link href="/policy/tos">{`Terms of Service`}</Link>
-      <Link href="/policy/privacy">{`Privacy Policy`}</Link>
+      <Link href="/policy/tos" target="_blank">{`Terms of Service`}</Link>
+      <Link href="/policy/privacy" target="_blank">{`Privacy Policy`}</Link>
       <Link href="/contact-us">{`Contact Us`}</Link>
     </div>
   );

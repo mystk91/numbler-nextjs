@@ -4,7 +4,7 @@ import styles from "./page.module.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Directory",
+  title: "Test Pages",
   description: `This is a description about the page`,
 };
 
@@ -13,7 +13,8 @@ export default function Page() {
     <div className={styles.page}>
       <div className={styles.wrapper}>
         <div>
-          <h1>{`Page Misc`}</h1>
+          <h1>{`Misc`}</h1>
+          <Link href="/dev/homepage">{`Homepage`}</Link>
           <Link href="/dev/footer">{`Footer`}</Link>
           <Link href="/dev/contact-us">{`Contact Us`}</Link>
           <Link href="/dev/404">{`404`}</Link>
@@ -38,10 +39,11 @@ export default function Page() {
 
         <div>
           <h1>{`Game`}</h1>
+          <Link href="/dev/game">{`Game`}</Link>
+          <Link href="/dev/customGame">{`Custom Game`}</Link>
           <Link href="/dev/rectangle">{`Rectangle`}</Link>
           <Link href="/dev/row">{`Row`}</Link>
           <Link href="/dev/gameboard">{`Gameboard`}</Link>
-          <Link href="/dev/game">{`Game`}</Link>
           <Link href="/dev/game_end_panel">{`Game End Panel`}</Link>
           <Link href="/dev/scramble">{`Scramble / Descramble`}</Link>
         </div>

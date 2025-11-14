@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("sessionId")?.value;
   try {
+    if (!sessionId) throw new Error("Invalid credentials");
     const body = await req.json();
     const game = body.game;
     const digits = body.digits;
@@ -77,7 +78,6 @@ export async function POST(req: NextRequest) {
       gameId: game.gameId,
     };
     // Updating the game data in backend
-    if (!sessionId) throw new Error("Invalid credentials");
     const accountsDb = await connectToDatabase("accounts");
     const accounts = accountsDb.collection("accounts");
     let result;

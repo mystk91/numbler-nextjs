@@ -56,9 +56,12 @@ export default function Navbar({
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
               };
-              fetch("/api/auth/logout", options);
+
+              await fetch("/api/auth/logout", options);
               window.location.reload();
-            } catch {}
+            } catch {
+              window.location.reload();
+            }
           },
         },
       ]

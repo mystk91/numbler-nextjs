@@ -363,6 +363,17 @@ export default function startCronJobs() {
     );
     updateWeeklyAnalytics.start();
 
+    // Reset daily email counter
+    const resetEmailCounter = cron.schedule(`0 5 * * *`, async () => {
+      const db = await connectToDatabase("analytics");
+      const current_metrics = db.collection("current_metrics");
+      await current_metrics.updateOne(
+        { name: "emails_sent" },
+        { $set: { emails_sent: 0 } }
+      );
+    });
+    resetEmailCounter.start();
+
     // Sets all inactive accounts to "status: inactive" every day if they've been inactive for 48 hours
     // We could implement this system later if we wanted
     const manageInactiveAccounts = cron.schedule(

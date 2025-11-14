@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import styles from "./game.module.css";
+import styles from "./customGame.module.css";
 import classNames from "classnames";
 import Gameboard from "@/app/components/game/gameboard/gameboard";
 import Keyboard, {
@@ -16,19 +16,14 @@ import {
   Value,
   Animation,
 } from "@/app/components/game/rectangle/rectangle";
-import { useUser } from "@/app/contexts/userContext";
 import { createToast } from "@/app/components/toasts/createToast";
 import InvalidGuess from "@/app/components/toasts/invalidGuessToast";
 import { toast } from "react-toastify";
 import { descramble } from "@/app/lib/descramble";
-import ArrowLoader from "@/app/components/loaders/arrow_loader";
-import ExpectedError from "@/app/components/errors/Expected Error/error";
+import Button from "@/app/components/buttons/Button Set/button";
+import InputWrapper from "@/app/components/inputs/Text Input Wrapper - Trendy/input_wrapper";
 
-export type Digits = 2 | 3 | 4 | 5 | 6 | 7;
-
-interface GameProps {
-  digits: Digits;
-}
+type Digits = 2 | 3 | 4 | 5 | 6 | 7;
 
 export type GameData = {
   values: Value[][];
@@ -40,40 +35,23 @@ export type GameData = {
   gameId: string;
 };
 
-// Retrieves the users local storage
-async function getLocalGameData(digits: number): Promise<GameData | null> {
-  const storage = localStorage.getItem("digits" + digits);
-  if (storage) {
-    const object = JSON.parse(storage);
-    return {
-      values: object.values,
-      hints: object.hints,
-      currentRow: object.currentRow,
-      correctNumber: object.correctNumber,
-      gameStatus: object.gameStatus,
-      date: object.date,
-      gameId: object.gameId,
-    };
-  }
-  return null;
-}
-
-// Refreshes the page - used when user has invalid credentials. Will force "user" to be reloaded
-function forceLogout() {
-  window.location.reload();
-}
-
-export default function Game({ digits }: GameProps) {
+/**
+ *   Version of the game that lets you play random numbers, or choose a specific number to play.
+ *   Only uses localStorage for scores, and doesn't do any backend tracking.
+ *   This component was made by removing features from game.tsx, and adding a "create game" feature
+ */
+export default function Game() {
   const [gameboard, setGameboard] = useState<RowProps[]>([]);
   const currentRow = useRef(0);
   const currentColumn = useRef(0);
+  const gameMode = useRef<`none` | `random` | `picked`>(`none`);
   const gameStatus = useRef<`playing` | `victory` | `defeat`>(`playing`);
-  const [loading, setLoading] = useState(true);
   const correctNumber = useRef("");
   const [showEndPanel, setShowEndPanel] = useState(false);
   const { keyColors, setKeyColors } = useKeyColors();
   const initialKeyColors = useKeyColors().keyColors;
   const values = useRef<Value[][]>([]);
+  const digits = useRef<Digits>(2);
   const hints = useRef<Color[][]>([]);
   const date = useRef<Date>(new Date());
   const gameId = useRef<string>(``);
@@ -87,164 +65,70 @@ export default function Game({ digits }: GameProps) {
     "Enter" | "Reset" | "Countdown"
   >("Enter");
   const [showScoresButton, setShowScoresButton] = useState(false);
-  // Tells us that we have a logged in user
-  const user = useUser();
 
-  // Returns an object with all the data in the current game
-  function getGameData() {
-    return {
-      values: values.current,
-      hints: hints.current,
-      currentRow: currentRow.current,
-      correctNumber: correctNumber.current,
-      gameStatus: gameStatus.current,
-      date: date.current,
-      gameId: gameId.current,
-    };
-  }
-
-  //Initalizes the game
-  useEffect(() => {
-    initializeGame();
-
-    // Stable handlers that check logout state
-    const handleBlur = () => {
-      if (!isLoggingOut.current) updateUserGame();
-    };
-    const handleBeforeUnload = () => {
-      if (!isLoggingOut.current) updateUserGame();
-    };
-
-    window.addEventListener("focus", windowFocus);
-    window.addEventListener("blur", handleBlur);
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("focus", windowFocus);
-      window.removeEventListener("blur", handleBlur);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
-
-  // Re-initalizes the game when user swaps windows
-  async function windowFocus() {
-    if (gameStatus.current === "playing") {
-      checkingGuess.current = true;
-      await initializeGame();
-      checkingGuess.current = false;
-    }
-  }
-
-  // Updates the game on the backend for logged in users
-  // We use "if (user)"" to either do this or handle data with localStorage
-  // We need to input the score when the game ends
-  async function updateGame(score?: number) {
-    try {
-      const res = await fetch("/api/game/updateGame", {
-        method: "POST",
-        body: JSON.stringify({
-          digits: digits,
-          score: score,
-          game: getGameData(),
-        }),
-        headers: { "Content-Type": "application/json" },
-      });
-      const data = await res.json();
-      if (data.error && data.logout) {
-        isLoggingOut.current = true;
-        forceLogout();
-      }
-    } catch {}
-  }
-
-  // Wrapper function for updateGame that checks if we have a user first - used in events
-  async function updateUserGame(score?: number) {
-    if (user && gameStatus.current === "playing" && !isLoggingOut.current) {
-      await updateGame(score);
-    }
+  // State for form data and errors
+  const form = {
+    pickedNumber: "",
+    randomNumber: "",
+  };
+  const [formData, setFormData] = useState(form);
+  const [formErrors, setFormErrors] = useState(form);
+  // Handle input changes
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   }
 
   // Initalizes the game on mount
   async function initializeGame() {
-    try {
-      setShowEndPanel(false);
-      setShowScoresButton(false);
-      setEnterButton("Enter");
-      // Here we need to decide if we're
-      // loading user game data, local storage game data, or just creating an empty game
-      let game: GameData | null = null;
-      let scoresArr: number[] = [];
-      let shouldFetch = true;
-      const body: { digits: number; game?: GameData } = {
-        digits: digits,
-      };
-      if (!user) {
-        try {
-          game = await getLocalGameData(digits);
-        } catch {
-          game = null;
-        }
-        const scoresStorage = localStorage.getItem("scores" + digits);
-        if (scoresStorage) {
-          try {
-            scoresArr = JSON.parse(scoresStorage);
-          } catch {
-            scoresArr = [];
-          }
-        }
-        if (game && game.gameStatus === "playing" && game.currentRow > 0) {
-          shouldFetch = false;
-        } else {
-          body.game = game as GameData;
-        }
+    setShowEndPanel(false);
+    setShowScoresButton(false);
+    setEnterButton("Enter");
+    setKeyColors(initialKeyColors);
+    let scoresArr: number[] = [];
+    const scoresStorage = localStorage.getItem("scores" + digits.current);
+    if (scoresStorage) {
+      try {
+        scoresArr = JSON.parse(scoresStorage);
+      } catch {
+        scoresArr = [];
       }
-      if (shouldFetch) {
-        try {
-          const res = await fetch("/api/game/getGame", {
-            method: "POST",
-            body: JSON.stringify(body),
-            headers: { "Content-Type": "application/json" },
-          });
-          const data = await res.json();
-          if (data.game) {
-            game = data.game;
-          } else if (data.error && data.logout) {
-            forceLogout();
-          }
-          if (data.scores) {
-            scoresArr = data.scores;
-          }
-        } catch {}
-      }
-      if (game) {
-        values.current = game.values;
-        hints.current = game.hints;
-        currentRow.current = game.currentRow;
-        currentColumn.current = Math.max(
-          game.values[game.currentRow].findIndex((value) => value === ""),
-          0
-        );
-        gameStatus.current = game.gameStatus;
-        gameId.current = game.gameId;
-        correctNumber.current = game.correctNumber;
-        scores.current = scoresArr;
-        if (gameStatus.current !== "playing") {
-          currentColumn.current = digits;
-          updateKeyColors(currentRow.current + 1);
-          setShowEndPanel(true);
-          setEnterButton("Countdown");
-          setShowScoresButton(true);
-        } else {
-          updateKeyColors(currentRow.current);
-        }
-        checkingGuess.current = false;
-        createGameboard();
-      }
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
     }
+    scores.current = scoresArr;
+    // Sets the refs used in the game
+    const valuesArr = [];
+    const hintsArr = [];
+    for (let i = 0; i < 6; i++) {
+      const valueRow: Value[] = [];
+      const hintRow: Color[] = [];
+      for (let j = 0; j < digits.current + 1; j++) {
+        valueRow.push("");
+        hintRow.push(`none`);
+      }
+      valuesArr.push(valueRow);
+      hintsArr.push(hintRow);
+    }
+    values.current = valuesArr;
+    hints.current = hintsArr;
+    gameStatus.current = "playing";
+    currentRow.current = 0;
+    currentColumn.current = 0;
+    checkingGuess.current = false;
+    // Setting the number
+    if (gameMode.current === "random") {
+      let randomNumber = Math.floor(
+        Math.random() * Math.pow(10, Number(formData.randomNumber))
+      ).toString();
+      while (randomNumber.length < digits.current) {
+        randomNumber = "0" + randomNumber;
+      }
+      correctNumber.current = randomNumber;
+    } else if (gameMode.current === "picked") {
+      correctNumber.current = formData.pickedNumber.trim();
+    }
+    createGameboard();
   }
 
   //Creates the initial gameboard - helper function in initaizeGame
@@ -252,7 +136,7 @@ export default function Game({ digits }: GameProps) {
     const newBoard: RowProps[] = [];
     for (let i = 0; i < 6; i++) {
       const rectangles: RectangleProps[] = [];
-      for (let j = 0; j < digits; j++) {
+      for (let j = 0; j < digits.current; j++) {
         let digit: RectangleProps = {
           type: "digit",
           value: values.current[i][j],
@@ -266,8 +150,8 @@ export default function Game({ digits }: GameProps) {
       }
       let hint: RectangleProps = {
         type: "hint",
-        value: values.current[i][digits],
-        color: hints.current[i][digits],
+        value: values.current[i][digits.current],
+        color: hints.current[i][digits.current],
         active: false,
         animate: false,
         animation: ``,
@@ -342,7 +226,7 @@ export default function Game({ digits }: GameProps) {
   function handleNumberKey(number: Value) {
     toast.dismiss();
     if (gameStatus.current !== "playing" || checkingGuess.current) return;
-    if (currentColumn.current < digits - 1) {
+    if (currentColumn.current < digits.current - 1) {
       values.current[currentRow.current][currentColumn.current] = number;
       currentColumn.current += 1;
       updateRectangles([
@@ -362,7 +246,7 @@ export default function Game({ digits }: GameProps) {
           },
         },
       ]);
-    } else if (currentColumn.current === digits - 1) {
+    } else if (currentColumn.current === digits.current - 1) {
       values.current[currentRow.current][currentColumn.current] = number;
       currentColumn.current += 1;
       updateRectangles([
@@ -377,12 +261,9 @@ export default function Game({ digits }: GameProps) {
       ]);
     }
     // This will make it so Enter always focuses when the digits are full
-    if (currentColumn.current > digits - 1) {
+    if (currentColumn.current > digits.current - 1) {
       setFocusEnter(true);
       setTimeout(() => setFocusEnter(false), 1);
-    }
-    if (!user) {
-      localStorage.setItem("digits" + digits, JSON.stringify(getGameData()));
     }
   }
 
@@ -390,7 +271,7 @@ export default function Game({ digits }: GameProps) {
   function handleBackspaceKey() {
     if (gameStatus.current !== "playing" || checkingGuess.current) return;
     toast.dismiss();
-    if (currentColumn.current === digits) {
+    if (currentColumn.current === digits.current) {
       currentColumn.current -= 1;
       values.current[currentRow.current][currentColumn.current] = "";
       updateRectangles([
@@ -425,15 +306,12 @@ export default function Game({ digits }: GameProps) {
         },
       ]);
     }
-    if (!user) {
-      localStorage.setItem("digits" + digits, JSON.stringify(getGameData()));
-    }
   }
 
   //Handles hitting the enter key on the keyboard
   async function handleEnterKey() {
     if (gameStatus.current !== "playing" || checkingGuess.current) return;
-    if (currentColumn.current === digits) {
+    if (currentColumn.current === digits.current) {
       checkingGuess.current = true;
       await checkGuess();
       if (gameStatus.current === "playing") {
@@ -456,7 +334,7 @@ export default function Game({ digits }: GameProps) {
         InvalidGuess,
         "error",
         undefined,
-        `Enter a ${digits} digit number`,
+        `Enter a ${digits.current} digit number`,
         true,
         2000
       );
@@ -467,7 +345,7 @@ export default function Game({ digits }: GameProps) {
   // Checks the guess of the user and handles the outcome
   async function checkGuess() {
     let guess = "";
-    for (let i = 0; i < digits; i++) {
+    for (let i = 0; i < digits.current; i++) {
       guess += values.current[currentRow.current][i];
     }
     const newHints = getHints(guess);
@@ -488,21 +366,21 @@ export default function Game({ digits }: GameProps) {
       grey: "",
       yellow: "",
     };
-    const animation = animations[newHints[digits]];
-    values.current[currentRow.current][digits] =
-      directionalHint[newHints[digits]];
+    const animation = animations[newHints[digits.current]];
+    values.current[currentRow.current][digits.current] =
+      directionalHint[newHints[digits.current]];
     //Here we update the current row rectangle graphics and the keyboard key graphics
-    updateRectangle(currentRow.current, digits, {
-      color: newHints[digits],
-      value: values.current[currentRow.current][digits],
+    updateRectangle(currentRow.current, digits.current, {
+      color: newHints[digits.current],
+      value: values.current[currentRow.current][digits.current],
       animation: animation === "equals" ? "equals" : "",
       animate: true,
       currentRow: false,
     });
-    const delayIncrement = Math.min(180, 800 / digits); //Lets our large digit versions go quicker
+    const delayIncrement = Math.min(180, 800 / digits.current); //Lets our large digit versions go quicker
     let delay = 240;
     let oldRow = currentRow.current;
-    for (let i = digits - 1; i > -1; i--) {
+    for (let i = digits.current - 1; i > -1; i--) {
       let randomDelay =
         animation === "equals" ? 0 : Math.floor(Math.random() * 160) - 80;
       setTimeout(
@@ -531,14 +409,12 @@ export default function Game({ digits }: GameProps) {
       const score =
         gameStatus.current === "victory" ? currentRow.current + 1 : 7;
       scores.current.push(score);
-      if (user) {
-        await updateGame(score);
-      } else {
-        localStorage.setItem("digits" + digits, JSON.stringify(getGameData()));
-        localStorage.setItem("scores" + digits, JSON.stringify(scores.current));
-      }
-      if (digits < 4) {
-        if (digits == 2) {
+      localStorage.setItem(
+        "scores" + digits.current,
+        JSON.stringify(scores.current)
+      );
+      if (digits.current < 4) {
+        if (digits.current == 2) {
           delay += 360;
         } else {
           delay += 160;
@@ -546,47 +422,31 @@ export default function Game({ digits }: GameProps) {
       }
       setTimeout(() => {
         setShowEndPanel(true);
-      }, delay + delayIncrement * digits - 200);
-      // Checks for new game and updates statistics
-      try {
-        const res = await fetch("/api/game/finishGame", {
-          method: "POST",
-          body: JSON.stringify({
-            digits: digits,
-            score: score,
-            values: values.current,
-            gameId: gameId.current,
-          }),
-          headers: { "Content-Type": "application/json" },
-        });
-        const data = await res.json();
-        // We will change the button and its function
-        setTimeout(() => {
-          if (data.newGame === true) {
-            setEnterButton("Reset");
-            setShowScoresButton(true);
-          } else {
-            setEnterButton("Countdown");
-            setShowScoresButton(true);
-          }
-        }, delay + delayIncrement * digits + 200);
-      } catch {}
+      }, delay + delayIncrement * digits.current - 200);
+      // We will change the button and its function
+      setTimeout(() => {
+        setEnterButton("Reset");
+        setShowScoresButton(true);
+      }, delay + delayIncrement * digits.current + 300);
     } else {
       //Moving player to the next row
       currentRow.current += 1;
       currentColumn.current = 0;
-      const newRowUpdate = Array.from({ length: digits + 1 }, (_, i) => ({
-        row: currentRow.current,
-        column: i,
-        updates: {
-          animate: true,
-          currentRow: true,
-        },
-      }));
+      const newRowUpdate = Array.from(
+        { length: digits.current + 1 },
+        (_, i) => ({
+          row: currentRow.current,
+          column: i,
+          updates: {
+            animate: true,
+            currentRow: true,
+          },
+        })
+      );
       updateRectangle(currentRow.current, 0, {
         active: true,
       });
-      setTimeout(() => updateRectangles(newRowUpdate), 90 * digits);
+      setTimeout(() => updateRectangles(newRowUpdate), 90 * digits.current);
       setGameboard((prevGameboard) => {
         return prevGameboard.map((row, rowIndex) => {
           return {
@@ -596,12 +456,6 @@ export default function Game({ digits }: GameProps) {
         });
       });
       checkingGuess.current = false;
-      // We update the user's game on the backend here
-      if (user) {
-        await updateGame();
-      } else {
-        localStorage.setItem("digits" + digits, JSON.stringify(getGameData()));
-      }
     }
   }
 
@@ -610,17 +464,17 @@ export default function Game({ digits }: GameProps) {
   function getHints(guess: string) {
     let newHints: Color[] = [];
     //Compares the number with target number and creates color hints for it
-    //let target = correctNumber.current;
-    let target = descramble(correctNumber.current);
+    let target = correctNumber.current;
+    //let target = descramble(correctNumber.current);
     let tempTarget = "";
-    for (let i = 0; i < digits; i++) {
+    for (let i = 0; i < digits.current; i++) {
       if (guess[i] === target[i]) {
         tempTarget += "G";
       } else {
         tempTarget += target[i];
       }
     }
-    for (let i = 0; i < digits; i++) {
+    for (let i = 0; i < digits.current; i++) {
       if (tempTarget[i] === "G") {
         newHints.push("green");
       } else if (tempTarget.includes(guess[i])) {
@@ -664,11 +518,44 @@ export default function Game({ digits }: GameProps) {
     setKeyColors(initialKeyColors);
     if (currentRow.current > 0) {
       for (let i = 0; i < row; i++) {
-        for (let j = 0; j < digits; j++) {
+        for (let j = 0; j < digits.current; j++) {
           updateKeyColor(values.current[i][j] as Keys, hints.current[i][j]);
         }
       }
     }
+  }
+
+  function createRandomGame(e: React.FormEvent) {
+    e.preventDefault();
+    if (Number(formData.randomNumber) < 2) return;
+    setFormErrors(form);
+    gameMode.current = "random";
+    digits.current = Number(formData.randomNumber) as Digits;
+    initializeGame();
+  }
+
+  function createPickedGame(e: React.FormEvent) {
+    e.preventDefault();
+    setFormErrors(form);
+    // Validating the chosen number
+    const errorFound =
+      formData.pickedNumber
+        .trim()
+        .split(``)
+        .some((number) => {
+          return Number.isNaN(Number(number));
+        }) || formData.pickedNumber.trim().length < 2;
+    if (errorFound) {
+      setFormErrors((prev) => ({
+        ...prev,
+        pickedNumber: "Choose a valid number",
+      }));
+      return;
+    }
+    digits.current = Number(formData.pickedNumber.trim().length) as Digits;
+    gameMode.current = "picked";
+    initializeGame();
+    formData.pickedNumber = "";
   }
 
   return gameboard.length > 0 ? (
@@ -691,7 +578,8 @@ export default function Game({ digits }: GameProps) {
           Enter: () => handleEnterKey(),
           Backspace: () => handleBackspaceKey(),
           Countdown: () => {},
-          Reset: () => initializeGame(),
+          Reset: () =>
+            gameMode.current === "random" ? initializeGame() : setGameboard([]),
           Scores: () => setShowEndPanel(!showEndPanel),
         }}
         focusEnter={focusEnter}
@@ -703,7 +591,7 @@ export default function Game({ digits }: GameProps) {
         <div className={styles.end_panel_wrapper}>
           <EndPanel
             result={gameStatus.current === "victory" ? "victory" : "defeat"}
-            correctNumber={descramble(correctNumber.current)}
+            correctNumber={correctNumber.current}
             hints={hints.current}
             scores={scores.current}
             date={date.current}
@@ -714,20 +602,67 @@ export default function Game({ digits }: GameProps) {
         </div>
       )}
     </div>
-  ) : loading ? (
-    <div
-      className={styles.loading_game}
-      role="status"
-      aria-label="Loading game..."
-    >
-      <ArrowLoader />
-    </div>
   ) : (
-    <ExpectedError
-      reset={() => {
-        setLoading(true);
-        initializeGame();
-      }}
-    />
+    <div className={styles.game_creator_wrapper}>
+      <div className={styles.game_creator}>
+        <h1>{`Create game`}</h1>
+        <div className={styles.forms_wrapper}>
+          <div className={styles.form_wrapper}>
+            <h2>{`Random Number`}</h2>
+            <form onSubmit={createRandomGame}>
+              <select
+                name="randomNumber"
+                value={formData.randomNumber}
+                onChange={handleChange}
+              >
+                <optgroup>
+                  <option value={0}>{`Digits`}</option>
+                  <option value={2}>{`2`}</option>
+                  <option value={3}>{`3`}</option>
+                  <option value={4}>{`4`}</option>
+                  <option value={5}>{`5`}</option>
+                  <option value={6}>{`6`}</option>
+                  <option value={7}>{`7`}</option>
+                </optgroup>
+              </select>
+              <Button
+                variant="primary"
+                width="smallest"
+                type="submit"
+                style={{ borderRadius: "0.4rem" }}
+              >
+                {`Start`}
+              </Button>
+            </form>
+          </div>
+          <div className={styles.form_wrapper}>
+            <h2>{`Chosen Number`}</h2>
+            <form onSubmit={createPickedGame}>
+              <InputWrapper
+                label="Choose a number"
+                id="pickedNumber"
+                name="pickedNumber"
+                type="text"
+                value={formData.pickedNumber}
+                onChange={handleChange}
+                error={formErrors.pickedNumber}
+                ariaDescribedBy={
+                  formErrors.pickedNumber ? `number-error` : undefined
+                }
+                maxLength={7}
+              />
+              <Button
+                variant="primary"
+                width="smallest"
+                type="submit"
+                style={{ borderRadius: "0.4rem" }}
+              >
+                {`Start`}
+              </Button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
