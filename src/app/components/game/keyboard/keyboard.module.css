@@ -32,23 +32,26 @@
   height: 40%;
 }
 
+.mobile_backspace_button {
+  display: none;
+}
+
 /* Mobile Styles */
-@media screen and (max-width: 520px) {
+@media screen and (max-width: 540px) {
   .number_keys {
     column-gap: 0rem;
     transition: column-gap 0.6s;
   }
 }
 
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 480px) {
   .keyboard {
     row-gap: 0.6rem;
-    padding: 0 0.8rem 1.2rem;
+    padding: 0 0.4rem 1.2rem;
   }
   .number_keys {
     justify-content: center;
     flex-wrap: wrap;
-    column-gap: 1vw;
     row-gap: 0.2rem;
     height: max-content;
   }
@@ -56,12 +59,16 @@
   .number_keys > * {
     height: 5svh !important;
     min-height: 3.6rem !important;
-    width: 30vw !important;
+    width: 31vw !important;
     aspect-ratio: unset !important;
   }
 
   .number_keys > * > * {
     font-size: 90cqh !important;
+  }
+
+  .mobile_backspace_button {
+    display: block;
   }
 }
 

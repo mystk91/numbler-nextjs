@@ -3,7 +3,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 0.4rem solid light-dark(rgb(200, 200, 200), rgb(170, 170, 170));
+  border: 0.4rem solid light-dark(rgb(200, 200, 200), rgb(120, 120, 120));
   min-height: 5.2rem;
   font-family: "Roboto", "Inter", sans-serif;
   background-color: var(--background);
@@ -47,13 +47,13 @@ svg.equals {
 }
 
 .current_row.active {
-  border: 0.4rem solid var(--border-color);
+  border: 0.6rem solid var(--border-color);
   transition: border 0.1s;
 }
 
 @keyframes newRow {
   0% {
-    border: 0.4rem solid light-dark(rgb(200, 200, 200), rgb(200, 200, 200));
+    border: 0.4rem solid light-dark(rgb(200, 200, 200), rgb(120, 120, 120));
   }
 }
 
@@ -266,4 +266,11 @@ svg.equals {
 .no_animation,
 .hint .no_animation {
   animation: none;
+}
+
+@media screen and (max-width: 420px) {
+  .current_row.active {
+  border: 0.5rem solid var(--border-color);
+}
+
 }

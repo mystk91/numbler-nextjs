@@ -9,6 +9,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://numbler.net"),
   title: "Numbler",
   description: `A number guessing game. Use hints to zero in on the correct number!`,
   openGraph: {
@@ -17,13 +18,6 @@ export const metadata: Metadata = {
       "A number guessing game. Use hints to zero in on the correct number!",
     url: "https://numbler.net",
     images: ["/og-image.png"],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Numbler",
-    description:
-      "A number guessing game. Use hints to zero in on the correct number!",
-    images: ["/twitter-image.png"],
   },
   icons: {
     icon: "/favicon.ico",

@@ -75,6 +75,7 @@ export default function Keyboard({
   showScoresButton = false,
   endPanelOpen = false,
 }: KeyboardProps) {
+  const [mobileSize, setMobileSize] = useState(window.innerWidth <= 480); // In the game, the window will already be loaded
   const keyboardRef = useRef<HTMLDivElement>(null);
   const buttonRefs = useRef<Record<Keys, HTMLButtonElement | null>>({
     0: null,
@@ -131,6 +132,7 @@ export default function Keyboard({
       e.key === "ArrowLeft" ||
       e.key === "ArrowRight"
     ) {
+      if (mobileSize) return; // We don't need the navigationMap on mobile sizes (and it'd be a different map too)
       e.preventDefault();
       const nextKey =
         navigationMap[key][e.key as keyof (typeof navigationMap)[typeof key]];
@@ -178,13 +180,20 @@ export default function Keyboard({
     }
   }
 
-  // Adds keydown event
+  // Adds keydown event and resize
   useEffect(() => {
+    handleResize();
     window.addEventListener("keydown", handleKeydown);
+    window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("keydown", handleKeydown);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  function handleResize() {
+    setMobileSize(window.innerWidth <= 480);
+  }
 
   // Focuses the Enter key when we change the focusEnter prop to true
   useEffect(() => {
@@ -206,10 +215,18 @@ export default function Keyboard({
     }
   }, [enterButton]);
 
+  // Reset backspace token when showScoresButton changes to prevent flicker
+  useEffect(() => {
+    setTokens((prev) => ({
+      ...prev,
+      Backspace: 0,
+    }));
+  }, [showScoresButton]);
+
   return (
     <div className={styles.keyboard} ref={keyboardRef} aria-label="Keyboard">
       <div className={styles.number_keys} aria-label="Number keys">
-        {["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].map((i) => (
+        {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((i) => (
           <KeyboardButton
             key={i}
             backgroundColor={keyColors[i as Keys]}
@@ -225,12 +242,45 @@ export default function Keyboard({
             {i}
           </KeyboardButton>
         ))}
+        {mobileSize && <div className={styles.empty_space}></div>}
+        <KeyboardButton
+          backgroundColor={keyColors[0]}
+          width={"smallest"}
+          onClick={keyFunctions[0]}
+          keyPressToken={tokens[0]}
+          ref={(el) => {
+            buttonRefs.current[0] = el;
+          }}
+          onKeyDown={(e) => onButtonKeydown(e, "0")}
+          tabIndex={1}
+        >
+          {"0"}
+        </KeyboardButton>
+        {mobileSize && (
+          <KeyboardButton
+            backgroundColor="none"
+            width={"smallest"}
+            onClick={keyFunctions[`Backspace`]}
+            icon={<Backspace />}
+            keyPressToken={tokens.Backspace}
+            ref={(el) => {
+              buttonRefs.current.Backspace = el;
+            }}
+            onKeyDown={(e) => onButtonKeydown(e, "Backspace")}
+            ariaLabel="Backspace key"
+            keyType="backspace"
+            tabIndex={1}
+          ></KeyboardButton>
+        )}
       </div>
       <div className={styles.input_keys} aria-label="Input keys">
         {enterButton === "Enter" && (
           <KeyboardButton
             backgroundColor={keyColors.Enter}
-            style={{ minHeight: `4.8rem` }}
+            style={{
+              minHeight: `4.8rem`,
+              aspectRatio: mobileSize ? "unset" : "5/1",
+            }}
             width={"default"}
             onClick={keyFunctions[`Enter`]}
             keyPressToken={tokens.Enter}
@@ -248,7 +298,10 @@ export default function Keyboard({
         {enterButton === "Reset" && (
           <KeyboardButton
             backgroundColor={keyColors.Reset}
-            style={{ minHeight: `4.8rem`, aspectRatio: "27/5" }}
+            style={{
+              minHeight: `4.8rem`,
+              aspectRatio: mobileSize ? "unset" : "27/5",
+            }}
             width={"default"}
             onClick={keyFunctions[`Reset`]}
             keyPressToken={resetKeyPressToken}
@@ -265,7 +318,10 @@ export default function Keyboard({
         {enterButton === "Countdown" && (
           <KeyboardButton
             backgroundColor={keyColors.Enter}
-            style={{ minHeight: `4.8rem`, aspectRatio: "35/6" }}
+            style={{
+              minHeight: `4.8rem`,
+              aspectRatio: mobileSize ? "unset" : "35/6",
+            }}
             width={"default"}
             onClick={keyFunctions[`Countdown`]}
             ref={(el) => {
@@ -280,26 +336,32 @@ export default function Keyboard({
           </KeyboardButton>
         )}
         {!showScoresButton ? (
-          <KeyboardButton
-            backgroundColor="none"
-            width={"smallest"}
-            style={{ minHeight: `4.8rem` }}
-            onClick={keyFunctions[`Backspace`]}
-            icon={<Backspace />}
-            keyPressToken={tokens.Backspace}
-            ref={(el) => {
-              buttonRefs.current.Backspace = el;
-            }}
-            onKeyDown={(e) => onButtonKeydown(e, "Backspace")}
-            ariaLabel="Backspace key"
-            keyType="backspace"
-            tabIndex={1}
-          ></KeyboardButton>
+          !mobileSize && (
+            <KeyboardButton
+              backgroundColor="none"
+              width={"smallest"}
+              style={{ minHeight: `4.8rem` }}
+              onClick={keyFunctions[`Backspace`]}
+              icon={<Backspace />}
+              keyPressToken={tokens.Backspace}
+              ref={(el) => {
+                buttonRefs.current.Backspace = el;
+              }}
+              onKeyDown={(e) => onButtonKeydown(e, "Backspace")}
+              ariaLabel="Backspace key"
+              keyType="backspace"
+              tabIndex={1}
+            ></KeyboardButton>
+          )
         ) : (
           <KeyboardButton
             backgroundColor="none"
             width={"smallest"}
-            style={{ minHeight: `4.8rem`, aspectRatio: "2 / 1" }}
+            style={{
+              minHeight: `4.8rem`,
+              aspectRatio: mobileSize ? "unset" : "2 / 1",
+              width: mobileSize ? "40%" : "",
+            }}
             onClick={keyFunctions[`Scores`]}
             keyType="toggle"
             ref={(el) => {

@@ -66,10 +66,12 @@ export default function HomepageLink({
                 : valuesArr[digits.toString()][j]
               : "",
           color: i === 0 ? colorsArr[digits.toString()][j] : "none",
-          active: i === 1 && j === 1,
           animate: false,
           animation: ``,
-          style: { minHeight: "unset" },
+          style: {
+            minHeight: "unset",
+            borderWidth: i === 1 && j === 1 ? "0.35rem" : "",
+          },
           ariaLabel: "",
           currentRow: i === 1,
         };
@@ -84,6 +86,7 @@ export default function HomepageLink({
         animation: ``,
         style: { minHeight: "unset" },
         ariaLabel: "",
+        currentRow: i === 1,
       };
       rectangles.push(hint);
       newBoard.push(

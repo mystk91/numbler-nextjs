@@ -140,6 +140,22 @@
   transition: filter 0.15s;
 }
 
+@media screen and (max-width: 480px) {
+  .enter.button {
+    height: max(7svh, 4.8rem);
+    width: 90%;
+  }
+
+  .enter .text_wrapper {
+    font-size: max(2.5svh, 1.6rem);
+  }
+
+  .toggle .text_wrapper {
+    min-width: none;
+    font-size: max(2.5svh, 1.6rem);
+  }
+}
+
 @media (hover: hover) {
   .keyboard.grey:hover {
     filter: brightness(0.9);

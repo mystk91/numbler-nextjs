@@ -1,5 +1,5 @@
 .backdrop {
-  background-color: light-dark(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+  background-color: light-dark(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.52));
   width: 100vw;
   height: 100vh;
   position: fixed;
@@ -142,5 +142,5 @@
   height: 100%;
   width: 100%;
   pointer-events: none;
-  fill: var(--iconColor);
+  fill: var(--icon-color);
 }

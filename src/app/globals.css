@@ -2,16 +2,16 @@
 
 :root {
   color-scheme: light dark;
-  --grey: light-dark(#8c8c8c, #8c8c8c);
-  --yellow: light-dark(#d1b101, #9d8600);
-  --green: light-dark(#23a64c, #1e8c41);
+  --grey: light-dark(#8c8c8c, #808080);
+  --yellow: light-dark(#d2b200, #9d8600);
+  --green: light-dark(#1f9e48, #166d32);
   --dark-blue: light-dark(#0a0a2f, #0a0a2f);
-  --higher-color: light-dark(#962929, #962929);
-  --lower-color: light-dark(#434360, #434360);
-  --hint-color: light-dark(rgb(225, 225, 225), rgb(120, 120, 120));
+  --higher-color: light-dark(#8a0e0e, #7a1010);
+  --lower-color: light-dark(#434360, #484866);
+  --hint-color: light-dark(rgb(225, 225, 225), rgb(80, 80, 80));
   --background: light-dark(white, rgb(50, 50, 50));
   --foreground: light-dark(black, white);
-  --border-color: light-dark(rgb(50, 50, 50), rgb(245, 245, 245));
+  --border-color: light-dark(rgb(50, 50, 50), rgb(220, 220, 220));
   --border: 0.05rem solid var(--border-color);
   --backdrop-color: light-dark(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
   --link-color: light-dark(blue, rgb(170, 170, 255));

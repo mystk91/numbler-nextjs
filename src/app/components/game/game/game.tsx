@@ -68,7 +68,7 @@ export default function Game({ digits }: GameProps) {
   const currentRow = useRef(0);
   const currentColumn = useRef(0);
   const gameStatus = useRef<`playing` | `victory` | `defeat`>(`playing`);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const correctNumber = useRef("");
   const [showEndPanel, setShowEndPanel] = useState(false);
   const { keyColors, setKeyColors } = useKeyColors();
@@ -80,6 +80,7 @@ export default function Game({ digits }: GameProps) {
   const scores = useRef<number[]>([]);
   const checkingGuess = useRef(false);
   const [focusEnter, setFocusEnter] = useState(false);
+  const [error, setError] = useState(false);
   // Stops infinite loops while logging out
   const isLoggingOut = useRef(false);
   // Used to change the Enter and Backpace key when the game is over to different buttons
@@ -167,6 +168,7 @@ export default function Game({ digits }: GameProps) {
   // Initalizes the game on mount
   async function initializeGame() {
     try {
+      setError(false);
       setShowEndPanel(false);
       setShowScoresButton(false);
       setEnterButton("Enter");
@@ -192,13 +194,14 @@ export default function Game({ digits }: GameProps) {
             scoresArr = [];
           }
         }
-        if (game && game.gameStatus === "playing" && game.currentRow > 0) {
+        if (game && game.gameStatus === "playing") {
           shouldFetch = false;
         } else {
           body.game = game as GameData;
         }
       }
       if (shouldFetch) {
+        setLoading(true);
         try {
           const res = await fetch("/api/game/getGame", {
             method: "POST",
@@ -242,7 +245,7 @@ export default function Game({ digits }: GameProps) {
       }
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      setError(true);
       setLoading(false);
     }
   }
@@ -672,7 +675,6 @@ export default function Game({ digits }: GameProps) {
   }
 
   return gameboard.length > 0 ? (
-    //return false ? (
     <div className={styles.game}>
       <Gameboard rows={gameboard} />
       <Keyboard
@@ -714,20 +716,25 @@ export default function Game({ digits }: GameProps) {
         </div>
       )}
     </div>
-  ) : loading ? (
-    <div
-      className={styles.loading_game}
-      role="status"
-      aria-label="Loading game..."
-    >
-      <ArrowLoader />
-    </div>
   ) : (
-    <ExpectedError
-      reset={() => {
-        setLoading(true);
-        initializeGame();
-      }}
-    />
+    <>
+      {loading && (
+        <div
+          className={styles.loading_game}
+          role="status"
+          aria-label="Loading game..."
+        >
+          <ArrowLoader />
+        </div>
+      )}
+      {error && (
+        <ExpectedError
+          reset={() => {
+            setLoading(true);
+            initializeGame();
+          }}
+        />
+      )}
+    </>
   );
 }
