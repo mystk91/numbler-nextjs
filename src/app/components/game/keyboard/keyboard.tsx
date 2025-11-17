@@ -75,7 +75,7 @@ export default function Keyboard({
   showScoresButton = false,
   endPanelOpen = false,
 }: KeyboardProps) {
-  const [mobileSize, setMobileSize] = useState(window.innerWidth <= 480); // In the game, the window will already be loaded
+  const [mobileSize, setMobileSize] = useState(window.innerWidth <= 480); // In the game, the window will already loaded
   const keyboardRef = useRef<HTMLDivElement>(null);
   const buttonRefs = useRef<Record<Keys, HTMLButtonElement | null>>({
     0: null,
@@ -204,24 +204,12 @@ export default function Keyboard({
     }
   }, [focusEnter]);
 
-  // Needed to reset enterButton when user hits reset button so "Enter" doesn't execute as well
+  // Focuses the enter button if its a "reset game" button
   useEffect(() => {
     if (enterButton === "Reset") {
-      setTokens((prev) => ({
-        ...prev,
-        Enter: 0,
-      }));
       buttonRefs.current.Enter?.focus();
     }
   }, [enterButton]);
-
-  // Reset backspace token when showScoresButton changes to prevent flicker
-  useEffect(() => {
-    setTokens((prev) => ({
-      ...prev,
-      Backspace: 0,
-    }));
-  }, [showScoresButton]);
 
   return (
     <div className={styles.keyboard} ref={keyboardRef} aria-label="Keyboard">

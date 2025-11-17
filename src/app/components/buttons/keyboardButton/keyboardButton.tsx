@@ -66,6 +66,7 @@ function KeyboardButton(
   useImperativeHandle(ref, () => buttonRef.current!);
 
   const timeoutRef = useRef<NodeJS.Timeout>(undefined);
+  const prevToken = useRef(keyPressToken);
 
   const [active, setActive] = useState(false);
   const enabled = useRef(true);
@@ -153,7 +154,8 @@ function KeyboardButton(
   };
 
   useEffect(() => {
-    if (keyPressToken) {
+    // Tracking the previous token lets us properly handle multiple instances of a single button
+    if (keyPressToken && keyPressToken !== prevToken.current) {
       setActive(false);
       setActive(true);
       timeoutRef.current = setTimeout(() => {
@@ -161,6 +163,7 @@ function KeyboardButton(
         onClick?.();
       }, 160);
     }
+    prevToken.current = keyPressToken;
   }, [keyPressToken]);
 
   return (
