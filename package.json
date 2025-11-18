@@ -12,6 +12,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "classnames": "^2.5.1",
     "client-ses": "github:aws-sdk/client-ses",
     "focus-trap-react": "^11.0.4",
     "mongodb": "^6.20.0",
