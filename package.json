@@ -12,6 +12,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "classnames": "^2.5.1",
     "client-ses": "github:aws-sdk/client-ses",
     "focus-trap-react": "^11.0.4",
