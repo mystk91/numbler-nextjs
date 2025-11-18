@@ -100,7 +100,7 @@ a {
 /* Poppins */
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-ExtraLightItalic.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-ExtraLightItalic.ttf") format("truetype");
   font-weight: 200;
   font-style: italic;
   font-display: swap;
@@ -108,7 +108,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-Light.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-Light.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -116,7 +116,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-BoldItalic.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-BoldItalic.ttf") format("truetype");
   font-weight: bold;
   font-style: italic;
   font-display: swap;
@@ -124,7 +124,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-BlackItalic.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-BlackItalic.ttf") format("truetype");
   font-weight: 900;
   font-style: italic;
   font-display: swap;
@@ -132,7 +132,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-Italic.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-Italic.ttf") format("truetype");
   font-weight: normal;
   font-style: italic;
   font-display: swap;
@@ -140,7 +140,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-ExtraBold.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-ExtraBold.ttf") format("truetype");
   font-weight: bold;
   font-style: normal;
   font-display: swap;
@@ -148,7 +148,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-ExtraBoldItalic.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-ExtraBoldItalic.ttf") format("truetype");
   font-weight: bold;
   font-style: italic;
   font-display: swap;
@@ -156,7 +156,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-Medium.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -164,7 +164,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-Bold.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-Bold.ttf") format("truetype");
   font-weight: bold;
   font-style: normal;
   font-display: swap;
@@ -172,7 +172,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-ExtraLight.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-ExtraLight.ttf") format("truetype");
   font-weight: 200;
   font-style: normal;
   font-display: swap;
@@ -180,7 +180,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-LightItalic.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-LightItalic.ttf") format("truetype");
   font-weight: 300;
   font-style: italic;
   font-display: swap;
@@ -188,7 +188,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-Black.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-Black.ttf") format("truetype");
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -196,7 +196,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-ThinItalic.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-ThinItalic.ttf") format("truetype");
   font-weight: 100;
   font-style: italic;
   font-display: swap;
@@ -204,7 +204,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-Regular.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -212,7 +212,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-MediumItalic.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-MediumItalic.ttf") format("truetype");
   font-weight: 500;
   font-style: italic;
   font-display: swap;
@@ -220,7 +220,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-SemiBold.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-SemiBold.ttf") format("truetype");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -228,7 +228,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-Thin.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-Thin.ttf") format("truetype");
   font-weight: 100;
   font-style: normal;
   font-display: swap;
@@ -236,7 +236,7 @@ a {
 
 @font-face {
   font-family: "Poppins";
-  src: url("./fonts/Poppins/Poppins-SemiBoldItalic.ttf") format("truetype");
+  src: url("/fonts/Poppins/Poppins-SemiBoldItalic.ttf") format("truetype");
   font-weight: 600;
   font-style: italic;
   font-display: swap;
@@ -244,7 +244,7 @@ a {
 
 @font-face {
   font-family: "Roboto";
-  src: url("fonts/Roboto/Roboto-Black.ttf") format("truetype");
+  src: url("/fonts/Roboto/Roboto-Black.ttf") format("truetype");
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -252,7 +252,7 @@ a {
 
 @font-face {
   font-family: "Roboto";
-  src: url("fonts/Roboto/Roboto-BoldItalic.ttf") format("truetype");
+  src: url("/fonts/Roboto/Roboto-BoldItalic.ttf") format("truetype");
   font-weight: bold;
   font-style: italic;
   font-display: swap;
@@ -260,7 +260,7 @@ a {
 
 @font-face {
   font-family: "Roboto";
-  src: url("fonts/Roboto/Roboto-BlackItalic.ttf") format("truetype");
+  src: url("/fonts/Roboto/Roboto-BlackItalic.ttf") format("truetype");
   font-weight: 900;
   font-style: italic;
   font-display: swap;
@@ -269,7 +269,7 @@ a {
 /* Roboto */
 @font-face {
   font-family: "Roboto";
-  src: url("./fonts/Roboto/Roboto-Italic.ttf") format("truetype");
+  src: url("/fonts/Roboto/Roboto-Italic.ttf") format("truetype");
   font-weight: normal;
   font-style: italic;
   font-display: swap;
@@ -277,7 +277,7 @@ a {
 
 @font-face {
   font-family: "Roboto";
-  src: url("./fonts/Roboto/Roboto-Bold.ttf") format("truetype");
+  src: url("/fonts/Roboto/Roboto-Bold.ttf") format("truetype");
   font-weight: bold;
   font-style: normal;
   font-display: swap;
@@ -285,7 +285,7 @@ a {
 
 @font-face {
   font-family: "Roboto";
-  src: url("./fonts/Roboto/Roboto-Light.ttf") format("truetype");
+  src: url("/fonts/Roboto/Roboto-Light.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -293,7 +293,7 @@ a {
 
 @font-face {
   font-family: "Roboto";
-  src: url("./fonts/Roboto/Roboto-Regular.ttf") format("truetype");
+  src: url("/fonts/Roboto/Roboto-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -301,7 +301,7 @@ a {
 
 @font-face {
   font-family: "Roboto";
-  src: url("./fonts/Roboto/Roboto-LightItalic.ttf") format("truetype");
+  src: url("/fonts/Roboto/Roboto-LightItalic.ttf") format("truetype");
   font-weight: 300;
   font-style: italic;
   font-display: swap;
@@ -309,7 +309,7 @@ a {
 
 @font-face {
   font-family: "Roboto";
-  src: url("./fonts/Roboto/Roboto-MediumItalic.ttf") format("truetype");
+  src: url("/fonts/Roboto/Roboto-MediumItalic.ttf") format("truetype");
   font-weight: 500;
   font-style: italic;
   font-display: swap;
@@ -317,7 +317,7 @@ a {
 
 @font-face {
   font-family: "Roboto";
-  src: url("./fonts/Roboto/Roboto-Thin.ttf") format("truetype");
+  src: url("/fonts/Roboto/Roboto-Thin.ttf") format("truetype");
   font-weight: 100;
   font-style: normal;
   font-display: swap;
@@ -325,7 +325,7 @@ a {
 
 @font-face {
   font-family: "Roboto";
-  src: url("./fonts/Roboto/Roboto-ThinItalic.ttf") format("truetype");
+  src: url("/fonts/Roboto/Roboto-ThinItalic.ttf") format("truetype");
   font-weight: 100;
   font-style: italic;
   font-display: swap;
@@ -333,7 +333,7 @@ a {
 
 @font-face {
   font-family: "Roboto";
-  src: url("./fonts/Roboto/Roboto-Medium.ttf") format("truetype");
+  src: url("/fonts/Roboto/Roboto-Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -342,7 +342,7 @@ a {
 /* Urbanist */
 @font-face {
   font-family: "Urbanist";
-  src: url("./fonts/urbanist/Urbanist-Italic-VariableFont_wght.ttf")
+  src: url("/fonts/urbanist/Urbanist-Italic-VariableFont_wght.ttf")
     format("truetype");
   font-weight: normal;
   font-style: italic;
@@ -351,7 +351,7 @@ a {
 
 @font-face {
   font-family: "Urbanist";
-  src: url("./fonts/urbanist/Urbanist-VariableFont_wght.ttf") format("truetype");
+  src: url("/fonts/urbanist/Urbanist-VariableFont_wght.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -360,21 +360,21 @@ a {
 /* Manrope */
 @font-face {
   font-family: "Manrope-ExtraLight";
-  src: url("./fonts/Manrope-VariableFont_wght.ttf") format("truetype");
+  src: url("/fonts/Manrope-VariableFont_wght.ttf") format("truetype");
   font-display: swap;
 }
 
 /* Gabarito */
 @font-face {
   font-family: "Gabarito";
-  src: url("./fonts/Gabarito-VariableFont_wght.ttf") format("truetype");
+  src: url("/fonts/Gabarito-VariableFont_wght.ttf") format("truetype");
   font-display: swap;
 }
 
 /* Inter */
 @font-face {
   font-family: "Inter";
-  src: url("./fonts/Inter-VariableFont_wght.ttf") format("truetype");
+  src: url("/fonts/Inter-VariableFont_wght.ttf") format("truetype");
   font-display: swap;
 }
 
