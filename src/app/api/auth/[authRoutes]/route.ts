@@ -162,7 +162,7 @@ async function login(req: NextRequest) {
     if (!user) {
       // We await for a random timeout here to create the illusion that a password is being checked
       await new Promise((resolve) =>
-        setTimeout(resolve, Math.floor(Math.random() * 600) + 300)
+        setTimeout(resolve, Math.floor(Math.random() * 400) + 100)
       );
       return wrongCredentials();
     }

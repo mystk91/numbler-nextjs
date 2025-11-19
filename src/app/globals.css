@@ -342,7 +342,7 @@ a {
 /* Urbanist */
 @font-face {
   font-family: "Urbanist";
-  src: url("/fonts/urbanist/Urbanist-Italic-VariableFont_wght.ttf")
+  src: url("/fonts/Urbanist/Urbanist-Italic-VariableFont_wght.ttf")
     format("truetype");
   font-weight: normal;
   font-style: italic;
@@ -351,7 +351,7 @@ a {
 
 @font-face {
   font-family: "Urbanist";
-  src: url("/fonts/urbanist/Urbanist-VariableFont_wght.ttf") format("truetype");
+  src: url("/fonts/Urbanist/Urbanist-VariableFont_wght.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;

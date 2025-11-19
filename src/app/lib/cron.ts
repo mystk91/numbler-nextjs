@@ -4,13 +4,10 @@ import { randomString } from "./randomString";
 import { connectToDatabase } from "./mongodb";
 
 export default function startCronJobs() {
-  if (
-    process.env.NODE_ENV === "production" ||
-    process.env.NODE_ENV === "development"
-  ) {
+  if (process.env.NODE_ENV === "production") {
     const updateGames = cron.schedule(
-      //`0 0 * * *`,
-      "*/2 * * * *",
+      `0 0 * * *`,
+      //"*/5 * * * *",
       async () => {
         const db = await connectToDatabase(`daily_games`);
         let dailyGames = db.collection(`daily_games`);
@@ -102,8 +99,8 @@ export default function startCronJobs() {
     updateGames.start();
 
     // Calculates the stats of averages of daily games once a day
-    //const calculateStats = cron.schedule(`0 5 * * *`, async () => {
-    const calculateStats = cron.schedule(`*/5 * * * *`, async () => {
+    const calculateStats = cron.schedule(`0 5 * * *`, async () => {
+      //const calculateStats = cron.schedule(`*/5 * * * *`, async () => {
       const db = await connectToDatabase("analytics");
       const game_stats = db.collection(`game_stats`);
       const current_metrics = db.collection(`current_metrics`);
@@ -199,8 +196,8 @@ export default function startCronJobs() {
 
     // Tabulates the past days user visits
     const updateDailyAnalytics = cron.schedule(
-      //`0 6 * * *`,
-      `*/5 * * * *`,
+      `0 6 * * *`,
+      //`*/5 * * * *`,
       async () => {
         const db = await connectToDatabase("analytics");
         const current_metrics = db.collection("current_metrics");
@@ -252,10 +249,8 @@ export default function startCronJobs() {
 
     // Tabulates the past weeks user visits
     const updateWeeklyAnalytics = cron.schedule(
-      /*
-      `0 4 * * 1`,
-      */
-      `*/12 * * * *`,
+      `0 7 * * 1`,
+      //`*/12 * * * *`,
       async () => {
         const db = await connectToDatabase("analytics");
         const current_metrics = db.collection("current_metrics");
