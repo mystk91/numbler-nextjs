@@ -160,10 +160,9 @@ async function login(req: NextRequest) {
       email: email,
     });
     if (!user) {
-      // Here we are doing a fake-out bcrypt so user who submits an inexistent email won't get feedback instantly
-      await bcrypt.compare(
-        body.password,
-        "kTz59TQ9B4EEX2WVBV8ssx3ooldp2NxbO5h9zX1xEQ1lDxhgTfrm7pgO52ma"
+      // We await for a random timeout here to create the illusion that a password is being checked
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.floor(Math.random() * 600) + 300)
       );
       return wrongCredentials();
     }
@@ -353,7 +352,7 @@ async function sendPasswordReset(req: NextRequest) {
     if (spamCheck.length > 4 || !account) {
       // We await for a random timeout here to prevent timing attacks
       await new Promise((resolve) =>
-        setTimeout(resolve, Math.floor(Math.random() * 1500) + 800)
+        setTimeout(resolve, Math.floor(Math.random() * 600) + 300)
       );
       return success();
     }
