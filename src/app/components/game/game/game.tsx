@@ -192,13 +192,15 @@ export default function Game({ digits }: GameProps) {
             scoresArr = JSON.parse(scoresStorage);
             // Users might have the old local storage version, this converts it
             if (!Number(scoresArr[0])) {
-              const oldScoresArr: { gameId: string; score: number }[] =
-                JSON.parse(scoresStorage);
-              scoresArr = [];
-              oldScoresArr.forEach((entry) => {
-                scoresArr.push(entry.score);
-              });
-              localStorage.setItem("scores", JSON.stringify(scoresArr));
+              const oldScores: {
+                average: number;
+                scores: Record<string, number>;
+              } = JSON.parse(scoresStorage);
+              scoresArr = Object.values(oldScores.scores);
+              localStorage.setItem(
+                "scores" + digits,
+                JSON.stringify(scoresArr)
+              );
             }
           } catch {
             scoresArr = [];
