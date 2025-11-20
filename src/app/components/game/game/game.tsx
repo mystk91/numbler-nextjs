@@ -68,7 +68,8 @@ export default function Game({ digits }: GameProps) {
   const currentRow = useRef(0);
   const currentColumn = useRef(0);
   const gameStatus = useRef<`playing` | `victory` | `defeat`>(`playing`);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [showArrowLoader, setShowArrowLoader] = useState(false);
   const correctNumber = useRef("");
   const [showEndPanel, setShowEndPanel] = useState(false);
   const { keyColors, setKeyColors } = useKeyColors();
@@ -213,7 +214,7 @@ export default function Game({ digits }: GameProps) {
         }
       }
       if (shouldFetch) {
-        setLoading(true);
+        setShowArrowLoader(true);
         try {
           const res = await fetch("/api/game/getGame", {
             method: "POST",
@@ -256,9 +257,11 @@ export default function Game({ digits }: GameProps) {
         createGameboard();
       }
       setLoading(false);
+      setShowArrowLoader(false);
     } catch (error) {
       setError(true);
       setLoading(false);
+      setShowArrowLoader(false);
     }
   }
 
@@ -736,7 +739,7 @@ export default function Game({ digits }: GameProps) {
           role="status"
           aria-label="Loading game..."
         >
-          <ArrowLoader />
+          {showArrowLoader && <ArrowLoader />}
         </div>
       )}
       {error && (
