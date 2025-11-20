@@ -2,6 +2,6 @@
   display: flex;
   flex-direction: column;
   width: 100vw;
-  height: var(--app-height, 100svh);
+  height: 100svh;
   min-height: max-content;
 }
