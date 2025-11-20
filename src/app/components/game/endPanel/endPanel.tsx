@@ -241,7 +241,7 @@ export default function EndPanel({
                   style={{
                     border: "none",
                     backgroundColor: "var(--lower-color)",
-                    minHeight: "5.6rem",
+                    minHeight: "5.2rem",
                   }}
                 />
               </NavbarButton>
