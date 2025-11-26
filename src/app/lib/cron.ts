@@ -5,6 +5,7 @@ import { connectToDatabase } from "./mongodb";
 
 export default function startCronJobs() {
   if (process.env.NODE_ENV === "production") {
+    console.log("cron jobs started");
     const updateGames = cron.schedule(
       `0 0 * * *`,
       //"*/5 * * * *",
@@ -432,5 +433,6 @@ export default function startCronJobs() {
     );
     */
     //manageInactiveAccounts.start();
+    console.log("cron jobs finished");
   }
 }

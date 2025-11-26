@@ -111,6 +111,12 @@ export default function Modal({
     }
   }
 
+  let modalTarget = document.getElementById("modal") as HTMLElement | null;
+  if (!modalTarget) {
+    modalTarget = document.createElement("div");
+    modalTarget.id = "modal";
+    document.body.appendChild(modalTarget);
+  }
   return createPortal(
     <FocusTrap>
       <div
@@ -161,6 +167,6 @@ export default function Modal({
         </div>
       </div>
     </FocusTrap>,
-    document.getElementById("modal") as HTMLElement
+    modalTarget
   );
 }
